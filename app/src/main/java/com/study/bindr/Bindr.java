@@ -1,4 +1,4 @@
-package com.study.activities;
+package com.study.bindr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
