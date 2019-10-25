@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Bindr</string>
+    <string name="enterUsername">Enter Username</string>
+    <string name="enterEmailAddress">Enter Email Address</string>
+    <string name="enterPassword">Enter Password</string>
+    <string name="confirmPassword">Confirm Password</string>
 </resources>
