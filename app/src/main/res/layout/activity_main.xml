@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--TOOLBAR. NEEDS TO BE INSIDE THE LINEAR LAYOUT-->
+        <!--Navigation Bar. Must be inside DrawerLayout and another layout like LinearLayout.-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -27,7 +27,6 @@
 
 
         <!-- Login Screen Components -->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,8 +63,8 @@
                 android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="Password"
-                android:hint="Password"
+                android:autofillHints="@string/password"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
@@ -79,7 +78,8 @@
                 android:layout_marginBottom="24dp"
                 android:background="@color/colorPrimaryDark"
                 android:padding="12dp"
-                android:text="Login"
+                android:text="@string/login"
+                android:onClick="login"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
@@ -90,14 +90,17 @@
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
                 android:text="No account yet? Create one"
+                android:clickable="true"
+                android:onClick="register"
                 android:textSize="16sp" />
 
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- More Navigation Bar Stuff -->
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/design_navigation_view"
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
