@@ -10,8 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!--Need the theme line for no actionbar. Use toolbar instead-->
-        <activity android:name="com.study.bindr.Bindr"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name="com.study.bindr.Bindr">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

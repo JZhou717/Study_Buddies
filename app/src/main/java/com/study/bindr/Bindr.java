@@ -6,12 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.google.android.material.navigation.NavigationView;
 
 public class Bindr extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +26,7 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Change the view to the proper screen
         drawer = findViewById(R.id.login_screen);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -36,6 +35,9 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Change the selection to the proper screen
+        navigationView.setCheckedItem(R.id.nav_courses);
         /* End Navigation Stuff */
 
     }
@@ -74,9 +76,9 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
                 intent = new Intent(Bindr.this, RegisterActivity.class);
                 startActivity(intent);
                 break;
-
         }
 
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
