@@ -4,4 +4,10 @@
     <string name="enterEmailAddress">Enter Email Address</string>
     <string name="enterPassword">Enter Password</string>
     <string name="confirmPassword">Confirm Password</string>
+    <string name="enterFullName">Enter Full Name</string>
+    <string name="enterBiography">Enter a Biography</string>
+    <string name="enterInterests">Enter Interests</string>
+    <string name="enterGPA">Enter GPA (optional)</string>
+    <string name="uploadProfilePicture">Upload Profile Picture</string>
+    <string name="next">Next</string>
 </resources>
