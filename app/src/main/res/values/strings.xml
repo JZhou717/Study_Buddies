@@ -10,4 +10,8 @@
     <string name="enterGPA">Enter GPA (optional)</string>
     <string name="uploadProfilePicture">Upload Profile Picture</string>
     <string name="next">Next</string>
+    <string name="addCourse">Add a Course</string>
+    <string name="courseNameHeader">Course Name</string>
+    <string name="courseIDHeader">Course ID</string>
+    <string name="removeCourseHeader">Remove Course</string>
 </resources>
