@@ -11,7 +11,7 @@
 
     <EditText
         android:id="@+id/editEmailAddress"
-        android:layout_width="313dp"
+        android:layout_width="fill_parent"
         android:layout_height="47dp"
         android:ems="10"
         android:hint="@string/enterEmailAddress"
@@ -25,7 +25,7 @@
 
     <EditText
         android:id="@+id/editPassword"
-        android:layout_width="313dp"
+        android:layout_width="fill_parent"
         android:layout_height="47dp"
         android:ems="10"
         android:hint="@string/enterPassword"
@@ -39,7 +39,7 @@
 
     <EditText
         android:id="@+id/editUsername"
-        android:layout_width="313dp"
+        android:layout_width="fill_parent"
         android:layout_height="47dp"
         android:ems="10"
         android:hint="@string/enterUsername"
@@ -53,7 +53,7 @@
 
     <EditText
         android:id="@+id/editConfirmPassword"
-        android:layout_width="313dp"
+        android:layout_width="fill_parent"
         android:layout_height="47dp"
         android:ems="10"
         android:hint="@string/confirmPassword"
@@ -69,20 +69,19 @@
         android:id="@+id/buttonUploadProfilePicture"
         android:layout_width="313dp"
         android:layout_height="wrap_content"
-        android:text="@string/uploadProfilePicture"
         android:background="@color/colorPrimaryDark"
+        android:text="@string/uploadProfilePicture"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editConfirmPassword"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editFullName"
-        android:layout_width="313dp"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="47dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/enterFullName"
@@ -95,7 +94,7 @@
 
     <EditText
         android:id="@+id/editBiography"
-        android:layout_width="313dp"
+        android:layout_width="fill_parent"
         android:layout_height="136dp"
         android:ems="10"
         android:hint="@string/enterBiography"
@@ -108,7 +107,7 @@
 
     <EditText
         android:id="@+id/editInterests"
-        android:layout_width="313dp"
+        android:layout_width="fill_parent"
         android:layout_height="80dp"
         android:ems="10"
         android:hint="@string/enterInterests"
@@ -122,8 +121,8 @@
 
     <EditText
         android:id="@+id/editGPA"
-        android:layout_width="313dp"
-        android:layout_height="80dp"
+        android:layout_width="fill_parent"
+        android:layout_height="47dp"
         android:ems="10"
         android:hint="@string/enterGPA"
         android:inputType="textPersonName"
@@ -137,17 +136,17 @@
     <Button
         android:id="@+id/buttonNext"
         android:layout_width="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@color/white"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+        android:background="@color/colorPrimaryDark"
         android:text="@string/next"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editGPA"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.171" />
 
     <!--TODO - Enter courses-->
 </androidx.constraintlayout.widget.ConstraintLayout>
