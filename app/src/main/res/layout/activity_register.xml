@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/white"
-    tools:context=".Bindr">
+    android:padding="20dp"
+    tools:context=".RegisterActivity">
 
     <EditText
         android:id="@+id/editEmailAddress"
