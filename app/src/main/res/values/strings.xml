@@ -14,4 +14,6 @@
     <string name="courseNameHeader">Course Name</string>
     <string name="courseIDHeader">Course ID</string>
     <string name="removeCourseHeader">Remove Course</string>
+    <string name="remove">Remove</string>
+    <string name="editCoursesExplanation">What courses would you like to find a study buddy for?</string>
 </resources>
