@@ -63,7 +63,7 @@
         app:layout_constraintVertical_bias="0.01" />
 
     <Button
-        android:id="@+id/buttonUploadImage"
+        android:id="@+id/buttonUploadProfilePicture"
         android:layout_width="313dp"
         android:layout_height="wrap_content"
         android:text="@string/uploadProfilePicture"
@@ -85,7 +85,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonUploadImage"
+        app:layout_constraintTop_toBottomOf="@+id/buttonUploadProfilePicture"
         app:layout_constraintVertical_bias="0.01" />
 
     <EditText
@@ -130,7 +130,7 @@
         app:layout_constraintVertical_bias="0.01" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
