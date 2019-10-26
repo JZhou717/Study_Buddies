@@ -9,15 +9,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".Session_Activity"></activity>
         <activity android:name=".Home_Activity" />
         <activity android:name=".Bindr">
+=======
+        <!--Need the theme line for no actionbar. Use toolbar instead-->
+        <activity android:name="com.study.bindr.Bindr"
+            android:theme="@style/AppTheme.NoActionBar">
+>>>>>>> 1494ebfb9d48b57c1f284218979fa0f32b076edd
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.study.bindr.EditCoursesActivity" />
+        <activity
+            android:name="com.study.bindr.RegisterActivity" />
     </application>
 
 </manifest>

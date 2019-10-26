@@ -1,7 +1,13 @@
 <resources>
+    <!-- General Strings -->
     <string name="app_name">Bindr</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="login">Login</string>
+    <!-- Register Strings -->
     <string name="enterUsername">Enter Username</string>
     <string name="enterEmailAddress">Enter Email Address</string>
+    <string name="password">Password</string>
     <string name="enterPassword">Enter Password</string>
     <string name="confirmPassword">Confirm Password</string>
     <string name="enterFullName">Enter Full Name</string>
@@ -10,4 +16,11 @@
     <string name="enterGPA">Enter GPA (optional)</string>
     <string name="uploadProfilePicture">Upload Profile Picture</string>
     <string name="next">Next</string>
+    <!-- Course Strings -->
+    <string name="addCourse">Add a Course</string>
+    <string name="courseNameHeader">Course Name</string>
+    <string name="courseIDHeader">Course ID</string>
+    <string name="removeCourseHeader">Remove Course</string>
+    <string name="remove">Remove</string>
+    <string name="editCoursesExplanation">What courses would you like to find a study buddy for?</string>
 </resources>
