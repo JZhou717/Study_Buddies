@@ -37,7 +37,7 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
         toggle.syncState();
 
         //Change the selection to the proper screen
-        navigationView.setCheckedItem(R.id.nav_courses);
+        //navigationView.setCheckedItem(R.id.nav_courses);
         /* End Navigation Stuff */
 
     }
@@ -74,6 +74,14 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
                 break;
             case R.id.nav_profile:
                 intent = new Intent(Bindr.this, RegisterActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_home:
+                intent = new Intent(Bindr.this, Home_Activity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_session:
+                intent = new Intent(Bindr.this, Session_Activity.class);
                 startActivity(intent);
                 break;
         }
