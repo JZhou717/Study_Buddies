@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -25,7 +26,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle("Messages");
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatbox_screen);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -40,6 +41,13 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         navigationView.setCheckedItem(R.id.nav_home);
         /* End Navigation Stuff */
     }
+
+    public void sendMessage(View view) {
+
+    }
+
+
+
 
     /* Start Navigation Stuff */
     //Navbar closes on activity change
