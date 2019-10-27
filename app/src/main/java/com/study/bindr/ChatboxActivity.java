@@ -13,7 +13,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class ChatBoxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ChatboxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //Need this for our drawer layout
     private DrawerLayout drawer;
 
@@ -27,7 +27,7 @@ public class ChatBoxActivity extends AppCompatActivity implements NavigationView
         setSupportActionBar(toolbar);
 
         //Change the view to the proper screen
-        drawer = findViewById(R.id.chatslist_screen);
+        drawer = findViewById(R.id.chatbox_screen);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -58,19 +58,23 @@ public class ChatBoxActivity extends AppCompatActivity implements NavigationView
 
         switch (item.getItemId()) {
             case R.id.nav_courses:
-                intent = new Intent(ChatBoxActivity.this, EditCoursesActivity.class);
+                intent = new Intent(ChatboxActivity.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(ChatBoxActivity.this, RegisterActivity.class);
+                intent = new Intent(ChatboxActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_home:
-                intent = new Intent(ChatBoxActivity.this, Home_Activity.class);
+                intent = new Intent(ChatboxActivity.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:
-                intent = new Intent(ChatBoxActivity.this, Session_Activity.class);
+                intent = new Intent(ChatboxActivity.this, Session_Activity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_chatslist:
+                intent = new Intent(ChatboxActivity.this, ChatsListActivity.class);
                 startActivity(intent);
                 break;
         }

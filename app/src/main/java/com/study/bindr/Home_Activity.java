@@ -73,6 +73,10 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
                 intent = new Intent(Home_Activity.this, Session_Activity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_chatslist:
+                intent = new Intent(Home_Activity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

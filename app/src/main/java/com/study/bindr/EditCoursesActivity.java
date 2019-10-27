@@ -73,6 +73,10 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
                 intent = new Intent(EditCoursesActivity.this, Session_Activity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_chatslist:
+                intent = new Intent(EditCoursesActivity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

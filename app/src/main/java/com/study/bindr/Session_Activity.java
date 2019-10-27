@@ -73,6 +73,10 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
                 intent = new Intent(Session_Activity.this, Session_Activity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_chatslist:
+                intent = new Intent(Session_Activity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

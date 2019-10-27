@@ -84,6 +84,10 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
                 intent = new Intent(Bindr.this, Session_Activity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_chatslist:
+                intent = new Intent(Bindr.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
