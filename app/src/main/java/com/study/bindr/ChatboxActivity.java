@@ -21,7 +21,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chats_list);
+        setContentView(R.layout.activity_chatbox);
 
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);

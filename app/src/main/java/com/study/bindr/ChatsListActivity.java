@@ -12,12 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ChatsListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ChatsListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ChatsAdapter.OnChatListener,
+        MatchedStudentAdapter.OnMatchIconListener {
     //Need this for our drawer layout
 
     private DrawerLayout drawer;
@@ -54,6 +58,21 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         navigationView.setCheckedItem(R.id.nav_home);
         /* End Navigation Stuff */
 
+
+        //Dropdown for filter
+        final Spinner searchByDropDown=findViewById(R.id.searchByDropDown);
+        List<String> searchOptions = new ArrayList<String>();
+        searchOptions.add("User");
+        searchOptions.add("Course Name");
+
+        ArrayAdapter<String> searchOptionsAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, searchOptions);
+
+        searchOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        searchByDropDown.setAdapter(searchOptionsAdapter);
+
+
         //Populate student matches (not yet messaged)
         matchedStudentsRecyclerView = findViewById(R.id.matchedRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -65,7 +84,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         matchedStudentsList.add(new Student("Linda ", "Wallace"));
         matchedStudentsList.add(new Student("Ben ", "Grey"));
 
-        matchedStudentAdapter=new MatchedStudentAdapter(matchedStudentsList, this);
+        matchedStudentAdapter=new MatchedStudentAdapter(matchedStudentsList, this, this);
         matchedStudentsRecyclerView.setAdapter(matchedStudentAdapter);
 
         //Populate chats
@@ -79,7 +98,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         chatsList.add(new Student("Sunny ", "Renner"));
         chatsList.add(new Student("Greg", "Lee"));
 
-        chatsAdapter=new ChatsAdapter(chatsList, this);
+        chatsAdapter=new ChatsAdapter(chatsList, this, this);
         chatsRecyclerView.setAdapter(chatsAdapter);
 
     }
@@ -127,4 +146,18 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     }
 
     /* End Navigation Stuff */
+    //Navigate to chatbox when a chat is clicked
+    @Override
+    public void onChatClick(int position) {
+
+        Intent intent=new Intent(ChatsListActivity.this, ChatboxActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void OnMatchIconClick(int position) {
+        Intent intent=new Intent(ChatsListActivity.this, ChatboxActivity.class);
+        startActivity(intent);
+
+    }
 }

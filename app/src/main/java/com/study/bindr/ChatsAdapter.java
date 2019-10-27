@@ -20,9 +20,13 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
 
     private ArrayList<Student> studentsList = new ArrayList<>();
 
-    public ChatsAdapter(ArrayList<Student> studentsList, Context context) {
+    //The interface (implemented in activity) will be passed to each individual view so will know where to go to when a chat is clicked
+    private OnChatListener onChatListener;
+
+    public ChatsAdapter(ArrayList<Student> studentsList, Context context, OnChatListener onChatListener) {
         this.studentsList = studentsList;
         this.context = context;
+        this.onChatListener=onChatListener;
     }
 
     private Context context;
@@ -33,7 +37,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_row, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,onChatListener);
     }
 
     @Override
@@ -48,18 +52,35 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         return studentsList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //Get the objects from xml
         ImageView image;
         TextView name;
         TextView lastMessage;
-        public ViewHolder(View itemView) {
+        //Each view holder will have a onChatListener interface
+        OnChatListener onChatListener;
+
+        public ViewHolder(View itemView,OnChatListener onChatListener) {
             super(itemView);
             image = itemView.findViewById(R.id.chatPhoto);
             name = itemView.findViewById(R.id.chatName);
             lastMessage = itemView.findViewById(R.id.chatLastMessage);
+
+            this.onChatListener=onChatListener;
+
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            onChatListener.onChatClick(getAdapterPosition());
+        }
+    }
+
+    //Use this interface to detect click on chat
+    public interface OnChatListener{
+        //Use this method in activity to send position of the clicked item
+        void onChatClick(int position);
     }
 }
