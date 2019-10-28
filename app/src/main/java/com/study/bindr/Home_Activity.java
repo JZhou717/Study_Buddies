@@ -10,12 +10,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Button;
 
 import com.google.android.material.navigation.NavigationView;
 
 public class Home_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //Need this for our drawer layout
     private DrawerLayout drawer;
+    private ScrollView courseScrollView;
+    private Button addCourseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +44,22 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         //Change this to the proper page
         navigationView.setCheckedItem(R.id.nav_home);
         /* End Navigation Stuff */
+
+        courseScrollView = findViewById(R.id.courseScrollView);
+        addCourseButton = findViewById(R.id.addCourseButton);
     }
 
     /* Start Navigation Stuff */
     //Navbar closes on activity change
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        String[] courses = {"Software Methodology","Software Engineering","Internet Technology","Intro to AI"};
+
+    }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
