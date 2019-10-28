@@ -8,6 +8,7 @@ import android.text.method.ScrollingMovementMethod;
 public class UserProfileActivity extends Activity{
     private TextView bioTextView;
     private TextView interestsTextView;
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activty_user_profile);
