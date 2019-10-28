@@ -16,6 +16,8 @@ public class MatchActivity extends Activity {
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                //TODO: MUST ACTUALLY RETRIEVE THE SPECIFIC USER'S PROFILE
+                //(currently, we're just loading a mockup of a profile)
                 Intent i = new Intent(getApplicationContext(),UserProfileActivity.class);
                 startActivity(i);
             }
