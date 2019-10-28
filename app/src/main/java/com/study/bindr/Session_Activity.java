@@ -26,6 +26,7 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Study Sessions");
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.session_screen);

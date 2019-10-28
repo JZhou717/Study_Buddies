@@ -31,6 +31,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Profile");
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.profile_screen);

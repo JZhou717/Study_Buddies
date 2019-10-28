@@ -42,7 +42,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Chats");
+        getSupportActionBar().setTitle("My Chats");
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatslist_screen);

@@ -37,6 +37,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Messages");
+
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatbox_screen);
         NavigationView navigationView = findViewById(R.id.nav_view);

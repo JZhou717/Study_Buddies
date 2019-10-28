@@ -25,6 +25,7 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Edit Courses");
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.courses_screen);
