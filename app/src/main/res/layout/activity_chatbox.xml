@@ -23,7 +23,38 @@
             android:background="@color/colorPrimaryDark"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/Theme.AppCompat.Light" />
+            app:popupTheme="@style/Theme.AppCompat.Light">
+
+            <Button
+                android:id="@+id/blockButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/white"
+                android:onClick="onBlockClick"
+                android:text="Block"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/studyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/white"
+                android:onClick="onStudySessionClick"
+                android:text="Study"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp" />
+
+        </androidx.appcompat.widget.Toolbar>
 
         <!--PUT YOUR STUFF DOWN HERE. REMOVE THIS COMMENT-->
 

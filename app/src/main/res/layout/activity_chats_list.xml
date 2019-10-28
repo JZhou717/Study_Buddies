@@ -41,6 +41,7 @@
                 android:id="@+id/searchByDropDown"
                 android:layout_width="125dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
                 android:background="@android:color/white" />
 
             <SearchView

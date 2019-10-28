@@ -7,16 +7,26 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
 public class ChatboxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Button blockButton;
+    private Button studyButton;
+
     //Need this for our drawer layout
     private DrawerLayout drawer;
+
+    DialogInterface.OnClickListener blockClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,25 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         //Change this to the proper page
         navigationView.setCheckedItem(R.id.nav_home);
         /* End Navigation Stuff */
+
+        blockClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Toast.makeText(ChatboxActivity.this, "Successfully Blocked", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(ChatboxActivity.this, ChatsListActivity.class);
+                        startActivity(intent);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+
+                        break;
+                }
+            }
+        };
+
+
     }
 
     public void sendMessage(View view) {
@@ -90,6 +119,18 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     /* End Navigation Stuff */
+
+
+    public void onBlockClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
+        builder.setMessage("Are you sure you want to block?").setPositiveButton("Yes", blockClickListener)
+                .setNegativeButton("No", blockClickListener).show();
+    }
+
+    public void onStudySessionClick(View view) {
+        Intent intent = new Intent(ChatboxActivity.this, SetStudySessionActivity.class);
+        startActivity(intent);
+    }
+
 }
