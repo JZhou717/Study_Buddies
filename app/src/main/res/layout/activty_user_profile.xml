@@ -10,11 +10,11 @@
     android:fitsSystemWindows="true"
     tools:context=".UserProfileActivity"
     tools:openDrawer="start">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutUserCard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        tools:context=".UserProfileActivity">
 
         <ImageView
             android:id="@+id/imageViewStar1"
@@ -64,7 +64,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textViewGPALabel"
             app:layout_constraintTop_toBottomOf="@+id/textViewGPALabel"
-            app:layout_constraintVertical_bias="0.079" />
+            app:layout_constraintVertical_bias="0.092" />
 
         <ImageView
             android:id="@+id/imageViewProfilePic"
@@ -109,13 +109,13 @@
             android:id="@+id/textViewCourses"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
             android:text="Data Structures, Introduction to Linguistic Theory"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textViewCoursesLabel"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewStar1"
+            app:layout_constraintStart_toStartOf="@+id/textViewInterests"
+            app:layout_constraintTop_toTopOf="@+id/textViewCoursesLabel"
             app:layout_constraintVertical_bias="0.0"
             tools:layout_constraintHorizontal_bias="0.1" />
 
@@ -130,8 +130,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textViewCoursesLabel"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCoursesLabel"
-            app:layout_constraintVertical_bias="0.183" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewCourses"
+            app:layout_constraintVertical_bias="0.02" />
 
         <TextView
             android:id="@+id/textViewGPA"
@@ -142,20 +142,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textViewCourses"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCourses"
-            app:layout_constraintVertical_bias="0.076" />
+            app:layout_constraintTop_toTopOf="@+id/textViewGPALabel"
+            app:layout_constraintVertical_bias="0.02" />
 
         <TextView
             android:id="@+id/textViewBio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="I'm a computer science major and lingu..."
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="20dp"
+            android:scrollbars="vertical"
+            android:text="@string/exampleBioJohnFull"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/textViewGPA"
-            app:layout_constraintTop_toBottomOf="@+id/textViewGPA"
-            app:layout_constraintVertical_bias="0.079" />
+            app:layout_constraintTop_toTopOf="@+id/textViewBioLabel"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/imageViewStar2"
@@ -180,5 +182,35 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewName"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@android:drawable/btn_star_big_off" />
+
+        <TextView
+            android:id="@+id/textViewInterestsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:text="Interests: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textViewBioLabel"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBio"
+            app:layout_constraintVertical_bias="0.23" />
+
+        <TextView
+            android:id="@+id/textViewInterests"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/ExampleInterestsJohn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.36"
+            app:layout_constraintStart_toEndOf="@+id/textViewInterestsLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewInterestsLabel"
+            app:layout_constraintVertical_bias="0.0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
