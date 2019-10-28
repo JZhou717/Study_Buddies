@@ -22,7 +22,7 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editPassword"
@@ -36,7 +36,7 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editUsername"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editUsername"
@@ -50,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editEmailAddress"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editConfirmPassword"
@@ -64,7 +64,7 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editPassword"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/buttonUploadProfilePicture"
@@ -91,12 +91,12 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonUploadProfilePicture"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editBiography"
         android:layout_width="fill_parent"
-        android:layout_height="136dp"
+        android:layout_height="106dp"
         android:ems="10"
         android:hint="@string/enterBiography"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -104,12 +104,12 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editFullName"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editInterests"
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:ems="10"
         android:hint="@string/enterInterests"
         android:inputType="textPersonName"
@@ -118,7 +118,7 @@
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editBiography"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editGPA"
@@ -147,7 +147,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editGPA"
-        app:layout_constraintVertical_bias="0.171" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <!--TODO - Enter courses-->
 </androidx.constraintlayout.widget.ConstraintLayout>
