@@ -17,10 +17,14 @@
     <string name="uploadProfilePicture">Upload Profile Picture</string>
     <string name="next">Next</string>
     <!-- Course Strings -->
-    <string name="addCourse">Add a Course</string>
+    <string name="addCourse">Add Course</string>
     <string name="courseNameHeader">Course Name</string>
     <string name="courseIDHeader">Course ID</string>
     <string name="removeCourseHeader">Remove Course</string>
     <string name="remove">Remove</string>
     <string name="editCoursesExplanation">What courses would you like to find a study buddy for?</string>
+    <string name="colon">:</string>
+    <string name="enterSchoolNum">XX</string>
+    <string name="enterCourseName">Course name</string>
+    <string name="enterTripleDigitNum">XXX</string>
 </resources>
