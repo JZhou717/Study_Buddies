@@ -30,6 +30,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@android:color/transparent"
             android:orientation="horizontal">
 
@@ -37,31 +41,35 @@
                 android:id="@+id/searchByDropDown"
                 android:layout_width="125dp"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
                 android:background="@android:color/white" />
 
             <SearchView
                 android:id="@+id/chatsSearchView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
                 android:background="@android:color/white"
                 android:contentDescription="Search"></SearchView>
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/matchedRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:id="@+id/matchedRecyclerView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/chatsRecyclerView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical">
 
         </androidx.recyclerview.widget.RecyclerView>
