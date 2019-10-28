@@ -160,6 +160,4 @@ public class SetStudySessionActivity extends AppCompatActivity{
         timePickerDialog.show();
     }
 
-    public void onSelectReminder(View view) {
-    }
 }

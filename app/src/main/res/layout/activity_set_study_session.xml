@@ -36,7 +36,6 @@
                 android:id="@+id/selectDateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:onClick="onSelectDate"
                 android:text="Select Date"
                 android:textColor="@color/colorPrimaryDark"
@@ -65,7 +64,6 @@
                 android:id="@+id/selectStartTimeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:onClick="onSelectStartTime"
                 android:text="Select Start Time"
                 android:textColor="@color/colorPrimaryDark"
@@ -90,23 +88,22 @@
             android:orientation="horizontal"
             android:gravity="center|bottom">
 
-            <Button
-                android:id="@+id/selectReminderButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:onClick="onSelectReminder"
-                android:text="Select Reminder Time"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp" />
-
             <TextView
                 android:id="@+id/reminderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Reminder Time (Minutes):"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/reminderEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="Reminder"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:inputType="numberSigned"/>
         </LinearLayout>
 
 
