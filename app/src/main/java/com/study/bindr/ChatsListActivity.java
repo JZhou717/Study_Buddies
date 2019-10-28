@@ -23,7 +23,6 @@ import java.util.List;
 public class ChatsListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ChatsAdapter.OnChatListener,
         MatchedStudentAdapter.OnMatchIconListener {
     //Need this for our drawer layout
-
     private DrawerLayout drawer;
 
     private RecyclerView matchedStudentsRecyclerView;
@@ -44,6 +43,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Chats");
+
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatslist_screen);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -55,7 +55,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         toggle.syncState();
 
         //Change this to the proper page
-        navigationView.setCheckedItem(R.id.nav_home);
+        navigationView.setCheckedItem(R.id.nav_chatslist);
         /* End Navigation Stuff */
 
 
@@ -119,16 +119,16 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.nav_courses:
-                intent = new Intent(ChatsListActivity.this, EditCoursesActivity.class);
+            case R.id.nav_home:
+                intent = new Intent(ChatsListActivity.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(ChatsListActivity.this, RegisterActivity.class);
+                intent = new Intent(ChatsListActivity.this, UserProfileActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                intent = new Intent(ChatsListActivity.this, Home_Activity.class);
+            case R.id.nav_courses:
+                intent = new Intent(ChatsListActivity.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:
@@ -137,6 +137,10 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.nav_chatslist:
                 intent = new Intent(ChatsListActivity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_logout:
+                intent = new Intent(ChatsListActivity.this, Bindr.class);
                 startActivity(intent);
                 break;
         }

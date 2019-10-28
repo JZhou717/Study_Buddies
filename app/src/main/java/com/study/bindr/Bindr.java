@@ -43,7 +43,7 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
     }
 
     public void login(View view) {
-        Intent intent = new Intent(Bindr.this, EditCoursesActivity.class);
+        Intent intent = new Intent(Bindr.this, Home_Activity.class);
         startActivity(intent);
     }
 
@@ -68,16 +68,16 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.nav_courses:
-                intent = new Intent(Bindr.this, EditCoursesActivity.class);
+            case R.id.nav_home:
+                intent = new Intent(Bindr.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(Bindr.this, RegisterActivity.class);
+                intent = new Intent(Bindr.this, UserProfileActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                intent = new Intent(Bindr.this, Home_Activity.class);
+            case R.id.nav_courses:
+                intent = new Intent(Bindr.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:
@@ -86,6 +86,10 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
                 break;
             case R.id.nav_chatslist:
                 intent = new Intent(Bindr.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_logout:
+                intent = new Intent(Bindr.this, Bindr.class);
                 startActivity(intent);
                 break;
         }

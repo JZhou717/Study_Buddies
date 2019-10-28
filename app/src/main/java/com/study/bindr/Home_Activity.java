@@ -30,6 +30,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Courses");
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.home_screen);
@@ -74,16 +75,16 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.nav_courses:
-                intent = new Intent(Home_Activity.this, EditCoursesActivity.class);
+            case R.id.nav_home:
+                intent = new Intent(Home_Activity.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(Home_Activity.this, RegisterActivity.class);
+                intent = new Intent(Home_Activity.this, UserProfileActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                intent = new Intent(Home_Activity.this, Home_Activity.class);
+            case R.id.nav_courses:
+                intent = new Intent(Home_Activity.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:
@@ -92,6 +93,10 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.nav_chatslist:
                 intent = new Intent(Home_Activity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_logout:
+                intent = new Intent(Home_Activity.this, Bindr.class);
                 startActivity(intent);
                 break;
         }
