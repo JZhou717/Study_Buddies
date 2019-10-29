@@ -54,19 +54,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/textViewName"
                 app:layout_constraintVertical_bias="0.0" />
 
+
             <TextView
                 android:id="@+id/textViewBioLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Bio:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewGPALabel"
-                app:layout_constraintTop_toBottomOf="@+id/textViewGPALabel"
-                app:layout_constraintVertical_bias="0.079" />
-
+                app:layout_constraintTop_toBottomOf="@+id/textViewGPALabel" />
 
             <ImageView
                 android:id="@+id/imageViewProfilePic"
@@ -95,14 +95,14 @@
                 android:id="@+id/textViewCoursesLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Courses:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewName"
-                app:layout_constraintTop_toBottomOf="@+id/imageViewStar1"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/imageViewStar1" />
 
             <TextView
                 android:id="@+id/textViewCourses"
@@ -113,22 +113,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textViewCoursesLabel"
-                app:layout_constraintTop_toBottomOf="@+id/imageViewStar1"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintTop_toTopOf="@+id/textViewCoursesLabel"
                 tools:layout_constraintHorizontal_bias="0.1" />
 
             <TextView
                 android:id="@+id/textViewGPALabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:text="GPA:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewCoursesLabel"
-                app:layout_constraintTop_toBottomOf="@+id/textViewCoursesLabel"
-                app:layout_constraintVertical_bias="0.183" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewCoursesLabel" />
 
             <TextView
                 android:id="@+id/textViewGPA"
@@ -138,8 +137,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewCourses"
-                app:layout_constraintTop_toBottomOf="@+id/textViewCourses"
-                app:layout_constraintVertical_bias="0.076" />
+                app:layout_constraintTop_toTopOf="@+id/textViewGPALabel" />
 
             <TextView
                 android:id="@+id/textViewBio"
@@ -149,8 +147,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewGPA"
-                app:layout_constraintTop_toBottomOf="@+id/textViewGPA"
-                app:layout_constraintVertical_bias="0.079" />
+                app:layout_constraintTop_toTopOf="@+id/textViewBioLabel" />
 
             <ImageView
                 android:id="@+id/imageViewStar2"
@@ -178,7 +175,7 @@
                 android:id="@+id/buttonReject"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="12dp"
                 android:backgroundTint="#F44336"
                 android:text="Pass"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -190,14 +187,13 @@
                 android:id="@+id/buttonAccept"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:layout_marginRight="0.176dp"
                 android:backgroundTint="#009688"
                 android:text="Match"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.664"
                 app:layout_constraintStart_toEndOf="@+id/buttonReject"
-                app:layout_constraintTop_toBottomOf="@+id/textViewBio" />
+                app:layout_constraintTop_toTopOf="@+id/buttonReject" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>
