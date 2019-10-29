@@ -29,4 +29,5 @@
     <string name="enterTripleDigitNum">XXX</string>
     <string name="exampleBioJohnFull">I\'m a computer science major and linguistics minor, class of 2021. I\'m a strong programmer and I love linguistics, but I\'m struggling to wrap my head around recursion, which is crucial to both cs and lingustics, so any help with that would be appreciated!</string>
     <string name="ExampleInterestsJohn">Travelling, learning new languages, baseball, and listening to pop music!</string>
+    <string name="done">done</string>
 </resources>
