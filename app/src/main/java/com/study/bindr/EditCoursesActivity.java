@@ -3,6 +3,7 @@ package com.study.bindr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -52,6 +53,12 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
             super.onBackPressed();
         }
     }
+
+    public void done(View view){
+        Intent intent = new Intent(EditCoursesActivity.this, Home_Activity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
