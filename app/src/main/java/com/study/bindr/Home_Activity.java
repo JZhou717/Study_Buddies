@@ -22,7 +22,6 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     //Need this for our drawer layout
     private DrawerLayout drawer;
     private ScrollView courseScrollView;
-    private Button addCourseButton;
     private Button enterCourseButton;
 
     @Override
@@ -50,7 +49,6 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         /* End Navigation Stuff */
 
         courseScrollView = findViewById(R.id.courseScrollView);
-        addCourseButton = findViewById(R.id.addCourseButton);
         enterCourseButton = findViewById(R.id.enterCourseButton);
         enterCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
