@@ -3,6 +3,7 @@ package com.study.bindr;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.text.method.ScrollingMovementMethod;
@@ -22,16 +23,20 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
     private TextView bioTextView;
     private TextView interestsTextView;
+    private static final String TAG = "UserProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activty_user_profile);
+        Log.d(TAG, "Starting onCreate() for UserProfileActivity");
 
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My Profile");
+        Log.d(TAG, "Started Navigation");
+
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.profile_screen);
@@ -46,7 +51,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         //Change the selection to the proper screen
         navigationView.setCheckedItem(R.id.nav_profile);
         /* End Navigation Stuff */
-
+        Log.d(TAG, "Ended navigation");
         bioTextView = (TextView)findViewById(R.id.textViewBio);
         interestsTextView = (TextView)findViewById(R.id.textViewInterests);
         bioTextView.setMovementMethod(new ScrollingMovementMethod());

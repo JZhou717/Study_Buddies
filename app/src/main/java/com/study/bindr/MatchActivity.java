@@ -12,13 +12,13 @@ public class MatchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activty_user_profile);
+        setContentView(R.layout.activity_match);
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 //TODO: MUST ACTUALLY RETRIEVE THE SPECIFIC USER'S PROFILE
                 //(currently, we're just loading a mockup of a profile)
-                Intent i = new Intent(getApplicationContext(),UserProfileActivity.class);
+                Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
                 startActivity(i);
             }
         });
