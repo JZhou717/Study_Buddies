@@ -47,12 +47,12 @@
                     android:textSize="20sp" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/enterCourseButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="@color/colorPrimary"
-                    android:text="Course 1" />
+                    android:text="Data Structures" />
 
                 <Button
                     android:id="@+id/button3"
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="@color/colorPrimary"
-                    android:text="Course 2" />
+                    android:text="Intro to Linguistic Theory" />
 
                 <Button
                     android:id="@+id/button4"

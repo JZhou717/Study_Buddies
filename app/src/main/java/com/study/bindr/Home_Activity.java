@@ -9,7 +9,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.FieldClassification;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Button;
@@ -21,6 +23,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     private DrawerLayout drawer;
     private ScrollView courseScrollView;
     private Button addCourseButton;
+    private Button enterCourseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,14 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
 
         courseScrollView = findViewById(R.id.courseScrollView);
         addCourseButton = findViewById(R.id.addCourseButton);
+        enterCourseButton = findViewById(R.id.enterCourseButton);
+        enterCourseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Home_Activity.this, MatchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /* Start Navigation Stuff */
