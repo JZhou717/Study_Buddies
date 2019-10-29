@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,73 +8,101 @@
     tools:context=".RateActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
+            android:id="@+id/intro_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rate your study session with Student A" />
+            android:layout_marginBottom="20dp"
+            android:text="Rate your study session with Kevin"
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/focus_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Focus:" />
+            android:text="Focus:"
+            android:textSize="18sp" />
 
         <RatingBar
-            android:id="@+id/ratingBar"
+            android:id="@+id/focus_rating_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/productivy_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Productivity" />
+            android:text="Productivity"
+            android:textSize="18sp" />
 
         <RatingBar
-            android:id="@+id/ratingBar2"
+            android:id="@+id/productivity_rating_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/engagement_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Engagement" />
+            android:text="Engagement"
+            android:textSize="18sp" />
 
         <RatingBar
-            android:id="@+id/ratingBar3"
+            android:id="@+id/engagement_rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5" />
+
+        <TextView
+            android:id="@+id/environment_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Environment"
+            android:textSize="18sp" />
+
+        <RatingBar
+            android:id="@+id/environment_rating_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="50dp">
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorPrimaryDark"
+                android:layout_marginEnd="10dp"
                 android:text="Cancel" />
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/submit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
+                android:layout_marginStart="10dp"
                 android:text="Submit" />
         </LinearLayout>
 
     </LinearLayout>
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
