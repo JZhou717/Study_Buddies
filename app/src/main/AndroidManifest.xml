@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SetStudySessionActivity"
-            android:parentActivityName=".ChatboxActivity"/>
+            android:theme="@style/ShowActionBar"
+            android:parentActivityName=".ChatboxActivity"
+            />
         <activity
             android:name=".ChatboxActivity"
             android:parentActivityName=".ChatsListActivity" />

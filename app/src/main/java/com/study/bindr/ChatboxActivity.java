@@ -115,6 +115,10 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 intent = new Intent(ChatboxActivity.this, ChatsListActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_logout:
+                intent = new Intent(ChatboxActivity.this, Bindr.class);
+                startActivity(intent);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

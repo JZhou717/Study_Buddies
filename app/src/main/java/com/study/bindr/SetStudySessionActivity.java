@@ -33,8 +33,6 @@ public class SetStudySessionActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_study_session);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Setup Study Session");
 
         dateTextView= (TextView) findViewById(R.id.dateTextView);
