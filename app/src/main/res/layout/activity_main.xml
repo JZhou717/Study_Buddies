@@ -34,7 +34,8 @@
         android:hint="Username/Email"
         android:inputType="textEmailAddress"
         android:paddingTop="24dp"
-        android:paddingBottom="24dp" />
+        android:paddingBottom="24dp"
+        android:textColor="@color/white" />
 
 
     <!-- Password Label -->
