@@ -49,7 +49,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         toggle.syncState();
 
         //Change this to the proper page
-        navigationView.setCheckedItem(R.id.nav_home);
+        navigationView.getMenu().getItem(0).setChecked(false);
         /* End Navigation Stuff */
 
         blockClickListener = new DialogInterface.OnClickListener() {
@@ -95,16 +95,16 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.nav_courses:
-                intent = new Intent(ChatboxActivity.this, EditCoursesActivity.class);
+            case R.id.nav_home:
+                intent = new Intent(ChatboxActivity.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(ChatboxActivity.this, RegisterActivity.class);
+                intent = new Intent(ChatboxActivity.this, UserProfileActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                intent = new Intent(ChatboxActivity.this, Home_Activity.class);
+            case R.id.nav_courses:
+                intent = new Intent(ChatboxActivity.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:

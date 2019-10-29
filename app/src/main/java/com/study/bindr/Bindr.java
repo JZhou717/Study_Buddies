@@ -1,20 +1,13 @@
 package com.study.bindr;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import com.google.android.material.navigation.NavigationView;
 
-public class Bindr extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Bindr extends AppCompatActivity {
     //Need this for our drawer layout
-    private DrawerLayout drawer;
+    //private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +15,7 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
         setContentView(R.layout.activity_main);
 
 
-        /* Start Navigation Stuff */
+        /* Start Navigation Stuff
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -38,7 +31,7 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
 
         //Change the selection to the proper screen
         //navigationView.setCheckedItem(R.id.nav_courses);
-        /* End Navigation Stuff */
+         End Navigation Stuff */
 
     }
 
@@ -52,7 +45,7 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
         startActivity(intent);
     }
 
-    /* Start Navigation Stuff */
+    /* Start Navigation Stuff
     //Navbar closes on activity change
     @Override
     public void onBackPressed() {
@@ -98,5 +91,5 @@ public class Bindr extends AppCompatActivity implements NavigationView.OnNavigat
         return true;
     }
 
-    /* End Navigation Stuff */
+    End Navigation Stuff */
 }

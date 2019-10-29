@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RateActivity"></activity>
+        <activity android:name=".RateActivity" />
         <activity
             android:name=".SetStudySessionActivity"
             android:parentActivityName=".ChatboxActivity"
@@ -28,7 +28,9 @@
             android:name=".RegisterActivity"
             android:theme="@style/ShowActionBar" />
         <activity android:name=".UserProfileActivity" />
-        <activity android:name=".Bindr">
+        <activity
+            android:name=".Bindr"
+            android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
