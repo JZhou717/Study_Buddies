@@ -58,16 +58,16 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.nav_courses:
-                intent = new Intent(EditCoursesActivity.this, EditCoursesActivity.class);
+            case R.id.nav_home:
+                intent = new Intent(EditCoursesActivity.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(EditCoursesActivity.this, RegisterActivity.class);
+                intent = new Intent(EditCoursesActivity.this, UserProfileActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                intent = new Intent(EditCoursesActivity.this, Home_Activity.class);
+            case R.id.nav_courses:
+                intent = new Intent(EditCoursesActivity.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:
@@ -76,6 +76,10 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
                 break;
             case R.id.nav_chatslist:
                 intent = new Intent(EditCoursesActivity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_logout:
+                intent = new Intent(EditCoursesActivity.this, Bindr.class);
                 startActivity(intent);
                 break;
         }

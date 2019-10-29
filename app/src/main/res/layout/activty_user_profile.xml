@@ -8,8 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    tools:context=".UserProfileActivity"
-    tools:openDrawer="start">
+    tools:context=".UserProfileActivity">
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="wrap_content"
@@ -34,17 +33,29 @@
                 android:id="@+id/constraintLayoutUserCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".UserProfileActivity">
+                tools:context=".UserProfileActivity"
+                android:layout_marginTop="20dp">
 
                 <ImageView
                     android:id="@+id/imageViewStar1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:src="@android:drawable/btn_star_big_on"
+                    android:src="@drawable/ic_star_on"
                     app:layout_constraintEnd_toEndOf="@+id/imageViewProfilePic"
                     app:layout_constraintHorizontal_bias="0.343"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+
+                <ImageView
+                    android:id="@+id/imageViewStar2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_star_on"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.039"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewStar1"
                     app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
                 <ImageView
@@ -52,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:src="@android:drawable/btn_star_big_on"
+                    android:src="@drawable/ic_star_on"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.039"
                     app:layout_constraintStart_toEndOf="@+id/imageViewStar2"
@@ -63,10 +74,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:src="@android:drawable/btn_star_big_on"
+                    android:src="@drawable/ic_star_on"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.039"
                     app:layout_constraintStart_toEndOf="@+id/imageViewStar3"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+
+                <ImageView
+                    android:id="@+id/imageViewStar5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_star_off"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.039"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewStar4"
                     app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
                 <TextView
@@ -167,28 +189,6 @@
                     app:layout_constraintTop_toTopOf="@+id/textViewBioLabel"
                     app:layout_constraintVertical_bias="0.0" />
 
-                <ImageView
-                    android:id="@+id/imageViewStar2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:src="@android:drawable/btn_star_big_on"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.039"
-                    app:layout_constraintStart_toEndOf="@+id/imageViewStar1"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewName" />
-
-                <ImageView
-                    android:id="@+id/imageViewStar5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:src="@android:drawable/btn_star_big_off"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.039"
-                    app:layout_constraintStart_toEndOf="@+id/imageViewStar4"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewName" />
-
                 <TextView
                     android:id="@+id/textViewInterestsLabel"
                     android:layout_width="wrap_content"
@@ -226,7 +226,7 @@
                     app:layout_constraintHorizontal_bias="0.387"
                     app:layout_constraintStart_toEndOf="@+id/imageViewProfilePic"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/edit" />
+                    app:srcCompat="@drawable/ic_edit" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
