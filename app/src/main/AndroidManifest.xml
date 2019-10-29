@@ -11,10 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SetStudySessionActivity"
-            android:theme="@style/ShowActionBar"
+        <activity android:name=".RateActivity"></activity>
+        <activity
+            android:name=".SetStudySessionActivity"
             android:parentActivityName=".ChatboxActivity"
-            />
+            android:theme="@style/ShowActionBar" />
         <activity
             android:name=".ChatboxActivity"
             android:parentActivityName=".ChatsListActivity" />
@@ -22,7 +23,7 @@
         <activity android:name=".Session_Activity" />
         <activity android:name=".Home_Activity" />
         <activity android:name=".EditCoursesActivity" />
-        <activity android:name=".MatchActivity"/>
+        <activity android:name=".MatchActivity" />
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/ShowActionBar" />
