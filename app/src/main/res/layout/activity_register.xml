@@ -145,6 +145,7 @@
                 android:background="@color/colorPrimaryDark"
                 android:text="@string/next"
                 android:textColor="@color/white"
+                android:onClick="goToEditCourses"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
