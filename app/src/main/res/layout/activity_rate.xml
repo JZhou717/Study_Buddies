@@ -92,7 +92,11 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimaryDark"
                 android:layout_marginEnd="10dp"
-                android:text="Cancel" />
+                android:text="Cancel"
+
+
+
+                android:onClick="back"/>
 
             <Button
                 android:id="@+id/submit_button"
@@ -101,7 +105,12 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:layout_marginStart="10dp"
-                android:text="Submit" />
+                android:text="Submit"
+
+
+
+
+                android:onClick="back"/>
         </LinearLayout>
 
     </LinearLayout>
