@@ -2,11 +2,13 @@ package com.study.bindr;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.service.autofill.FieldClassification;
@@ -22,7 +24,10 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     //Need this for our drawer layout
     private DrawerLayout drawer;
     private ScrollView courseScrollView;
-    private Button enterCourseButton;
+    private Button enterCourseButton1;
+    private Button enterCourseButton2;
+    private Button emptyCourse1;
+    private Button emptyCourse2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +54,52 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         /* End Navigation Stuff */
 
         courseScrollView = findViewById(R.id.courseScrollView);
-        enterCourseButton = findViewById(R.id.enterCourseButton);
-        enterCourseButton.setOnClickListener(new View.OnClickListener() {
+        enterCourseButton1 = findViewById(R.id.enterCourseButton1);
+        enterCourseButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Home_Activity.this, MatchActivity.class);
                 startActivity(intent);
+            }
+        });
+        enterCourseButton2 = findViewById(R.id.enterCourseButton2);
+        enterCourseButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Home_Activity.this, MatchActivity.class);
+                startActivity(intent);
+            }
+        });
+        emptyCourse1 = findViewById(R.id.emptyCourse1);
+        emptyCourse1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alert = new AlertDialog.Builder(Home_Activity.this).create();
+                alert.setTitle("Alert");
+                alert.setMessage("This course is currently empty");
+                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alert.show();
+            }
+        });
+        emptyCourse2 = findViewById(R.id.emptyCourse2);
+        emptyCourse2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alert = new AlertDialog.Builder(Home_Activity.this).create();
+                alert.setTitle("Alert");
+                alert.setMessage("This course is currently empty");
+                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alert.show();
             }
         });
     }
