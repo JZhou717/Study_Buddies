@@ -47,7 +47,7 @@
                     android:textSize="20sp" />
 
                 <Button
-                    android:id="@+id/enterCourseButton"
+                    android:id="@+id/enterCourseButton1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -55,7 +55,7 @@
                     android:text="Data Structures" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/enterCourseButton2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -63,7 +63,7 @@
                     android:text="Intro to Linguistic Theory" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/emptyCourse1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -71,7 +71,7 @@
                     android:text="Course 3" />
 
                 <Button
-                    android:id="@+id/button5"
+                    android:id="@+id/emptyCourse2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
