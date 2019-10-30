@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".RateActivity"
-            android:theme="@style/ShowActionBar"/>
+            android:theme="@style/ShowActionBar"
+            android:parentActivityName=".Session_Activity"/>
         <activity
             android:name=".SetStudySessionActivity"
             android:parentActivityName=".ChatboxActivity"
@@ -28,7 +29,8 @@
         <activity android:name=".MatchActivity" />
         <activity
             android:name=".RegisterActivity"
-            android:theme="@style/ShowActionBar" />
+            android:theme="@style/ShowActionBar"
+            android:parentActivityName=".Bindr"/>
         <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".Bindr"
