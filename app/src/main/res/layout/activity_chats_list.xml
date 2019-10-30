@@ -8,7 +8,7 @@
     android:background="@color/white"
     android:fitsSystemWindows="true"
     tools:context=".ChatsListActivity"
-    tools:openDrawer="start">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,6 +27,7 @@
             app:popupTheme="@style/Theme.AppCompat.Light" />
 
         <!--PUT YOUR STUFF DOWN HERE. REMOVE THIS COMMENT-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,6 +54,12 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:text="Matches" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/matchedRecyclerView"
             android:layout_width="match_parent"
@@ -64,12 +71,20 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Chats" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chatsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:orientation="vertical">
 
