@@ -1,4 +1,4 @@
-package com.study.bindr;
+package model;
 
 import java.util.List;
 

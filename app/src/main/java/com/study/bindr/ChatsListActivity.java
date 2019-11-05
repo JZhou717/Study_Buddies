@@ -20,6 +20,8 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Student;
+
 public class ChatsListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ChatsAdapter.OnChatListener,
         MatchedStudentAdapter.OnMatchIconListener {
     //Need this for our drawer layout
