@@ -70,16 +70,16 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.nav_courses:
-                intent = new Intent(Session_Activity.this, EditCoursesActivity.class);
+            case R.id.nav_home:
+                intent = new Intent(Session_Activity.this, Home_Activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_profile:
-                intent = new Intent(Session_Activity.this, RegisterActivity.class);
+                intent = new Intent(Session_Activity.this, UserProfileActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_home:
-                intent = new Intent(Session_Activity.this, Home_Activity.class);
+            case R.id.nav_courses:
+                intent = new Intent(Session_Activity.this, EditCoursesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_session:
@@ -88,6 +88,10 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.nav_chatslist:
                 intent = new Intent(Session_Activity.this, ChatsListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_logout:
+                intent = new Intent(Session_Activity.this, Bindr.class);
                 startActivity(intent);
                 break;
         }
