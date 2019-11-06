@@ -14,25 +14,6 @@ public class Bindr extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        /* Start Navigation Stuff
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        //Change the view to the proper screen
-        drawer = findViewById(R.id.login_screen);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        //Change the selection to the proper screen
-        //navigationView.setCheckedItem(R.id.nav_courses);
-         End Navigation Stuff */
-
     }
 
     public void login(View view) {
