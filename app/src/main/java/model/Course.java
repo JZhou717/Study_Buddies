@@ -2,10 +2,10 @@ package model;
 
 public class Course {
 
-    int schoolID;
-    int departmentID;
-    int courseID;
-    String courseName;
+    private int schoolID;
+    private int departmentID;
+    private int courseID;
+    private String courseName;
 
     public Course(int schoolID, int departmentID, int courseID, String courseName){
         this.schoolID = schoolID;
