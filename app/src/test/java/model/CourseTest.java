@@ -3,18 +3,38 @@ package model;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class CourseTest {
-    Course course;
+    private Course course;
+    private final int SCHOOL_ID = 1;
+    private final int DEPARTMENT_ID = 198;
+    private final int COURSE_ID = 431;
+    private final String COURSE_NAME = "Software Engineering";
 
     @Before
     public void setup() {
-        int schoolID = 1;
-        int departmentID = 198;
-        int courseID = 431;
-        String courseName = "Software Engineering";
-        course = new Course(schoolID, departmentID, courseID, courseName);
+        course = new Course(SCHOOL_ID, DEPARTMENT_ID, COURSE_ID, COURSE_NAME);
     }
 
+    @Test
+    public void testGetSchoolID() {
+        assertEquals(course.getSchoolID(), SCHOOL_ID);
+    }
 
+    @Test
+    public void testGetDepartmentID() {
+        assertEquals(course.getDepartmentID(), DEPARTMENT_ID);
+    }
+
+    @Test
+    public void testGetCourseID() {
+        assertEquals(course.getCourseID(), COURSE_ID);
+    }
+
+    @Test
+    public void testGetCourseName(){
+        assertEquals(course.getCourseName(), COURSE_NAME);
+    }
 
 }

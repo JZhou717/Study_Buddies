@@ -19,7 +19,7 @@ public class Course {
     }
 
     public int getDepartmentID(){
-        return courseID;
+        return departmentID;
     }
 
     public int getCourseID(){
