@@ -12,7 +12,7 @@ public class Student {
     private List<Integer> pendingMatches;
     private int id;
 
-    public Student(String foo, String bar){ } // TODO: DELETE THIS CONSTRUCTOR
+    //public Student(String foo, String bar){ } // TODO: DELETE THIS CONSTRUCTOR
 
     public Student(int id){
         this.id = id;
