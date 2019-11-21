@@ -12,6 +12,7 @@ public class Student {
     private List<Integer> pendingMatches;
     private int id;
 
+    public Student(String foo, String bar){ } // TODO: DELETE THIS CONSTRUCTOR
 
     public Student(int id){
         this.id = id;
@@ -54,7 +55,7 @@ public class Student {
         return null;  //TODO: GET FROM DB
     }
 
-    public String getName(){
+    public String getFullName(){
         return null;  //TODO: GET FROM DB
     }
 
