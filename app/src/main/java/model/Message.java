@@ -10,10 +10,10 @@ public class Message {
     }
 
     public String getText() {
-        return this.text;
+        return text;
     }
 
     public int getSenderID() {
-        return this.senderID;
+        return senderID;
     }
 }
