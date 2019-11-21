@@ -19,22 +19,22 @@ public class CourseTest {
 
     @Test
     public void testGetSchoolID() {
-        assertEquals(course.getSchoolID(), SCHOOL_ID);
+        assertEquals(SCHOOL_ID, course.getSchoolID());
     }
 
     @Test
     public void testGetDepartmentID() {
-        assertEquals(course.getDepartmentID(), DEPARTMENT_ID);
+        assertEquals(DEPARTMENT_ID, course.getDepartmentID());
     }
 
     @Test
     public void testGetCourseID() {
-        assertEquals(course.getCourseID(), COURSE_ID);
+        assertEquals(COURSE_ID, course.getCourseID());
     }
 
     @Test
     public void testGetCourseName(){
-        assertEquals(course.getCourseName(), COURSE_NAME);
+        assertEquals(COURSE_NAME, course.getCourseName());
     }
 
 }
