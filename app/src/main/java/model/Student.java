@@ -16,7 +16,12 @@ public class Student {
 
     public Student(int id){
         this.id = id;
-        //TODO: Retrieve student's courses, chatRooms, sessions, matched, passed from DB
+        //TODO: Retrieve student's courses, email, chatRooms, sessions, matched, passed, status from DB
+        //Call populateStudentInfo() for this
+    }
+
+    public void populateStudentInfo(){
+        //TODO: IMPLEMENT
     }
 
     public String getEmail(){
@@ -27,12 +32,28 @@ public class Student {
         return chatRooms;
     }
 
+    public void addChatRoom(String room){
+        //TODO: IMPLEMENT
+    }
+
+    public void removeChatRoom(String room) {
+        //TODO: IMPLEMENT
+    }
+
     public List<Session> getSessions(){
         return sessions;
     }
 
     public List<Course> getCourses(){
         return courses;
+    }
+
+    public void removeCourse(Course course) {
+        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
+    }
+
+    public void addCourse(Course course) {
+        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
     }
 
     public List<Integer> getMatched(){
@@ -67,10 +88,6 @@ public class Student {
         return -1;  //TODO: GET FROM DB
     }
 
-    public void addChatRoom(String room){
-        //TODO: IMPLEMENT
-    }
-
     public void editEmail(String newEmail){
         //TODO: IMPLEMENT
     }
@@ -96,10 +113,6 @@ public class Student {
     }
 
     public void deleteAccount(){
-        //TODO: IMPLEMENT
-    }
-
-    public void populateStudentInfo(){
         //TODO: IMPLEMENT
     }
 
