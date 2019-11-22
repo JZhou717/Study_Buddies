@@ -77,7 +77,7 @@ public class StudentTest {
 
     @Test
     public void testDeleteAccount() {
-        student.deleteAccount();
+        student = student.deleteAccount();
         assertTrue(student == null);
     }
 

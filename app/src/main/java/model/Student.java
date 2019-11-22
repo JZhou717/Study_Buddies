@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
@@ -16,11 +17,17 @@ public class Student {
 
     public Student(int id){
         this.id = id;
+        this.populateStudentInfo();
         //TODO: Retrieve student's courses, email, chatRooms, sessions, matched, passed, status from DB
-        //Call populateStudentInfo() for this
+
     }
 
     public void populateStudentInfo(){
+        courses = new ArrayList<Course>();
+        chatRooms = new ArrayList<String>();
+        sessions = new ArrayList<Session>();
+        matched = new ArrayList<Integer>();
+        passed = new ArrayList<Integer>();
         //TODO: IMPLEMENT
     }
 
@@ -33,6 +40,7 @@ public class Student {
     }
 
     public void addChatRoom(String room){
+        chatRooms.add(room);
         //TODO: IMPLEMENT
     }
 
@@ -48,11 +56,12 @@ public class Student {
         return courses;
     }
 
-    public void removeCourse(Course course) {
+    public void addCourse(Course course) {
+        courses.add(course);
         return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
     }
 
-    public void addCourse(Course course) {
+    public void removeCourse(Course course) {
         return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
     }
 
@@ -60,8 +69,18 @@ public class Student {
         return matched;
     }
 
+    public void addMatchedStudent(int matchedStudentID){
+        matched.add(matchedStudentID);
+        //TODO: IMPLEMENT
+    }
+
     public List<Integer> getPassed(){
         return passed;
+    }
+
+    public void addPassedStudent(int passedStudentID){
+        passed.add(passedStudentID);
+        //TODO: IMPLEMENT
     }
 
     public List<Integer> getPendingMatches(){
@@ -112,15 +131,8 @@ public class Student {
         //TODO: IMPLEMENT
     }
 
-    public void deleteAccount(){
-        //TODO: IMPLEMENT
-    }
-
-    public void addPassedStudent(int passedStudentID){
-        //TODO: IMPLEMENT
-    }
-
-    public void addMatchedStudent(int matchedStudentID){
+    public Student deleteAccount(){
+        return null;
         //TODO: IMPLEMENT
     }
 }
