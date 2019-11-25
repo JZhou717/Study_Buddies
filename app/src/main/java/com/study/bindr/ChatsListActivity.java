@@ -85,11 +85,11 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         matchedStudentsList.add(new Student("Jessica", "Warner"));
         matchedStudentsList.add(new Student("Linda ", "Wallace"));
         matchedStudentsList.add(new Student("Ben ", "Grey"));*/
-        matchedStudentsList.add(new Student(6));
-        matchedStudentsList.add(new Student(7));
-        matchedStudentsList.add(new Student(8));
-        matchedStudentsList.add(new Student(9));
-        matchedStudentsList.add(new Student(0));
+        matchedStudentsList.add(new Student("6"));
+        matchedStudentsList.add(new Student("7"));
+        matchedStudentsList.add(new Student("8"));
+        matchedStudentsList.add(new Student("9"));
+        matchedStudentsList.add(new Student("0"));
         matchedStudentAdapter=new MatchedStudentAdapter(matchedStudentsList, this, this);
         matchedStudentsRecyclerView.setAdapter(matchedStudentAdapter);
 
@@ -103,11 +103,11 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         chatsList.add(new Student("Danny", "Blue"));
         chatsList.add(new Student("Sunny ", "Renner"));
         chatsList.add(new Student("Greg", "Lee"));*/
-         chatsList.add(new Student(1));
-        chatsList.add(new Student(2));
-        chatsList.add(new Student(3));
-        chatsList.add(new Student(4));
-        chatsList.add(new Student(5));
+         chatsList.add(new Student("1"));
+        chatsList.add(new Student("2"));
+        chatsList.add(new Student("3"));
+        chatsList.add(new Student("4"));
+        chatsList.add(new Student("5"));
         chatsAdapter=new ChatsAdapter(chatsList, this, this);
         chatsRecyclerView.setAdapter(chatsAdapter);
 

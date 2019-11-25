@@ -1,5 +1,6 @@
 package model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +9,14 @@ public class Student {
     private List<Course> courses;
     private List<String> chatRooms;
     private List<Session> sessions;
-    private List<Integer> matched;
-    private List<Integer> passed;
-    private List<Integer> pendingMatches;
-    private int id;
+    private List<String> matched;
+    private List<String> passed;
+    private List<String> pendingMatches;
+    private String id;
 
     //public Student(String foo, String bar){ } // TODO: DELETE THIS CONSTRUCTOR
 
-    public Student(int id){
+    public Student(String id){
         this.id = id;
         this.populateStudentInfo();
         //TODO: Retrieve student's courses, email, chatRooms, sessions, matched, passed, status from DB
@@ -26,8 +27,9 @@ public class Student {
         courses = new ArrayList<Course>();
         chatRooms = new ArrayList<String>();
         sessions = new ArrayList<Session>();
-        matched = new ArrayList<Integer>();
-        passed = new ArrayList<Integer>();
+        matched = new ArrayList<String>();
+        passed = new ArrayList<String>();
+        pendingMatches = new ArrayList<String>();
         //TODO: IMPLEMENT
     }
 
@@ -65,25 +67,25 @@ public class Student {
         return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
     }
 
-    public List<Integer> getMatched(){
+    public List<String> getMatched(){
         return matched;
     }
 
-    public void addMatchedStudent(int matchedStudentID){
+    public void addMatchedStudent(String matchedStudentID){
         matched.add(matchedStudentID);
         //TODO: IMPLEMENT
     }
 
-    public List<Integer> getPassed(){
+    public List<String> getPassed(){
         return passed;
     }
 
-    public void addPassedStudent(int passedStudentID){
+    public void addPassedStudent(String passedStudentID){
         passed.add(passedStudentID);
         //TODO: IMPLEMENT
     }
 
-    public List<Integer> getPendingMatches(){
+    public List<String> getPendingMatches(){
         return pendingMatches;
     }
 
