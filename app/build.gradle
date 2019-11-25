@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "com.study.bindr"
         minSdkVersion 23
@@ -29,10 +33,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.scaledrone:scaledrone-java:0.6.0'
-
+    implementation 'org.mongodb:stitch-android-sdk:4.5.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'org.mongodb:stitch-android-core:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-aws:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-fcm:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-http:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-mongodb-remote:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-twilio:4.6.0'
 }

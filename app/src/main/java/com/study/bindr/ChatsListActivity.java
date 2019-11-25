@@ -11,11 +11,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.core.auth.StitchUser;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.auth.providers.anonymous.AnonymousCredential;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
+
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +49,21 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     private RecyclerView.Adapter chatsAdapter;
 
     private ArrayList<Student> matchedStudentsList = new ArrayList<>();
+
     private ArrayList<Student> chatsList = new ArrayList<>();
+
+    final StitchAppClient client =
+            Stitch.initializeDefaultAppClient("bindr-anrgm");
+
+    final RemoteMongoClient mongoClient =
+            client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+
+    final RemoteMongoCollection<Document> coll =
+            mongoClient.getDatabase("Bindr").getCollection("Chats");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats_list);
 
@@ -111,6 +137,9 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         chatsAdapter=new ChatsAdapter(chatsList, this, this);
         chatsRecyclerView.setAdapter(chatsAdapter);
 
+        chatCall();
+
+
     }
 
     /* Start Navigation Stuff */
@@ -172,6 +201,82 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     public void OnMatchIconClick(int position) {
         Intent intent=new Intent(ChatsListActivity.this, ChatboxActivity.class);
         startActivity(intent);
+
+    }
+
+    public void chatCall(){
+
+        client.getAuth().loginWithCredential(new AnonymousCredential())
+                .addOnCompleteListener(new OnCompleteListener<StitchUser>() {
+                                           @Override
+                                           public void onComplete(@NonNull final Task<StitchUser> task) {
+                                               if (task.isSuccessful()) {
+                                                   System.out.println("stitch logged in anonymously");
+                                               } else {
+                                                   System.out.println("stitch failed to log in anonymously " + task.getException());
+                                               }
+
+                                              /*  Document filterDoc = new Document()
+                                                     .append("room","room1");*/
+                                               RemoteFindIterable findResults = coll
+                                                       .find();
+                                                      // .projection(new Document().append("_id", 0));
+                                               findResults.forEach(item -> {
+
+                                                   System.out.println("successfully found: "+ item.toString());
+                                               });
+                                           }
+                                       });
+
+
+
+/*
+        client.getAuth().loginWithCredential(new AnonymousCredential()).continueWithTask(
+                new Continuation<StitchUser, Task<RemoteUpdateResult>>() {
+
+                    @Override
+                    public Task<RemoteUpdateResult> then(@NonNull Task<StitchUser> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            System.out.println("STITCH Login failed!");
+                            throw task.getException();
+                        }
+
+                        final Document updateDoc = new Document(
+                                "owner_id",
+                                task.getResult().getId()
+                        );
+
+                        updateDoc.put("number", 42);
+                        return coll.updateOne(
+                                null, updateDoc, new RemoteUpdateOptions().upsert(true)
+                        );
+                    }
+                }
+        ).continueWithTask(new Continuation<RemoteUpdateResult, Task<List<Document>>>() {
+            @Override
+            public Task<List<Document>> then(@NonNull Task<RemoteUpdateResult> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    System.out.println("STITCH Login failed!");
+                    throw task.getException();
+                }
+                List<Document> docs = new ArrayList<>();
+                return coll
+                        .find(new Document("owner_id", client.getAuth().getUser().getId()))
+                        .limit(100)
+                        .into(docs);
+            }
+        }).addOnCompleteListener(new OnCompleteListener<List<Document>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<Document>> task) {
+                if (task.isSuccessful()) {
+                    System.out.println("STITCH Found docs: " + task.getResult().toString());
+                    return;
+                }
+                System.out.println("STITCH Error: " + task.getException().toString());
+                task.getException().printStackTrace();
+            }
+        });*/
+
 
     }
 }
