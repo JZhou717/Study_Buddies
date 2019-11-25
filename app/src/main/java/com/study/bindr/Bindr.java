@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
+
 public class Bindr extends AppCompatActivity {
     //Need this for our drawer layout
     //private DrawerLayout drawer;
@@ -13,6 +15,17 @@ public class Bindr extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //connect client to database
+        BindrController.setUpDatabaseConnection();
+
+        RemoteFindIterable findResults = BindrController.studentsCollection
+                .find();
+
+        findResults.forEach(item -> {
+            System.out.println("successfully found student doc: "+ item.toString());
+        });
+
 
     }
 

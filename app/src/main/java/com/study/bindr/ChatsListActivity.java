@@ -52,7 +52,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
 
     private ArrayList<Student> chatsList = new ArrayList<>();
 
-    final StitchAppClient client =
+   /* final StitchAppClient client =
             Stitch.initializeDefaultAppClient("bindr-anrgm");
 
     final RemoteMongoClient mongoClient =
@@ -60,7 +60,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
 
     final RemoteMongoCollection<Document> coll =
             mongoClient.getDatabase("Bindr").getCollection("Chats");
-
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -205,8 +205,14 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void chatCall(){
+        RemoteFindIterable findResults = BindrController.chatsCollection
+                .find();
 
-        client.getAuth().loginWithCredential(new AnonymousCredential())
+        findResults.forEach(item -> {
+            System.out.println("successfully found chats doc: "+ item.toString());
+        });
+
+        /*client.getAuth().loginWithCredential(new AnonymousCredential())
                 .addOnCompleteListener(new OnCompleteListener<StitchUser>() {
                                            @Override
                                            public void onComplete(@NonNull final Task<StitchUser> task) {
@@ -218,7 +224,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
 
                                               /*  Document filterDoc = new Document()
                                                      .append("room","room1");*/
-                                               RemoteFindIterable findResults = coll
+                                              /* RemoteFindIterable findResults = coll
                                                        .find();
                                                       // .projection(new Document().append("_id", 0));
                                                findResults.forEach(item -> {
@@ -226,56 +232,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
                                                    System.out.println("successfully found: "+ item.toString());
                                                });
                                            }
-                                       });
-
-
-
-/*
-        client.getAuth().loginWithCredential(new AnonymousCredential()).continueWithTask(
-                new Continuation<StitchUser, Task<RemoteUpdateResult>>() {
-
-                    @Override
-                    public Task<RemoteUpdateResult> then(@NonNull Task<StitchUser> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            System.out.println("STITCH Login failed!");
-                            throw task.getException();
-                        }
-
-                        final Document updateDoc = new Document(
-                                "owner_id",
-                                task.getResult().getId()
-                        );
-
-                        updateDoc.put("number", 42);
-                        return coll.updateOne(
-                                null, updateDoc, new RemoteUpdateOptions().upsert(true)
-                        );
-                    }
-                }
-        ).continueWithTask(new Continuation<RemoteUpdateResult, Task<List<Document>>>() {
-            @Override
-            public Task<List<Document>> then(@NonNull Task<RemoteUpdateResult> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    System.out.println("STITCH Login failed!");
-                    throw task.getException();
-                }
-                List<Document> docs = new ArrayList<>();
-                return coll
-                        .find(new Document("owner_id", client.getAuth().getUser().getId()))
-                        .limit(100)
-                        .into(docs);
-            }
-        }).addOnCompleteListener(new OnCompleteListener<List<Document>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<Document>> task) {
-                if (task.isSuccessful()) {
-                    System.out.println("STITCH Found docs: " + task.getResult().toString());
-                    return;
-                }
-                System.out.println("STITCH Error: " + task.getException().toString());
-                task.getException().printStackTrace();
-            }
-        });*/
+                                       });*/
 
 
     }
