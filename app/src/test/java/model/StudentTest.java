@@ -12,9 +12,9 @@ public class StudentTest {
     private Student student;
     private Student matched;
     private Student passed;
-    private final int student_id = 1;
-    private final int match_id = 2;
-    private final int pass_id = 3;
+    private final String student_id = "1";
+    private final String match_id = "2";
+    private final String  pass_id = "3";
     private Course course;
     private final int SCHOOL_ID = 1;
     private final int DEPARTMENT_ID = 198;
