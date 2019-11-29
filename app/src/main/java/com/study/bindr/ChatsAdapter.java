@@ -10,23 +10,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Chat;
 import model.Student;
 
 
 //This adapter follows the view holder design pattern, which means that it allows you to define a custom class that extends RecyclerView.ViewHolder.
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> {
 
-    private ArrayList<Student> studentsList = new ArrayList<>();
+    private ArrayList<Chat> chatRoomsList = new ArrayList<>();
 
     //The interface (implemented in activity) will be passed to each individual view so will know where to go to when a chat is clicked
     private OnChatListener onChatListener;
+    private String currentUserID;
 
-    public ChatsAdapter(ArrayList<Student> studentsList, Context context, OnChatListener onChatListener) {
-        this.studentsList = studentsList;
+    public ChatsAdapter(ArrayList<Chat> chatRoomsList, String currentUserID, Context context, OnChatListener onChatListener) {
+        this.chatRoomsList = chatRoomsList;
         this.context = context;
         this.onChatListener=onChatListener;
+        this.currentUserID=currentUserID;
     }
 
     private Context context;
@@ -43,13 +49,37 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
     @Override
     //will be called after viewholder is created. It binds data to the viewholder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Student student=studentsList.get(position);
-        holder.name.setText(student.getFullName());
+        Chat chatRoom=chatRoomsList.get(position);
+        chatRoom.findChattingStudent(new DatabaseCallBack<Document>() {
+            @Override
+            public void onCallback(Document item) {
+                String studentID=item.get("_id").toString();
+                String full_name=item.getString("full_name");
+                chatRoom.setChattingStudentID(studentID);
+                chatRoom.setChattingStudentFullName(full_name);
+                holder.name.setText(full_name);
+
+            }
+        }, currentUserID);
+        chatRoom.findLastMessage(new DatabaseCallBack<Document>() {
+            @Override
+            public void onCallback(Document item) {
+                String studentID=item.get("sender").toString();
+                String text="";
+                if (studentID.equals(currentUserID)){
+                    text=text+"You: ";
+                }
+                text=text+item.getString("text");
+                holder.lastMessage.setText(text);
+            }
+        });
+
+
     }
 
     @Override
     public int getItemCount() {
-        return studentsList.size();
+        return chatRoomsList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

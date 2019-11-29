@@ -29,9 +29,10 @@ public class BindrController {
     static RemoteMongoClient mongoClient =
             client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
     //get collections
-    static RemoteMongoCollection<Document> studentsCollection=mongoClient.getDatabase("bindr").getCollection("students");
-    static RemoteMongoCollection<Document> chatsCollection=mongoClient.getDatabase("bindr").getCollection("chats");
-    static RemoteMongoCollection<Document> coursesCollection=mongoClient.getDatabase("bindr").getCollection("courses");
+    public static RemoteMongoCollection<Document> studentsCollection=mongoClient.getDatabase("bindr").getCollection("students");
+    public static RemoteMongoCollection<Document> chatsCollection=mongoClient.getDatabase("bindr").getCollection("chats");
+    public static RemoteMongoCollection<Document> coursesCollection=mongoClient.getDatabase("bindr").getCollection("courses");
+
 
     //called in Bindr (login)
     public static void setUpDatabaseConnection(){

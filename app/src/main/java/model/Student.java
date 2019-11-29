@@ -1,10 +1,28 @@
 package model;
 
+import android.util.Log;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
+import com.study.bindr.BindrController;
+import com.study.bindr.ChatsAdapter;
+import com.study.bindr.ChatsListActivity;
+import com.study.bindr.DatabaseCallBack;
+import com.study.bindr.MatchedStudentAdapter;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class Student {
+public class Student implements Serializable {
 
     private List<Course> courses;
     private List<String> chatRooms;
@@ -36,9 +54,42 @@ public class Student {
     public String getEmail(){
         return null;
     }
+    public String getId(){return this.id;}
 
-    public List<String> getChatRooms(){
-        return chatRooms;
+    public void getChatRooms(DatabaseCallBack<List<String>> dbCallBack){
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(id));
+
+        //Project the chats array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("chats", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findChatRooms = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findChatRooms.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getChatRooms", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getChatRooms", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document item = task.getResult();
+                    //Get the chatrooms results as a list
+                    List<String> chatRooms= (List<String>) item.get("chats");
+                    dbCallBack.onCallback(chatRooms);
+
+                } else {
+                    Log.e("getChatRooms", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
     public void addChatRoom(String room){
@@ -67,8 +118,47 @@ public class Student {
         return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
     }
 
-    public List<String> getMatched(){
-        return matched;
+    public void getMatched(DatabaseCallBack<List<String>> dbCallBack){
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+
+        //Project the matches array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("matches", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findMatchedStudents = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findMatchedStudents.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getMatched", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getMatched", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    //Get the student ID results as a list
+                    Document item = task.getResult();
+                    List<ObjectId> matches= (List<ObjectId>) item.get("matches");
+                    List<String> matchesString=new ArrayList<>();
+
+                    for (int i=0; i<matches.size(); i++){
+                        String matchedStudentID=matches.get(i).toString();
+                        matchesString.add(matchedStudentID);
+                    }
+                    dbCallBack.onCallback(matchesString);
+
+
+                } else {
+                    Log.e("getMatched", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
     public void addMatchedStudent(String matchedStudentID){
@@ -97,8 +187,41 @@ public class Student {
         return null;  //TODO: GET FROM DB
     }
 
-    public String getFullName(){
-        return null;  //TODO: GET FROM DB
+    public void getFullName(DatabaseCallBack<String> dbCallBack){
+            //Query by _id
+            Document query = new Document().append("_id", new ObjectId(this.id));
+            //Project the full_name
+            Document projection = new Document()
+                    .append("_id", 0)
+                    .append("full_name", 1);
+            RemoteFindOptions options = new RemoteFindOptions()
+                    .projection(projection);
+
+            final Task<Document> findFullName = BindrController.studentsCollection.findOne(query, options);
+
+            //listens for when the query finishes and sends result to callback method (given in parameter)
+            findFullName.addOnCompleteListener(new OnCompleteListener<Document>() {
+                @Override
+                public void onComplete(@NonNull Task <Document> task) {
+                    if (task.getResult() == null) {
+                        Log.d("getFullName", String.format("No document matches the provided query"));
+                    }
+                    else if (task.isSuccessful()) {
+                        Log.d("getFullName", String.format("Successfully found document: %s",
+                                task.getResult()));
+                        Document item = task.getResult();
+                        String full_name=item.getString("full_name");
+
+                        //Sends full_name back
+                        dbCallBack.onCallback(full_name);
+
+                    } else {
+                        Log.e("getFullName", "Failed to findOne: ", task.getException());
+                    }
+                }
+            });
+
+
     }
 
     public String getBio(){
@@ -137,4 +260,5 @@ public class Student {
         return null;
         //TODO: IMPLEMENT
     }
+
 }

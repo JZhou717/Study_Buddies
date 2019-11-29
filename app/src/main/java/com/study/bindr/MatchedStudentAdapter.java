@@ -44,7 +44,14 @@ public class MatchedStudentAdapter extends RecyclerView.Adapter<MatchedStudentAd
     //will be called after viewholder is created. It binds data to the viewholder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Student student=studentsList.get(position);
-        holder.name.setText(student.getFullName());
+        student.getFullName(new DatabaseCallBack<String>() {
+            @Override
+            public void onCallback(String items) {
+                holder.name.setText(items);
+            }
+        });
+
+
     }
 
     @Override

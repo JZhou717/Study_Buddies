@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -32,24 +33,32 @@ import com.scaledrone.lib.RoomListener;
 import com.scaledrone.lib.Scaledrone;
 import com.scaledrone.lib.SubscribeOptions;
 
+import org.bson.Document;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import model.Chat;
+import model.Student;
 
 public class ChatboxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RoomListener {
 
     private Button blockButton;
     private Button studyButton;
-    MemberData data;
     //Need this for our drawer layout
     private DrawerLayout drawer;
 
-
+    //CURRENT STUDENT TEST
+    private String id="5ddc5d142b665e671c7ff7bd";
     private String channelID = "EgTZXDSK6J2eOp6U";
-    private String roomName = "observable-room4";
     private EditText editText;
     private Scaledrone scaledrone;
     private MessageAdapter messageAdapter;
     private ListView messagesView;
+
+    private Chat chat=null;
+    private String type=null;
 
 
     DialogInterface.OnClickListener blockClickListener;
@@ -58,11 +67,34 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbox);
-
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Messages");
+
+        //get chats class
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle.getString("type").equals("chat")){
+            type="chat";
+            chat=(Chat)bundle.getSerializable("Chat");
+            getSupportActionBar().setTitle(chat.getChattingStudentFullName());
+
+            loadHistoryMessages();
+
+        }else {
+            type = "matched";
+            chat = new Chat();
+            Student student = (Student) bundle.get("Student");
+            student.getFullName(new DatabaseCallBack<String>() {
+                @Override
+                public void onCallback(String item) {
+                    chat.setChattingStudentFullName(item);
+                    chat.setChattingStudentID(student.getId());
+                    getSupportActionBar().setTitle(chat.getChattingStudentFullName());
+
+                }
+            });
+        }
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatbox_screen);
@@ -99,24 +131,22 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         //get user input
         editText = (EditText) findViewById(R.id.editText);
 
-        messageAdapter = new MessageAdapter(this, 1);
+        messageAdapter = new MessageAdapter(this, chat.getChattingStudentID());
         messagesView = (ListView) findViewById(R.id.messages_view);
         //To display items in the list, need to associate an adapter with the list.
         messagesView.setAdapter(messageAdapter);
 
-         data = new MemberData(getRandomName(), getRandomID(),true);
-        scaledrone = new Scaledrone(channelID,data);
+        scaledrone = new Scaledrone(channelID);
         //initial connection
         scaledrone.connect(new ScaledroneListener());
-
-
 
     }
 
     public void sendMessage(View view) {
+
         String message = editText.getText().toString();
         if (message.length() > 0) {
-            scaledrone.publish(roomName, message);
+            scaledrone.publish(chat.getRoom(), message);
             editText.getText().clear();
         }
 
@@ -139,7 +169,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         // parse as string
         System.out.println("Message client : "+receivedMessage.getClientID()+" "+receivedMessage.getMember()+" " + receivedMessage.getData().asText());
         boolean belongsToCurrentUser = receivedMessage.getClientID().equals(scaledrone.getClientID());
-        final model.Message message = new model.Message(receivedMessage.getData().asText(), 1 );
+        final model.Message message = new model.Message(receivedMessage.getData().asText(), "1" );
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -210,8 +240,26 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     public void onStudySessionClick(View view) {
         /*Intent intent = new Intent(ChatboxActivity.this, SetStudySessionActivity.class);
         startActivity(intent);*/
-        scaledrone.publish(roomName, "Study Session");
+        scaledrone.publish(chat.getRoom(), "Study Session");
 
+    }
+
+    private void loadHistoryMessages(){
+        chat.findMessages(new DatabaseCallBack<List<Document>>() {
+            @Override
+            public void onCallback(List<Document> items) {
+                for (Document item: items) {
+                    Log.d("app", String.format("successfully found:  %s", item.toString()));
+                    String sender=item.get("sender").toString();
+                    String text=item.getString("text");
+                    System.out.println("MESSAGE HISTORY "+sender +" "+text );
+                    chat.addMessage(text, sender);
+                    messageAdapter.add(chat.getLastMessage());
+                    messagesView.setSelection(messagesView.getCount() - 1);
+                }
+
+            }
+        });
     }
 
     private class ScaledroneListener implements Listener{
@@ -219,8 +267,8 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         @Override
         public void onOpen() {
             System.out.println("Scaledrone connection open");
-            Room room=scaledrone.subscribe(roomName, ChatboxActivity.this,new SubscribeOptions(100));
-            room.listenToHistoryEvents(new HistoryRoomListener() {
+            Room room=scaledrone.subscribe(chat.getRoom(), ChatboxActivity.this,new SubscribeOptions(100));
+            /*room.listenToHistoryEvents(new HistoryRoomListener() {
                 @Override
                 public void onHistoryMessage(Room room, Message receivedMessage) {
                     System.out.println("Received a message from the past client "+ receivedMessage.getClientID()+" "+ receivedMessage.getMember());
@@ -234,28 +282,8 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                         }
                     });
                 }
-            });
-            /*room.listenToObservableEvents(new ObservableRoomListener() {
-                @Override
-                public void onMembers(Room room, ArrayList<Member> members) {
-                    // Emits an array of members that have joined the room. This event is only triggered once, right after the user has successfully connected to the observable room.
-                    // Keep in mind that the session user will also be part of this array, so the minimum size of the array is 1
-                    for (int i=0;i<members.size();i++){
-                        System.out.println(members.get(i).toString());
-                    }
-
-                }
-
-                @Override
-                public void onMemberJoin(Room room, Member member) {
-                    System.out.println("member joined "+member.toString());
-                }
-
-                @Override
-                public void onMemberLeave(Room room, Member member) {
-                    System.out.println("member disconnected "+member.toString());
-                }
             });*/
+
         }
 
         @Override
@@ -280,46 +308,5 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
 
     }
-    class MemberData {
-        private String name;
-        private int id;
-        private boolean study;
-
-
-        public MemberData(String name, int id, boolean study) {
-            this.name = name;
-            this.id = id;
-            this.study=study;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-
-        public int getID() {
-            return id;
-        }
-
-        @Override
-        public String toString() {
-            return "MemberData{" +
-                    "name='" + name + '\'' +
-                    ", id='" + id + '\'' +
-                    ", study='" + study + '\'' +
-                    '}';
-        }
-    }
-    private String getRandomName() {
-        String[] names = {  "Sam", "Mandy"};
-        return names[(int) Math.floor(Math.random() * names.length)];
-    }
-
-    private int getRandomID() {
-        int[] id = {  1, 2};
-        return id[(int) Math.floor(Math.random() * id.length)];
-
-    }
-
 
 }

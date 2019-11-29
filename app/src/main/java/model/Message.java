@@ -2,9 +2,9 @@ package model;
 
 public class Message {
     private String text;
-    private int senderID;
+    private String senderID;
 
-    public Message(String text, int senderID) {
+    public Message(String text, String senderID) {
         this.text = text;
         this.senderID=senderID;
     }
@@ -13,7 +13,7 @@ public class Message {
         return text;
     }
 
-    public int getSenderID() {
+    public String getSenderID() {
         return senderID;
     }
 }
