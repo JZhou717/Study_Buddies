@@ -101,12 +101,35 @@ public class Student implements Serializable {
         //TODO: IMPLEMENT
     }
 
-    public List<Session> getSessions(){
-        return sessions;
-    }
-
     public List<Course> getCourses(){
         return courses;
+//        Document query = new Document().append("_id", new ObjectId(id));
+//        Document projection = new Document()
+//                .append("_id",0)
+//                .append("courses",1);
+//        RemoteFindOptions options = new RemoteFindOptions()
+//                .projection(projection);
+//        final Task <Document> findCourses = BindrController.studentsCollection.findOne(query,options);
+//        findCourses.addOnCompleteListener(new OnCompleteListener <Document> () {
+//            @Override
+//            public void onComplete(@NonNull Task <Document> task){
+//                if(task.getResult() == null){
+//                    Log.d("getCourses", String.format("No document matches the provided query"));
+//                } else if (task.isSuccessful()){
+//                    Log.d("getCourses", String.format("Successfully found document: %s",
+//                            task.getResult()));
+//                    Document item = task.getResult();
+//                    List<Course> courses = (List<Course>) item.get("courses");
+//                    dbCallBack.onCallback(courses);
+//                } else {
+//                    Log.e("getCourses", "Failed to findOne: ", task.getException());
+//                }
+//            }
+//        });
+    }
+
+    public List<Session> getSessions(){
+        return sessions;
     }
 
     public void addCourse(Course course) {
