@@ -8,8 +8,8 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    tools:context=".Home_Activity"
-    tools:openDrawer="start">
+    tools:context=".Home_Activity">
+<!--    tools:openDrawer="start">-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,60 +26,63 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/Theme.AppCompat.Light" />
 
+        <TextView
+            android:id="@+id/link_signup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="Click on a course to start matching!"
+            android:textSize="20sp" />
+
         <ScrollView
             android:id="@+id/courseScrollView"
             android:layout_width="match_parent"
-            android:layout_height="461dp"
+            android:layout_height="match_parent"
             android:layout_margin="20dp">
 
-            <LinearLayout
+            <ListView
+                android:id="@+id/courseListView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/link_signup"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:gravity="center"
-                    android:text="Click on a course to start matching!"
-                    android:textSize="20sp" />
 
-                <Button
-                    android:id="@+id/enterCourseButton1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@color/colorPrimary"
-                    android:text="Data Structures" />
+<!--                <Button-->
+<!--                    android:id="@+id/enterCourseButton1"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:background="@color/colorPrimary"-->
+<!--                    android:text="Data Structures" />-->
 
-                <Button
-                    android:id="@+id/enterCourseButton2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@color/colorPrimary"
-                    android:text="Intro to Linguistic Theory" />
+<!--                <Button-->
+<!--                    android:id="@+id/enterCourseButton2"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:background="@color/colorPrimary"-->
+<!--                    android:text="Intro to Linguistic Theory" />-->
 
-                <Button
-                    android:id="@+id/emptyCourse1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@color/colorPrimary"
-                    android:text="Course 3" />
+<!--                <Button-->
+<!--                    android:id="@+id/emptyCourse1"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:background="@color/colorPrimary"-->
+<!--                    android:text="Course 3" />-->
 
-                <Button
-                    android:id="@+id/emptyCourse2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@color/colorPrimary"
-                    android:text="Course 4" />
+<!--                <Button-->
+<!--                    android:id="@+id/emptyCourse2"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:background="@color/colorPrimary"-->
+<!--                    android:text="Course 4" />-->
 
-            </LinearLayout>
+            </ListView>
 
         </ScrollView>
 

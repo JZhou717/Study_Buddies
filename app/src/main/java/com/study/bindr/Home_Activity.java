@@ -2,32 +2,34 @@ package com.study.bindr;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.autofill.FieldClassification;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.Button;
+import android.widget.ListView;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
+
+import model.Course;
+import model.Student;
 
 public class Home_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //Need this for our drawer layout
     private DrawerLayout drawer;
-    private ScrollView courseScrollView;
-    private Button enterCourseButton1;
-    private Button enterCourseButton2;
-    private Button emptyCourse1;
-    private Button emptyCourse2;
+    private ListView courseListView;
+    private CourseAdapter courseAdapter;
+
+
+    //CURRENT STUDENT TEST
+    private String id = "5ddc5d142b665e671c7ff7bd";
+    private Student student = new Student(id);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,66 +55,19 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         navigationView.setCheckedItem(R.id.nav_home);
         /* End Navigation Stuff */
 
-        courseScrollView = findViewById(R.id.courseScrollView);
-        enterCourseButton1 = findViewById(R.id.enterCourseButton1);
-        enterCourseButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Home_Activity.this, MatchActivity.class);
-                startActivity(intent);
-            }
-        });
-        enterCourseButton2 = findViewById(R.id.enterCourseButton2);
-        enterCourseButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Home_Activity.this, MatchActivity.class);
-                startActivity(intent);
-            }
-        });
-        emptyCourse1 = findViewById(R.id.emptyCourse1);
-        emptyCourse1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog alert = new AlertDialog.Builder(Home_Activity.this).create();
-                alert.setTitle("Alert");
-                alert.setMessage("This course is currently empty");
-                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alert.show();
-            }
-        });
-        emptyCourse2 = findViewById(R.id.emptyCourse2);
-        emptyCourse2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog alert = new AlertDialog.Builder(Home_Activity.this).create();
-                alert.setTitle("Alert");
-                alert.setMessage("This course is currently empty");
-                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alert.show();
-            }
-        });
+
+        //link xml component
+        courseListView = findViewById(R.id.courseListView);
     }
 
-    /* Start Navigation Stuff */
-    //Navbar closes on activity change
+
 
     @Override
     public void onStart(){
         super.onStart();
-
-        String[] courses = {"Software Methodology","Software Engineering","Internet Technology","Intro to AI"};
-
+        List<Course> courses = student.getCourses();
+        courseAdapter = new CourseAdapter(this,courses);
+        courseListView.setAdapter(courseAdapter);
     }
 
     @Override
@@ -160,4 +115,8 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     }
 
     /* End Navigation Stuff */
+
+    private void populateCourses(){
+
+    }
 }
