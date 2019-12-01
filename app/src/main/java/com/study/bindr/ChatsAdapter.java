@@ -50,7 +50,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
     //will be called after viewholder is created. It binds data to the viewholder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Chat chatRoom=chatRoomsList.get(position);
-        chatRoom.findChattingStudent(new DatabaseCallBack<Document>() {
+        /*chatRoom.findChattingStudent(new DatabaseCallBack<Document>() {
             @Override
             public void onCallback(Document item) {
                 String studentID=item.get("_id").toString();
@@ -60,7 +60,15 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                 holder.name.setText(full_name);
 
             }
-        }, currentUserID);
+        }, currentUserID);*/
+        chatRoom.getChattingStudent().getFullName(new DatabaseCallBack<String>() {
+            @Override
+            public void onCallback(String item) {
+                chatRoom.setChattingStudentFullName(item);
+                holder.name.setText(item);
+
+            }
+        });
         chatRoom.findLastMessage(new DatabaseCallBack<Document>() {
             @Override
             public void onCallback(Document item) {

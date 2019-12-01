@@ -1,17 +1,9 @@
 package com.study.bindr;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +12,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.navigation.NavigationView;
-import com.scaledrone.lib.HistoryRoomListener;
 import com.scaledrone.lib.Listener;
-import com.scaledrone.lib.Member;
 import com.scaledrone.lib.Message;
-import com.scaledrone.lib.ObservableRoomListener;
 import com.scaledrone.lib.Room;
 import com.scaledrone.lib.RoomListener;
 import com.scaledrone.lib.Scaledrone;
@@ -35,9 +29,7 @@ import com.scaledrone.lib.SubscribeOptions;
 
 import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import model.Chat;
 import model.Student;
@@ -51,6 +43,8 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
     //CURRENT STUDENT TEST
     private String id="5ddc5d142b665e671c7ff7bd";
+    private Student me=new Student(id);
+    private Student chattingStudent;
     private String channelID = "EgTZXDSK6J2eOp6U";
     private EditText editText;
     private Scaledrone scaledrone;
@@ -58,8 +52,6 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     private ListView messagesView;
 
     private Chat chat=null;
-    private String type=null;
-
 
     DialogInterface.OnClickListener blockClickListener;
 
@@ -70,31 +62,6 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //get chats class
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        if(bundle.getString("type").equals("chat")){
-            type="chat";
-            chat=(Chat)bundle.getSerializable("Chat");
-            getSupportActionBar().setTitle(chat.getChattingStudentFullName());
-
-            loadHistoryMessages();
-
-        }else {
-            type = "matched";
-            chat = new Chat();
-            Student student = (Student) bundle.get("Student");
-            student.getFullName(new DatabaseCallBack<String>() {
-                @Override
-                public void onCallback(String item) {
-                    chat.setChattingStudentFullName(item);
-                    chat.setChattingStudentID(student.getId());
-                    getSupportActionBar().setTitle(chat.getChattingStudentFullName());
-
-                }
-            });
-        }
 
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatbox_screen);
@@ -109,6 +76,31 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         //Change this to the proper page
         navigationView.getMenu().getItem(0).setChecked(false);
         /* End Navigation Stuff */
+
+        //get chats class
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+
+        if(bundle.getString("type").equals("chat")){
+            chat=(Chat)bundle.getSerializable("Chat");
+            getSupportActionBar().setTitle(chat.getChattingStudentFullName());
+            loadHistoryMessages();
+            scaledrone = new Scaledrone(channelID);
+            //initial connection
+            scaledrone.connect(new ScaledroneListener());
+
+        }else {
+            chattingStudent= (Student) bundle.get("Student");
+            chat = new Chat(chattingStudent);
+            chattingStudent.getFullName(new DatabaseCallBack<String>() {
+                @Override
+                public void onCallback(String item) {
+                    chat.setChattingStudentFullName(item);
+                    getSupportActionBar().setTitle(chat.getChattingStudentFullName());
+
+                }
+            });
+        }
 
         blockClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -136,9 +128,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         //To display items in the list, need to associate an adapter with the list.
         messagesView.setAdapter(messageAdapter);
 
-        scaledrone = new Scaledrone(channelID);
-        //initial connection
-        scaledrone.connect(new ScaledroneListener());
+
 
     }
 
@@ -146,8 +136,32 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
         String message = editText.getText().toString();
         if (message.length() > 0) {
-            scaledrone.publish(chat.getRoom(), message);
-            editText.getText().clear();
+            if(chat.getMessages().size()==0){
+
+                Chat.getNewRoomAssignment(new DatabaseCallBack<String>() {
+                    @Override
+                    public void onCallback(String item) {
+                        chat.setRoom(item);
+                        me.saveChatRoom(item, chattingStudent.getId());
+                        chattingStudent.saveChatRoom(item, me.getId());
+
+                        scaledrone = new Scaledrone(channelID);
+                        //initial connection
+                        scaledrone.connect(new ScaledroneListener());
+                        scaledrone.publish(chat.getRoom(), message);
+                        editText.getText().clear();
+                    }
+                });
+
+
+            }else{
+                scaledrone.publish(chat.getRoom(), message);
+                editText.getText().clear();
+                chat.saveMesssage(id, message);
+                chat.saveNewChatMessage(me.getId(), message, chat.getRoom());
+
+
+            }
         }
 
     }
@@ -268,21 +282,6 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         public void onOpen() {
             System.out.println("Scaledrone connection open");
             Room room=scaledrone.subscribe(chat.getRoom(), ChatboxActivity.this,new SubscribeOptions(100));
-            /*room.listenToHistoryEvents(new HistoryRoomListener() {
-                @Override
-                public void onHistoryMessage(Room room, Message receivedMessage) {
-                    System.out.println("Received a message from the past client "+ receivedMessage.getClientID()+" "+ receivedMessage.getMember());
-                    boolean belongsToCurrentUser = receivedMessage.getClientID().equals(scaledrone.getClientID());
-                    final model.Message message = new model.Message(receivedMessage.getData().asText(), 1 );
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            messageAdapter.add(message);
-                            messagesView.setSelection(messagesView.getCount() - 1);
-                        }
-                    });
-                }
-            });*/
 
         }
 

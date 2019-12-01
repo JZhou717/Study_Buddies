@@ -215,13 +215,15 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
      * Finds the chats for the current user from the database and displays them using the adapter
      */
     private void populateChats(){
-        me.getChatRooms(new DatabaseCallBack<List<String>>() {
+        me.getChatRooms(new DatabaseCallBack<List<Document>>() {
             @Override
-            public void onCallback(List<String> items) {
+            public void onCallback(List<Document> items) {
                 //populate and set the adapter
                 for (int i=0; i<items.size(); i++){
-                    Chat chatRoom=new Chat(items.get(i).toString());
-                    chatsList.add(chatRoom);
+                    String chatRoom=items.get(i).getString("room");
+                    String studentID=items.get(i).get("student").toString();
+                    Chat chat=new Chat(chatRoom,studentID);
+                    chatsList.add(chat);
                 }
                 chatsAdapter=new ChatsAdapter(chatsList,id, ChatsListActivity.this, ChatsListActivity.this);
                 chatsRecyclerView.setAdapter(chatsAdapter);

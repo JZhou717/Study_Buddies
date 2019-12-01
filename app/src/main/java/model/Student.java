@@ -7,6 +7,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 import com.study.bindr.BindrController;
 import com.study.bindr.ChatsAdapter;
 import com.study.bindr.ChatsListActivity;
@@ -19,6 +22,7 @@ import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -56,7 +60,7 @@ public class Student implements Serializable {
     }
     public String getId(){return this.id;}
 
-    public void getChatRooms(DatabaseCallBack<List<String>> dbCallBack){
+    public void getChatRooms(DatabaseCallBack<List<Document>> dbCallBack){
         //Query by id
         Document query = new Document().append("_id", new ObjectId(id));
 
@@ -80,9 +84,9 @@ public class Student implements Serializable {
                 else if (task.isSuccessful()) {
                     Log.d("getChatRooms", String.format("Successfully found document: %s",
                             task.getResult()));
-                    Document item = task.getResult();
+                    Document items = task.getResult();
                     //Get the chatrooms results as a list
-                    List<String> chatRooms= (List<String>) item.get("chats");
+                    List<Document> chatRooms= (List<Document>) items.get("chats");
                     dbCallBack.onCallback(chatRooms);
 
                 } else {
@@ -97,6 +101,33 @@ public class Student implements Serializable {
         //TODO: IMPLEMENT
     }
 
+    //Saves new chat room into database
+    public void saveChatRoom(String room, String studentID){
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        Document updateDoc = new Document().append("$push",
+                new Document().append("chats", new Document().append("room", room)
+                        .append("student", new ObjectId(studentID)))
+        );
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> saveChatRoom =
+                BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+        saveChatRoom.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("saveChatRoom", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("saveChatRoom", "failed to update document with: ", task.getException());
+                }
+            }
+        });
+
+    }
     public void removeChatRoom(String room) {
         //TODO: IMPLEMENT
     }
@@ -283,5 +314,14 @@ public class Student implements Serializable {
         return null;
         //TODO: IMPLEMENT
     }
+
+
+    //Feiying will implement: getMatched gets ALL matched students.
+    //This will get the matched students that the user has not chatted with yet.
+    public void MatchedNotChatting(DatabaseCallBack<String> dbCallBack){
+
+    }
+
+
 
 }

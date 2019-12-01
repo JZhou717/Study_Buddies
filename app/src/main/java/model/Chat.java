@@ -4,11 +4,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.BasicDBObject;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOneAndModifyOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 import com.study.bindr.BindrController;
@@ -26,15 +29,17 @@ public class Chat implements Serializable {
 
     private String room;
     private ArrayList<Message> messages;
-    private String chattingStudentID;
     private String chattingStudentFullName;
+    private Student chattingStudent;
 
-    public Chat(String room) {
+    public Chat(String room, String chattingStudentID) {
         this.room = room;
+        this.chattingStudent=new Student(chattingStudentID);
         this.messages=new ArrayList<Message>();
     }
 
-    public Chat(){
+    public Chat(Student chattingStudent){
+        this.chattingStudent=chattingStudent;
         this.messages=new ArrayList<Message>();
 
     }
@@ -84,7 +89,7 @@ public class Chat implements Serializable {
     }
 
 
-    public void saveMesssage(DatabaseCallBack dbCallBack, String room, String senderID, String message) {
+    public void saveMesssage(String senderID, String message) {
 
         Document filterDoc = new Document().append("room", room);
         Document updateDoc = new Document().append("$push",
@@ -103,24 +108,47 @@ public class Chat implements Serializable {
                 if (task.isSuccessful()) {
                     long numMatched = task.getResult().getMatchedCount();
                     long numModified = task.getResult().getModifiedCount();
-                    Log.d("app", String.format("successfully matched %d and modified %d documents",
+                    Log.d("saveMesssage", String.format("successfully matched %d and modified %d documents",
                             numMatched, numModified));
-                    dbCallBack.onCallback("ok");
+                    Log.d("saveMesssage", String.format("Message SAVED"));
                 } else {
-                    Log.e("app", "failed to update document with: ", task.getException());
+                    Log.e("saveMesssage", "failed to save message ", task.getException());
+                }
+            }
+        });
+    }
+    public void saveNewChatMessage(String senderID, String message, String room){
+        Document newChat = new Document()
+                .append("room", room)
+                .append("senders", Arrays.asList(new ObjectId(senderID), new ObjectId(chattingStudent.getId())))
+                .append("messages", new Document().append("sender", new ObjectId(senderID))
+                                                .append("text", message));
+
+
+        final Task <RemoteInsertOneResult> insertNewChat = BindrController.chatsCollection.insertOne(newChat);
+        insertNewChat.addOnCompleteListener(new OnCompleteListener <RemoteInsertOneResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteInsertOneResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("saveNewChatMessage", String.format("successfully inserted item with id %s",
+                            task.getResult().getInsertedId()));
+                    Log.d("saveNewChatMessage", String.format("Message SAVED"));
+
+                } else {
+                    Log.e("saveNewChatMessage", "failed to insert document with: ", task.getException());
                 }
             }
         });
     }
 
-        public String getRoom() {
+    public String getRoom() {
         return room;
     }
-    public String getChattingStudentID(){
-        return this.chattingStudentID;
+    public void setRoom(String room){
+        this.room=room;
     }
-    public void setChattingStudentID(String id){
-        this.chattingStudentID=id;
+    public String getChattingStudentID(){
+        return this.chattingStudent.getId();
     }
     public void setChattingStudentFullName(String fullName){
         this.chattingStudentFullName=fullName;
@@ -128,11 +156,13 @@ public class Chat implements Serializable {
     public String getChattingStudentFullName(){
         return this.chattingStudentFullName;
     }
-
+    public Student getChattingStudent(){
+        return this.chattingStudent;
+    }
     /**
      * Finds the other student's id and full_name from database given the chatroom and the current user id
      */
-    public void findChattingStudent(DatabaseCallBack<Document> dbCallBack, String currentStudentID){
+   /* public void findChattingStudent(DatabaseCallBack<Document> dbCallBack, String currentStudentID){
         //Query by chat room
         Document filterDoc = new Document()
                 .append("chats", new BasicDBObject("$in", Arrays.asList(this.room)));
@@ -170,7 +200,7 @@ public class Chat implements Serializable {
             }
         });
 
-    }
+    }*/
     public ArrayList<Message> getMessages() {
         return messages;
     }
@@ -213,6 +243,46 @@ public class Chat implements Serializable {
     public void addMessage(String text, String sender){
         Message message=new Message(text, sender);
         messages.add(message);
+    }
+
+    /**
+     * To open up a new chat between 2 students, need to assign them to a room number.
+     * This method gets an unassigned room number from the database by incrementing the last room number assigned
+     */
+    public static void getNewRoomAssignment(DatabaseCallBack<String> databaseCallBack){
+        Document query = new Document().append("roomTrack", new Document().append("$exists", true));
+
+        // Set some fields in that document
+        Document update = new Document().append("$inc", new Document().append("roomTrack", 1));
+
+        Document projection = new Document()
+                .append("roomTrack", 1);
+
+
+        RemoteFindOneAndModifyOptions options = new RemoteFindOneAndModifyOptions()
+                // Return the updated document instead of the original document
+                .returnNewDocument(true)
+                .upsert(false)
+                .projection(projection);
+
+        final Task <Document> findNewRoom = BindrController.chatsCollection.findOneAndUpdate(query, update, options);
+        findNewRoom.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getNewRoomAssignment", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getNewRoomAssignment", String.format("Successfully updated document: %s",
+                            task.getResult()));
+                    String room=task.getResult().getLong("roomTrack").toString();
+                    databaseCallBack.onCallback("room"+room);
+                } else {
+                    Log.e("getNewRoomAssignment", "Failed to findOneAndUpdate: ", task.getException());
+                }
+            }
+        });
+
     }
 
 }

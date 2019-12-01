@@ -21,6 +21,8 @@ import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
 import org.bson.Document;
 
+import model.Student;
+
 public class Bindr extends AppCompatActivity {
     //Need this for our drawer layout
     //private DrawerLayout drawer;
@@ -39,7 +41,6 @@ public class Bindr extends AppCompatActivity {
         findResults.forEach(item -> {
             System.out.println("successfully found student doc: "+ item.toString());
         });
-
 
 
     }
