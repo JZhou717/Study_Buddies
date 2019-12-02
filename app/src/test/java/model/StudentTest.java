@@ -8,6 +8,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class StudentTest {
+    /*
 
     private Student student;
     private Student matched;
@@ -81,4 +82,5 @@ public class StudentTest {
         assertTrue(student == null);
     }
 
+     */
 }

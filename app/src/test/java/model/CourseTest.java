@@ -1,7 +1,12 @@
 package model;
 
+import com.study.bindr.DatabaseCallBack;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,6 +27,7 @@ public class CourseTest {
         assertEquals(SCHOOL_ID, course.getSchoolID());
     }
 
+
     @Test
     public void testGetDepartmentID() {
         assertEquals(DEPARTMENT_ID, course.getDepartmentID());
@@ -37,4 +43,21 @@ public class CourseTest {
         assertEquals(COURSE_NAME, course.getCourseName());
     }
 
+    @Test
+    public void testGetStudentIDsInCourse() {
+        ArrayList<String> studentIDs = new ArrayList<>();
+        course.getStudentIDsInCourse(new DatabaseCallBack<List<String>>() {
+            @Override
+            public void onCallback(List<String> items) {
+                //populate and set the adapter
+                for (int i=0; i<items.size(); i++){
+                    String studentID = items.get(i).toString();
+                    studentIDs.add(studentID);
+                }
+            }
+        });
+        for (int i=0; i<studentIDs.size(); i++){
+            assertEquals(i+1, studentIDs.get(i));
+        }
+    }
 }

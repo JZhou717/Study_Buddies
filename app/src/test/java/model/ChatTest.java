@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class ChatTest {
+    /*
     Chat chat;
     Message message1;
     Message message2;
@@ -43,4 +44,5 @@ public class ChatTest {
         chat.addMessage("Study", 1);
         assertTrue(messages.size()==3);
     }
+     */
 }
