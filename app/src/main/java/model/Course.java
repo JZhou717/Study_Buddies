@@ -88,4 +88,8 @@ public class Course {
             }
         });
     }
+
+    public void addStudentToThisCourseInDatabase(String studentID){
+        //TODO: Implement
+    }
 }

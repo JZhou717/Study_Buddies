@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -13,6 +14,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+
+import model.Course;
 
 public class EditCoursesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //Need this for our drawer layout
@@ -41,6 +44,19 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         //Change this to the proper page
         navigationView.setCheckedItem(R.id.nav_courses);
         /* End Navigation Stuff */
+    }
+
+    public void addCourse(View view){
+        int schoolNum = Integer
+                .parseInt(((EditText)findViewById(R.id.editSchoolNum)).getText().toString());
+        int deptNum = Integer
+                .parseInt(((EditText)findViewById(R.id.editDeptNum)).getText().toString());
+        int courseNum = Integer
+                .parseInt(((EditText)findViewById(R.id.editCourseNum)).getText().toString());
+        String courseName = ((EditText)findViewById(R.id.editCourseName)).getText().toString();
+        Course courseToBeAdded = new Course(schoolNum, deptNum, courseNum, courseName);
+        courseToBeAdded.addStudentToThisCourseInDatabase(BindrController.getCurrentUser().getId());
+        BindrController.getCurrentUser().addCourse(courseToBeAdded);
     }
 
     /* Start Navigation Stuff */

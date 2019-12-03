@@ -41,7 +41,7 @@
                 app:layout_constraintHorizontal_bias="0.2"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button">
+                app:layout_constraintTop_toBottomOf="@+id/addButton">
 
                 <TableLayout
                     android:id="@+id/tableCoursesAdded"
@@ -148,7 +148,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/enterSchoolNum"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.07"
                 app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +172,7 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/enterTripleDigitNum"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textView4"
@@ -198,18 +198,19 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/enterTripleDigitNum"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textViewSecondColon"
                 app:layout_constraintTop_toBottomOf="@+id/editCourseName" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/addButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@color/colorPrimaryDark"
+                android:onClick="addCourse"
                 android:text="@string/addCourse"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -227,8 +228,8 @@
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.846"
-                app:layout_constraintStart_toEndOf="@+id/button"
-                app:layout_constraintTop_toTopOf="@+id/button" />
+                app:layout_constraintStart_toEndOf="@+id/addButton"
+                app:layout_constraintTop_toTopOf="@+id/addButton" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

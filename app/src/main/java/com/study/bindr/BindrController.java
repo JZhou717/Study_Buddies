@@ -13,7 +13,10 @@ import com.mongodb.stitch.core.auth.providers.anonymous.AnonymousCredential;
 
 import org.bson.Document;
 
+import model.Student;
+
 public class BindrController {
+    private static Student currentUser;
     static StitchAppClient client =
             Stitch.initializeDefaultAppClient("bindr-yfpaz");
 
@@ -43,6 +46,10 @@ public class BindrController {
                 });
 
     }
-
-
+    public static Student getCurrentUser(){
+        return currentUser;
+    }
+    public static void setCurrentUser(Student student){
+        currentUser = student;
+    }
 }
