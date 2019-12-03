@@ -46,6 +46,18 @@ public class Bindr extends AppCompatActivity {
     }
 
     public void login(View view) {
+        //TESTING REMOVE LATER
+        Student student = new Student("5ddb3fd5c3de9037b0b2ced6");
+        student.getEmail(new DatabaseCallBack<String>() {
+            @Override
+            public void onCallback(String item) {
+                System.out.println(item);
+            }
+
+        });
+        //END OF TESTING
+
+
         Intent intent = new Intent(Bindr.this, Home_Activity.class);
         startActivity(intent);
     }

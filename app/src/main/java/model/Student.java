@@ -55,9 +55,46 @@ public class Student implements Serializable {
         //TODO: IMPLEMENT
     }
 
-    public String getEmail(){
-        return null;
+    public void getEmail(DatabaseCallBack<String> dbCallBack){
+
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the email
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("email", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findEmail = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findEmail.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getEmail", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getEmail", String.format("Successfully found document: %s",
+                            task.getResult()));
+                            String email = task.getResult().getString("email");
+
+                            //Sends full_name back
+                            dbCallBack.onCallback(email);
+
+
+                } else {
+                    Log.e("getFullName", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
+
+    private void emailQuery() {
+
+    }
+
     public String getId(){return this.id;}
 
     public void getChatRooms(DatabaseCallBack<List<Document>> dbCallBack){
