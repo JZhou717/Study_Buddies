@@ -142,14 +142,16 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                     @Override
                     public void onCallback(String item) {
                         chat.setRoom(item);
-                        me.saveChatRoom(item, chattingStudent.getId());
-                        chattingStudent.saveChatRoom(item, me.getId());
+                        //me.saveChatRoom(item, chattingStudent.getId());
+                        //chattingStudent.saveChatRoom(item, me.getId());
 
                         scaledrone = new Scaledrone(channelID);
                         //initial connection
                         scaledrone.connect(new ScaledroneListener());
                         scaledrone.publish(chat.getRoom(), message);
                         editText.getText().clear();
+                        chat.saveNewChatMessage(me.getId(), message, chat.getRoom());
+
                     }
                 });
 
@@ -158,7 +160,6 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 scaledrone.publish(chat.getRoom(), message);
                 editText.getText().clear();
                 chat.saveMesssage(id, message);
-                chat.saveNewChatMessage(me.getId(), message, chat.getRoom());
 
 
             }
