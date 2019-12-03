@@ -85,17 +85,152 @@ public class Student implements Serializable {
 
 
                 } else {
-                    Log.e("getFullName", "Failed to findOne: ", task.getException());
+                    Log.e("getEmail", "Failed to findOne: ", task.getException());
                 }
             }
         });
     }
 
-    private void emailQuery() {
+    public void getUsername(DatabaseCallBack<String> dbCallBack){
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the username
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("username", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
 
+        final Task<Document> findUsername = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findUsername.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getUsername", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getUsername", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    String username = task.getResult().getString("username");
+
+                    //Sends full_name back
+                    dbCallBack.onCallback(username);
+
+
+                } else {
+                    Log.e("getUsername", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
-    public String getId(){return this.id;}
+    public void getPassword(DatabaseCallBack<String> dbCallBack){
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the username
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("password", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findPassword = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findPassword.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getPassword", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getPassword", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    String password = task.getResult().getString("password");
+
+                    //Sends full_name back
+                    dbCallBack.onCallback(password);
+
+                } else {
+                    Log.e("getPassword", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void getBio(DatabaseCallBack<String> dbCallBack){
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the username
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("bio", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findBio = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findBio.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getBio", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getBio", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    String bio = task.getResult().getString("bio");
+
+                    //Sends full_name back
+                    dbCallBack.onCallback(bio);
+
+                } else {
+                    Log.e("getBio", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void getGPA(DatabaseCallBack<Double> dbCallBack){
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the username
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("gpa", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findGpa = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findGpa.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getGpa", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getGpa", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Double bio = task.getResult().getDouble("gpa");
+
+                    //Sends full_name back
+                    dbCallBack.onCallback(bio);
+
+                } else {
+                    Log.e("getBio", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public String getId(){
+        return this.id;
+    }
 
     public void getChatRooms(DatabaseCallBack<List<Document>> dbCallBack){
         //Query by id
@@ -270,14 +405,6 @@ public class Student implements Serializable {
         return pendingMatches;
     }
 
-    public String getUsername(){
-        return null;  //TODO: GET FROM DB
-    }
-
-    public String getPassword(){
-        return null;  //TODO: GET FROM DB
-    }
-
     public void getFullName(DatabaseCallBack<String> dbCallBack){
             //Query by _id
             Document query = new Document().append("_id", new ObjectId(this.id));
@@ -313,14 +440,6 @@ public class Student implements Serializable {
             });
 
 
-    }
-
-    public String getBio(){
-        return null; //TODO: GET FROM DB
-    }
-
-    public double getGPA(){
-        return -1;  //TODO: GET FROM DB
     }
 
     public void editEmail(String newEmail){
