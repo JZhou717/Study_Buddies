@@ -1,7 +1,10 @@
 package com.study.bindr;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +58,26 @@ public class Bindr extends AppCompatActivity {
             }
 
         });
+
+        /*
+        student.editEmail("test@rutgers.edu", new DatabaseCallBack<Boolean> () {
+            @Override
+            public void onCallback(Boolean success) {
+                if(success.booleanValue() == false) {
+                    AlertDialog alert = new AlertDialog.Builder(Bindr.this).create();
+                    alert.setTitle("Email Update Unsuccessful");
+                    alert.setMessage("Your email did not update properly. Please try again");
+                    alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alert.show();
+                }
+            }
+        });
+         */
         //END OF TESTING
 
 

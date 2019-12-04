@@ -1,5 +1,6 @@
 package model;
 
+import android.app.AlertDialog;
 import android.util.Log;
 import androidx.annotation.NonNull;
 
@@ -15,6 +16,7 @@ import com.study.bindr.ChatsAdapter;
 import com.study.bindr.ChatsListActivity;
 import com.study.bindr.DatabaseCallBack;
 import com.study.bindr.MatchedStudentAdapter;
+import com.study.bindr.UserProfileActivity;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -36,12 +38,10 @@ public class Student implements Serializable {
     private List<String> pendingMatches;
     private String id;
 
-    //public Student(String foo, String bar){ } // TODO: DELETE THIS CONSTRUCTOR
-
     public Student(String id){
         this.id = id;
+        //Fills in student class's instance variables from database
         this.populateStudentInfo();
-        //TODO: Retrieve student's courses, email, chatRooms, sessions, matched, passed, status from DB
 
     }
 
@@ -53,10 +53,10 @@ public class Student implements Serializable {
         passed = new ArrayList<String>();
         pendingMatches = new ArrayList<String>();
         //TODO: IMPLEMENT
+        //We should change the above statements to call the relevant query methods instead
     }
 
     public void getEmail(DatabaseCallBack<String> dbCallBack){
-
         //Query by _id
         Document query = new Document().append("_id", new ObjectId(this.id));
         //Project the email
@@ -89,6 +89,88 @@ public class Student implements Serializable {
                 }
             }
         });
+    }
+
+    /**
+     * Takes in new email to upload to database, notifies success to call back method
+     * @param newEmail String of new email
+     * @param dbCallBack gets passed true if successful update, false otherwise
+     */
+    public void editEmail(String newEmail, DatabaseCallBack<Boolean> dbCallBack){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                .append("email", newEmail)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                boolean update_successful;
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+
+                    update_successful = true;
+
+                } else {
+                    Log.e("app", "failed to update document with: ", task.getException());
+
+                    update_successful = false;
+                }
+
+                //Sends result back back
+                dbCallBack.onCallback(update_successful);
+            }
+        });
+    }
+
+    public void getFullName(DatabaseCallBack<String> dbCallBack){
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the full_name
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("full_name", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findFullName = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findFullName.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getFullName", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getFullName", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document item = task.getResult();
+                    String full_name=item.getString("full_name");
+
+                    //Sends full_name back
+                    dbCallBack.onCallback(full_name);
+
+                } else {
+                    Log.e("getFullName", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void editName(String newName){
+        //TODO: IMPLEMENT
     }
 
     public void getUsername(DatabaseCallBack<String> dbCallBack){
@@ -160,6 +242,10 @@ public class Student implements Serializable {
         });
     }
 
+    public void editPassword(String newPassword){
+        //TODO: IMPLEMENT
+    }
+
     public void getBio(DatabaseCallBack<String> dbCallBack){
         //Query by _id
         Document query = new Document().append("_id", new ObjectId(this.id));
@@ -194,6 +280,10 @@ public class Student implements Serializable {
         });
     }
 
+    public void editBio(String newBio){
+        //TODO: IMPLEMENT
+    }
+
     public void getGPA(DatabaseCallBack<Double> dbCallBack){
         //Query by _id
         Document query = new Document().append("_id", new ObjectId(this.id));
@@ -226,6 +316,14 @@ public class Student implements Serializable {
                 }
             }
         });
+    }
+
+    public void editGPA(double newGPA){
+        //TODO: IMPLEMENT
+    }
+
+    public void setStatus(boolean isActive){
+        //TODO: IMPLEMENT
     }
 
     public String getId(){
@@ -306,29 +404,7 @@ public class Student implements Serializable {
 
     public List<Course> getCourses(){
         return courses;
-//        Document query = new Document().append("_id", new ObjectId(id));
-//        Document projection = new Document()
-//                .append("_id",0)
-//                .append("courses",1);
-//        RemoteFindOptions options = new RemoteFindOptions()
-//                .projection(projection);
-//        final Task <Document> findCourses = BindrController.studentsCollection.findOne(query,options);
-//        findCourses.addOnCompleteListener(new OnCompleteListener <Document> () {
-//            @Override
-//            public void onComplete(@NonNull Task <Document> task){
-//                if(task.getResult() == null){
-//                    Log.d("getCourses", String.format("No document matches the provided query"));
-//                } else if (task.isSuccessful()){
-//                    Log.d("getCourses", String.format("Successfully found document: %s",
-//                            task.getResult()));
-//                    Document item = task.getResult();
-//                    List<Course> courses = (List<Course>) item.get("courses");
-//                    dbCallBack.onCallback(courses);
-//                } else {
-//                    Log.e("getCourses", "Failed to findOne: ", task.getException());
-//                }
-//            }
-//        });
+//
     }
 
     public List<Session> getSessions(){
@@ -394,6 +470,7 @@ public class Student implements Serializable {
 
     public List<String> getPassed(){
         return passed;
+        //TODO: IMPLEMENT
     }
 
     public void addPassedStudent(String passedStudentID){
@@ -403,66 +480,6 @@ public class Student implements Serializable {
 
     public List<String> getPendingMatches(){
         return pendingMatches;
-    }
-
-    public void getFullName(DatabaseCallBack<String> dbCallBack){
-            //Query by _id
-            Document query = new Document().append("_id", new ObjectId(this.id));
-            //Project the full_name
-            Document projection = new Document()
-                    .append("_id", 0)
-                    .append("full_name", 1);
-            RemoteFindOptions options = new RemoteFindOptions()
-                    .projection(projection);
-
-            final Task<Document> findFullName = BindrController.studentsCollection.findOne(query, options);
-
-            //listens for when the query finishes and sends result to callback method (given in parameter)
-            findFullName.addOnCompleteListener(new OnCompleteListener<Document>() {
-                @Override
-                public void onComplete(@NonNull Task <Document> task) {
-                    if (task.getResult() == null) {
-                        Log.d("getFullName", String.format("No document matches the provided query"));
-                    }
-                    else if (task.isSuccessful()) {
-                        Log.d("getFullName", String.format("Successfully found document: %s",
-                                task.getResult()));
-                        Document item = task.getResult();
-                        String full_name=item.getString("full_name");
-
-                        //Sends full_name back
-                        dbCallBack.onCallback(full_name);
-
-                    } else {
-                        Log.e("getFullName", "Failed to findOne: ", task.getException());
-                    }
-                }
-            });
-
-
-    }
-
-    public void editEmail(String newEmail){
-        //TODO: IMPLEMENT
-    }
-
-    public void editPassword(String newPassword){
-        //TODO: IMPLEMENT
-    }
-
-    public void editName(String newName){
-        //TODO: IMPLEMENT
-    }
-
-    public void editBio(String newBio){
-        //TODO: IMPLEMENT
-    }
-
-    public void editGPA(double newGPA){
-        //TODO: IMPLEMENT
-    }
-
-    public void setStatus(boolean isActive){
         //TODO: IMPLEMENT
     }
 
