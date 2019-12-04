@@ -105,7 +105,7 @@ public class Course {
         RemoteFindOptions options = new RemoteFindOptions()
                 .projection(projection);
 
-        //task to find ids of students in this course
+        //task to find object id of course matching this
         final Task <Document> findCourse = BindrController.studentsCollection
                 .findOne(filter, options);
 
