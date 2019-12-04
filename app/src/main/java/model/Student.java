@@ -117,13 +117,13 @@ public class Student implements Serializable {
                 if (task.isSuccessful()) {
                     long numMatched = task.getResult().getMatchedCount();
                     long numModified = task.getResult().getModifiedCount();
-                    Log.d("app", String.format("successfully matched %d and modified %d documents",
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update email",
                             numMatched, numModified));
 
                     update_successful = true;
 
                 } else {
-                    Log.e("app", "failed to update document with: ", task.getException());
+                    Log.e("app", "failed to update email of document with: ", task.getException());
 
                     update_successful = false;
                 }
@@ -169,8 +169,42 @@ public class Student implements Serializable {
         });
     }
 
-    public void editName(String newName){
-        //TODO: IMPLEMENT
+    public void editName(String newName, DatabaseCallBack<Boolean> dbCallBack){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                        .append("full_name", newName)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                boolean update_successful;
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update full_name",
+                            numMatched, numModified));
+
+                    update_successful = true;
+
+                } else {
+                    Log.e("app", "failed to update full_name of document with: ", task.getException());
+
+                    update_successful = false;
+                }
+
+                //Sends result back back
+                dbCallBack.onCallback(update_successful);
+            }
+        });
     }
 
     public void getUsername(DatabaseCallBack<String> dbCallBack){
@@ -242,8 +276,42 @@ public class Student implements Serializable {
         });
     }
 
-    public void editPassword(String newPassword){
-        //TODO: IMPLEMENT
+    public void editPassword(String newPassword, DatabaseCallBack<Boolean> dbCallBack){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                        .append("password", newPassword)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                boolean update_successful;
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update password",
+                            numMatched, numModified));
+
+                    update_successful = true;
+
+                } else {
+                    Log.e("app", "failed to update password of document with: ", task.getException());
+
+                    update_successful = false;
+                }
+
+                //Sends result back back
+                dbCallBack.onCallback(update_successful);
+            }
+        });
     }
 
     public void getBio(DatabaseCallBack<String> dbCallBack){
@@ -280,8 +348,42 @@ public class Student implements Serializable {
         });
     }
 
-    public void editBio(String newBio){
-        //TODO: IMPLEMENT
+    public void editBio(String newBio, DatabaseCallBack<Boolean> dbCallBack){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                        .append("bio", newBio)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                boolean update_successful;
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update bio",
+                            numMatched, numModified));
+
+                    update_successful = true;
+
+                } else {
+                    Log.e("app", "failed to update bio of document with: ", task.getException());
+
+                    update_successful = false;
+                }
+
+                //Sends result back back
+                dbCallBack.onCallback(update_successful);
+            }
+        });
     }
 
     public void getGPA(DatabaseCallBack<Double> dbCallBack){
@@ -318,12 +420,80 @@ public class Student implements Serializable {
         });
     }
 
-    public void editGPA(double newGPA){
-        //TODO: IMPLEMENT
+    public void editGPA(double newGPA, DatabaseCallBack<Boolean> dbCallBack){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                        .append("gpa", newGPA)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                boolean update_successful;
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update gpa",
+                            numMatched, numModified));
+
+                    update_successful = true;
+
+                } else {
+                    Log.e("app", "failed to update gpa of document with: ", task.getException());
+
+                    update_successful = false;
+                }
+
+                //Sends result back back
+                dbCallBack.onCallback(update_successful);
+            }
+        });
     }
 
-    public void setStatus(boolean isActive){
-        //TODO: IMPLEMENT
+    public void setStatus(boolean isActive, DatabaseCallBack<Boolean> dbCallBack){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                        .append("status", isActive)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                boolean update_successful;
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update status",
+                            numMatched, numModified));
+
+                    update_successful = true;
+
+                } else {
+                    Log.e("app", "failed to update status of document with: ", task.getException());
+
+                    update_successful = false;
+                }
+
+                //Sends result back back
+                dbCallBack.onCallback(update_successful);
+            }
+        });
     }
 
     public String getId(){
