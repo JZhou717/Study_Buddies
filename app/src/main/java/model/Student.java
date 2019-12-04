@@ -584,11 +584,11 @@ public class Student implements Serializable {
 
     public void addCourse(Course course) {
         courses.add(course);
-        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
+        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY, ADD TO STUDENT'S DOCUMENT'S COURSES FIELD
     }
 
     public void removeCourse(Course course) {
-        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY
+        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY REMOVE FROM STUDENT'S DOCUMENT'S COURSES FIELD
     }
 
     public void getMatched(DatabaseCallBack<List<String>> dbCallBack){
