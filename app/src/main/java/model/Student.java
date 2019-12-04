@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteDeleteResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
@@ -653,9 +654,27 @@ public class Student implements Serializable {
         //TODO: IMPLEMENT
     }
 
-    public Student deleteAccount(){
-        return null;
-        //TODO: IMPLEMENT
+    public void deleteAccount(){
+        //Query to find the student document related to this user
+        Document query = new Document()
+                .append("_id", new ObjectId(this.id));
+
+        final Task<RemoteDeleteResult> deleteTask = BindrController.studentsCollection.deleteOne(query);
+        deleteTask.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteDeleteResult> task) {
+                if (task.isSuccessful()) {
+                    long numDeleted = task.getResult().getDeletedCount();
+                    Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                } else {
+                    Log.e("app", "REQUIRE MANUAL STUDENT DELETION. failed to delete document with: ", task.getException());
+                }
+            }
+        });
+
+        //Remove the current user
+        //CALLER SHOULD LOGOUT WHEN CALLING THIS
+        BindrController.setCurrentUser(null);
     }
 
 
