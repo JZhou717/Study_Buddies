@@ -197,7 +197,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
      * Finds the matches for the current user from the database and displays them using the adapter
      */
     private void populateMatches(){
-        me.getMatched(new DatabaseCallBack<List<String>>() {
+        me.getMatchedNotChatting(new DatabaseCallBack<List<String>>() {
             @Override
             public void onCallback(List<String> items) {
                 //populate and set the adapter

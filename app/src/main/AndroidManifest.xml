@@ -26,7 +26,8 @@
         <activity android:name=".Session_Activity" />
         <activity android:name=".Home_Activity" />
         <activity android:name=".EditCoursesActivity" />
-        <activity android:name=".MatchActivity" />
+        <activity android:name=".MatchActivity"
+            android:parentActivityName=".Home_Activity"/>
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/ShowActionBar"

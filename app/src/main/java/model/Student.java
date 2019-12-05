@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -528,6 +529,9 @@ public class Student implements Serializable {
                     Document items = task.getResult();
                     //Get the chatrooms results as a list
                     List<Document> chatRooms= (List<Document>) items.get("chats");
+                    if (chatRooms==null){
+                        chatRooms=new ArrayList<>();
+                    }
                     dbCallBack.onCallback(chatRooms);
 
                 } else {
@@ -678,12 +682,92 @@ public class Student implements Serializable {
     }
 
 
-    //Feiying will implement: getMatched gets ALL matched students.
+    //
     //This will get the matched students that the user has not chatted with yet.
-    public void MatchedNotChatting(DatabaseCallBack<String> dbCallBack){
+    public void getMatchedNotChatting(DatabaseCallBack<List<String>> dbCallBack){
+//Query by id
+        Document query = new Document().append("_id", new ObjectId(id));
 
+        //Project the chats array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("chats", 1)
+                .append("matches", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findMatchesNotChatting = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findMatchesNotChatting.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getMatchedNotChatting", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getMatchedNotChatting", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    //Get the student ID results as a list
+                    Document item = task.getResult();
+                    List<ObjectId> matches= (List<ObjectId>) item.get("matches");
+                    List<String> matchesString=new ArrayList<>();
+
+                    List<Document> chats=(List<Document>) item.get("chats");
+                    if (chats==null){
+                        chats=new ArrayList<>();
+                    }
+                    for (int i = 0; i < matches.size(); i++) {
+                        String matchedStudentID = matches.get(i).toString();
+                        matchesString.add(matchedStudentID);
+                        for (int j = 0; j < chats.size(); j++) {
+                            String chatStudentID = chats.get(j).get("student").toString();
+                            if (chatStudentID.equals(matchedStudentID)) {
+                                System.out.println("Student is chatting" + chatStudentID);
+                                matchesString.remove(matchedStudentID);
+                            }
+                        }
+                    }
+                    dbCallBack.onCallback(matchesString);
+
+
+
+                } else {
+                    Log.e("getMatchedNotChatting", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
+    public void addSession(Session session){
+        String studentID =session.getPartnerID();
+        Date date=session.getDateTime();
+        int reminder=session.getReminder();
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        Document updateDoc = new Document().append("$push",
+                new Document().append("sessions", new Document().append("partner", new ObjectId(studentID))
+                        .append("datetime", date)
+                        .append("reminder", reminder))
+        );
 
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> addSessionTask =
+                BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+        addSessionTask.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("addSession", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("addSession", "failed to update document with: ", task.getException());
+                }
+            }
+        });
+    }
 
 }

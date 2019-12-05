@@ -2,6 +2,7 @@ package com.study.bindr;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,6 +19,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
+
+import model.Chat;
+import model.Session;
 
 public class SetStudySessionActivity extends AppCompatActivity{
     private TextView dateTextView;
@@ -26,7 +31,8 @@ public class SetStudySessionActivity extends AppCompatActivity{
 
     private TextView timeTextView;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
-
+    private Chat chat=null;
+    Calendar setCalendar = Calendar.getInstance();
 
 
     @Override
@@ -38,78 +44,54 @@ public class SetStudySessionActivity extends AppCompatActivity{
         dateTextView= (TextView) findViewById(R.id.dateTextView);
         timeTextView=(TextView) findViewById(R.id.timeTextView);
 
-        //will display date picker when dateTextView is clicked
-      /*  dateTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDatePickerDialog();
-            }
-        });
-
-        timeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showTimePickerDialog();
-            }
-
-       /* dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-
-                String date = month + "/" + day + "/" + year;
-                dateTextView.setText(date);
-            }
-        };
-*/
-       // });
-/*
-        timeSetListener= new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                String time = hourOfDay+":"+minute;
-                timeTextView.setText(time);
-            }
-        };*/
+        //get chats class
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        chat=(Chat)bundle.getSerializable("Chat");
+        System.out.println("Study Session for chat "+chat.getRoom());
 
 
     }
+    @Override
+    public void onBackPressed() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Chat", chat);
+        bundle.putString("type", "chat");
+        Intent intent = new Intent(SetStudySessionActivity.this, ChatboxActivity.class);
+        intent.putExtras(bundle);
 
+        startActivity(intent);
+    }
 
     public void onCancelStudySession(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Chat", chat);
+        bundle.putString("type", "chat");
         Intent intent = new Intent(SetStudySessionActivity.this, ChatboxActivity.class);
+        intent.putExtras(bundle);
+
         startActivity(intent);
     }
 
     public void onRequestStudySession(View view) {
+        if (timeTextView.getText().equals("") || dateTextView.getText().equals("")){
+            Toast.makeText(SetStudySessionActivity.this, "Please select time and date", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Date date=setCalendar.getTime();
+        System.out.println("DATE "+date);
+        Session session=new Session(chat.getChattingStudentID(), date,0);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Chat", chat);
+        bundle.putString("type", "chat");
+        bundle.putSerializable("Session", session);
+
         Intent intent = new Intent(SetStudySessionActivity.this, ChatboxActivity.class);
         Toast.makeText(SetStudySessionActivity.this, "Study Session Request Sent", Toast.LENGTH_LONG).show();
+        intent.putExtras(bundle);
+
         startActivity(intent);
     }
-
-    /*public void showDatePickerDialog(){
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                this,
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
-    }
-
-    public void showTimePickerDialog(){
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                this,
-                this,
-                Calendar.getInstance().get(Calendar.HOUR),
-                Calendar.getInstance().get(Calendar.MINUTE),
-                DateFormat.is24HourFormat(this));
-
-        timePickerDialog.show();
-
-
-    }*/
 
 
     public void onSelectDate(View view) {
@@ -123,11 +105,10 @@ public class SetStudySessionActivity extends AppCompatActivity{
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int date) {
 
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.YEAR, year);
-                calendar1.set(Calendar.MONTH, month);
-                calendar1.set(Calendar.DATE, date);
-
+                setCalendar.set(Calendar.YEAR, year);
+                setCalendar.set(Calendar.MONTH, month);
+                setCalendar.set(Calendar.DATE, date);
+                month++;
                 String selectedDate = month + "/" + date + "/" + year;
                 dateTextView.setText(selectedDate);
             }
@@ -147,11 +128,11 @@ public class SetStudySessionActivity extends AppCompatActivity{
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.HOUR, hour);
-                calendar1.set(Calendar.MINUTE, minute);
-                String dateText = DateFormat.format("h:mm a", calendar1).toString();
+                setCalendar.set(Calendar.HOUR, hour);
+                setCalendar.set(Calendar.MINUTE, minute);
+                String dateText = DateFormat.format("h:mm a", setCalendar).toString();
                 timeTextView.setText(dateText);
+
             }
         }, HOUR, MINUTE, is24HourFormat);
 

@@ -121,8 +121,8 @@ public class Chat implements Serializable {
         Document newChat = new Document()
                 .append("room", room)
                 .append("senders", Arrays.asList(new ObjectId(senderID), new ObjectId(chattingStudent.getId())))
-                .append("messages", new Document().append("sender", new ObjectId(senderID))
-                                                .append("text", message));
+                .append("messages", Arrays.asList(new Document().append("sender", new ObjectId(senderID))
+                                                .append("text", message)));
 
 
         final Task <RemoteInsertOneResult> insertNewChat = BindrController.chatsCollection.insertOne(newChat);
@@ -285,4 +285,29 @@ public class Chat implements Serializable {
 
     }
 
+    public void requestSession(DatabaseCallBack<String> databaseCallBack, String senderID){
+
+        Document filterDoc = new Document().append("room", room);
+        Document updateDoc = new Document().append("$set", new Document()
+                .append("request", new Document()
+                        .append("sender", new ObjectId(senderID))));
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> requestSessionTask =
+                BindrController.chatsCollection.updateOne(filterDoc, updateDoc, options);
+        requestSessionTask.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("requestSession", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                    databaseCallBack.onCallback("ok");
+                } else {
+                    Log.e("requestSession", "failed to save request ", task.getException());
+                }
+            }
+        });
+    }
 }
