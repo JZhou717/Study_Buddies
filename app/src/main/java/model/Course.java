@@ -194,4 +194,9 @@ public class Course {
         });
         while(!findCourse.isComplete());
     }
+
+    public boolean equals(Course course){
+        return schoolID == course.getCourseID() && departmentID == course.getDepartmentID()
+                && courseID == course.getCourseID();
+    }
 }

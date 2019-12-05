@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -57,6 +61,27 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         Course courseToBeAdded = new Course(schoolNum, deptNum, courseNum, courseName);
         courseToBeAdded.addStudentToThisCourseInDatabase(BindrController.getCurrentUser().getId());
         BindrController.getCurrentUser().addCourse(courseToBeAdded);
+        //TODO: Make sure course is not already in the table, use Course.equals()
+        //create table row tr
+        //tr will have course name, courseID=schoolNum:deptNum:courseNum, remove button
+        //remove button should have tag that is tr's index
+        //add tr to the tablelayout
+        TableLayout table = (TableLayout)findViewById(R.id.tableCoursesAdded);
+
+        TableRow tr = new TableRow(this);
+        tr.setTag(courseToBeAdded);
+
+        TextView courseNameTextView = new TextView(this);
+        TextView courseIDTextView = new TextView(this);
+        Button removeButton = new Button(this);
+
+        courseNameTextView.setText(courseName);
+        courseIDTextView.setText(String.format("%d:%d:%d", schoolNum, deptNum, courseNum));
+        removeButton.setTag(courseToBeAdded);
+
+        tr.addView(courseNameTextView);
+        tr.addView(courseIDTextView);
+        tr.addView(removeButton);
     }
 
     /* Start Navigation Stuff */
