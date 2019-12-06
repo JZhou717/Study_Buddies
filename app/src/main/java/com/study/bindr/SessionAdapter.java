@@ -47,19 +47,9 @@ public class SessionAdapter extends ArrayAdapter<Session> {
             listItem = LayoutInflater.from(sessionContext).inflate(R.layout.course_row,parent,false);
         }
         Session c = sessionList.get(position);
-        Student partner = new Student(c.getPartnerID());
-        partner.getFullName(new DatabaseCallBack<String>() {
-            @Override
-            public void onCallback(String item) {
-                tempNameHolder = item;
-                System.out.println("*******************NAME****************" + tempNameHolder);
-            }
-        });
 
-        //Task<Document> currStudent = BindrController.studentsCollection.find(eq("_id", partnerID)).first();
-        System.out.println("*******************NAME****************" + tempNameHolder);
         TextView name = (TextView) listItem.findViewById(R.id.name);
-        name.setText("Click to rate your session with " + tempNameHolder);
+        name.setText("Click to rate your session on " + c.getDateTime());
         return listItem;
     }
 
