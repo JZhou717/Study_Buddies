@@ -46,23 +46,7 @@
 
 
         </ListView>
-<!--        <ScrollView-->
-<!--            android:id="@+id/courseScrollView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_margin="20dp">-->
 
-<!--            <ListView-->
-<!--                android:id="@+id/courseListView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:orientation="vertical"-->
-<!--                android:padding="10dp">-->
-
-
-<!--            </ListView>-->
-
-<!--        </ScrollView>-->
 
     </LinearLayout>
 

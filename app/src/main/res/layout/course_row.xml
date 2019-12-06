@@ -10,6 +10,9 @@
         android:layout_height="60dp"
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
+        android:background="@color/colorPrimary"
+        android:layout_margin="5dp"
+        android:padding="5dp"
         />
 
 

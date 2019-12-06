@@ -6,20 +6,36 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
+import android.widget.ListView;
 import com.google.android.material.navigation.NavigationView;
+
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import model.Session;
+import model.Student;
 
 public class Session_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //Need this for our drawer layout
     private DrawerLayout drawer;
-    private Button rateButton;
+    private ListView sessionListView;
+    private SessionAdapter sessionAdapter;
+
+    private ArrayList<Session> sessions = new ArrayList<>();
+
+    //CURRENT STUDENT TEST
+    private String id = "5ddb3fd5c3de9037b0b2ced6";
+    private Student me = new Student(id);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +60,28 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
         navigationView.setCheckedItem(R.id.nav_session);
         /* End Navigation Stuff */
 
-        rateButton = findViewById(R.id.rateButton);
-        rateButton.setOnClickListener(new View.OnClickListener() {
+        sessionListView = findViewById(R.id.sessionListView);
+        populateSessions();
+
+    }
+
+    private void populateSessions(){
+        me.getSessions(new DatabaseCallBack<List<Document>>() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Session_Activity.this, RateActivity.class);
-                startActivity(intent);
+            public void onCallback(List<Document> items) {
+                for (int i = 0; i < items.size(); i++){
+                    String partnerID = items.get(i).get("partner").toString();
+                    Date dateTime = (Date) items.get(i).get("datetime");
+                    int reminder = Integer.parseInt(items.get(i).get("reminder").toString());
+                    Session session = new Session(partnerID, dateTime, reminder);
+                    sessions.add(session);
+                }
+                sessionAdapter = new SessionAdapter(Session_Activity.this,sessions);
+                sessionListView.setAdapter(sessionAdapter);
             }
         });
     }
 
-    /* Start Navigation Stuff */
-    //Navbar closes on activity change
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -100,5 +126,5 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    /* End Navigation Stuff */
+
 }
