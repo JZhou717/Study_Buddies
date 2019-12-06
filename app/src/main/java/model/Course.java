@@ -196,7 +196,8 @@ public class Course {
     }
 
     public boolean equals(Course course){
-        return schoolID == course.getCourseID() && departmentID == course.getDepartmentID()
-                && courseID == course.getCourseID();
+        return schoolID.equals(course.getCourseID())
+                && departmentID.equals(course.getDepartmentID())
+                && courseID.equals(course.getCourseID());
     }
 }
