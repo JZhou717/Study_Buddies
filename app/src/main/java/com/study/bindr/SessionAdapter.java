@@ -1,6 +1,7 @@
 package com.study.bindr;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +11,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.util.List;
 
 import model.Course;
 import model.Session;
 import model.Student;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class SessionAdapter extends ArrayAdapter<Session> {
 
 
     private Context sessionContext;
     private List<Session> sessionList;
+    public String tempNameHolder;
 
     public SessionAdapter(@NonNull Context context, List<Session> list) {
         super(context , 0, list);
@@ -35,9 +47,19 @@ public class SessionAdapter extends ArrayAdapter<Session> {
             listItem = LayoutInflater.from(sessionContext).inflate(R.layout.course_row,parent,false);
         }
         Session c = sessionList.get(position);
+        Student partner = new Student(c.getPartnerID());
+        partner.getFullName(new DatabaseCallBack<String>() {
+            @Override
+            public void onCallback(String item) {
+                tempNameHolder = item;
+                System.out.println("*******************NAME****************" + tempNameHolder);
+            }
+        });
+
+        //Task<Document> currStudent = BindrController.studentsCollection.find(eq("_id", partnerID)).first();
+        System.out.println("*******************NAME****************" + tempNameHolder);
         TextView name = (TextView) listItem.findViewById(R.id.name);
-        //TODO: Set the text for each session row
-        name.setText("Click to rate your session with ...");
+        name.setText("Click to rate your session with " + tempNameHolder);
         return listItem;
     }
 
