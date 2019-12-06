@@ -32,7 +32,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     private ArrayList<Course> courses = new ArrayList<>();
 
     //CURRENT STUDENT TEST
-    private String id = "5ddc5d142b665e671c7ff7bd";
+    private String id = "5ddb3fd5c3de9037b0b2ced6";
     private Student me = new Student(id);
 
 
@@ -133,7 +133,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
                     String schoolID = items.get(i).get("schoolID").toString();
                     String departmentID = items.get(i).get("departmentID").toString();
                     String courseID = items.get(i).get("courseID").toString();
-                    String courseName = schoolID + ":" + departmentID + ":" + courseID;
+                    String courseName = items.get(i).get("courseName").toString();
                     Course course = new Course(schoolID, departmentID, courseID, courseName);
                     courses.add(course);
                 }
