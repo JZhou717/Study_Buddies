@@ -711,8 +711,43 @@ public class Student implements Serializable {
         BindrController.setCurrentUser(null);
     }
 
-    public void getCourses(){
-        //TODO: IMPLEMENT THE QUERY FOR THIS
+    public void getCourses(DatabaseCallBack<List<Document>> dbCallBack){
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(id));
+
+        //Project the chats array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("courses", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findCourses = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findCourses.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getCourses", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getCourses", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document items = task.getResult();
+                    //Get the chatrooms results as a list
+                    List<Document> courses = (List<Document>) items.get("courses");
+                    if (courses==null){
+                        courses=new ArrayList<>();
+                    }
+                    dbCallBack.onCallback(courses);
+
+                } else {
+                    Log.e("getCourses", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
     public void getSessions(){

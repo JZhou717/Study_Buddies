@@ -51,12 +51,9 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
     }
 
     public void addCourse(View view){
-        int schoolNum = Integer
-                .parseInt(((EditText)findViewById(R.id.editSchoolNum)).getText().toString());
-        int deptNum = Integer
-                .parseInt(((EditText)findViewById(R.id.editDeptNum)).getText().toString());
-        int courseNum = Integer
-                .parseInt(((EditText)findViewById(R.id.editCourseNum)).getText().toString());
+        String schoolNum = ((EditText)findViewById(R.id.editSchoolNum)).getText().toString();
+        String deptNum = ((EditText)findViewById(R.id.editDeptNum)).getText().toString();
+        String courseNum = ((EditText)findViewById(R.id.editCourseNum)).getText().toString();
         String courseName = ((EditText)findViewById(R.id.editCourseName)).getText().toString();
         Course courseToBeAdded = new Course(schoolNum, deptNum, courseNum, courseName);
         courseToBeAdded.addStudentToThisCourseInDatabase(BindrController.getCurrentUser().getId());
@@ -76,7 +73,7 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         Button removeButton = new Button(this);
 
         courseNameTextView.setText(courseName);
-        courseIDTextView.setText(String.format("%d:%d:%d", schoolNum, deptNum, courseNum));
+        courseIDTextView.setText(String.format("%s:%s:%s", schoolNum, deptNum, courseNum));
         removeButton.setTag(courseToBeAdded);
 
         tr.addView(courseNameTextView);

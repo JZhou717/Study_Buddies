@@ -22,25 +22,25 @@ import java.util.List;
 
 public class Course {
 
-    private int schoolID;
-    private int departmentID;
-    private int courseID;
+    private String schoolID;
+    private String departmentID;
+    private String courseID;
     private String courseName;
 
-    public Course(int schoolID, int departmentID, int courseID, String courseName){
+    public Course(String schoolID, String departmentID, String courseID, String courseName){
         this.schoolID = schoolID;
         this.departmentID = departmentID;
         this.courseID = courseID;
         this.courseName = courseName;
     }
 
-    public int getSchoolID(){ return schoolID; }
+    public String getSchoolID(){ return schoolID; }
 
-    public int getDepartmentID(){
+    public String getDepartmentID(){
         return departmentID;
     }
 
-    public int getCourseID(){
+    public String getCourseID(){
         return courseID;
     }
 

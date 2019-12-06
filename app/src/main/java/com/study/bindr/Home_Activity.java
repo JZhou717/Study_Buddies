@@ -14,6 +14,9 @@ import android.widget.ListView;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.bson.Document;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Course;
@@ -26,9 +29,11 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     private CourseAdapter courseAdapter;
 
 
+    private ArrayList<Course> courses = new ArrayList<>();
+
     //CURRENT STUDENT TEST
     private String id = "5ddc5d142b665e671c7ff7bd";
-    private Student student = new Student(id);
+    private Student me = new Student(id);
 
 
     @Override
@@ -58,6 +63,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
 
         //link xml component
         courseListView = findViewById(R.id.courseListView);
+        populateCourses();
     }
 
 
@@ -120,6 +126,20 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     /* End Navigation Stuff */
 
     private void populateCourses(){
-
+        me.getCourses(new DatabaseCallBack<List<Document>>() {
+            @Override
+            public void onCallback(List<Document> items) {
+                for (int i = 0; i < items.size(); i++){
+                    String schoolID = items.get(i).get("schoolID").toString();
+                    String departmentID = items.get(i).get("departmentID").toString();
+                    String courseID = items.get(i).get("courseID").toString();
+                    String courseName = schoolID + ":" + departmentID + ":" + courseID;
+                    Course course = new Course(schoolID, departmentID, courseID, courseName);
+                    courses.add(course);
+                }
+                courseAdapter = new CourseAdapter(Home_Activity.this,courses);
+                courseListView.setAdapter(courseAdapter);
+            }
+        });
     }
 }
