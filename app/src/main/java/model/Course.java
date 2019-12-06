@@ -54,7 +54,6 @@ public class Course {
                 Filters.eq("schoolID", schoolID),
                 Filters.eq("departmentID", departmentID),
                 Filters.eq("courseID", departmentID));
-
         //Project the students array
         Document projection = new Document()
                 .append("_id", 0)
@@ -64,7 +63,7 @@ public class Course {
                 .projection(projection);
 
         //task to find ids of students in this course
-        final Task <Document> findStudentIDs = BindrController.studentsCollection
+        final Task <Document> findStudentIDs = BindrController.coursesCollection
                 .findOne(filter, options);
 
         //listens for when the query finishes and sends result to callback method
@@ -96,8 +95,9 @@ public class Course {
         Bson filter = Filters.and(
                 Filters.eq("schoolID", schoolID),
                 Filters.eq("departmentID", departmentID),
-                Filters.eq("courseID", departmentID));
-
+                Filters.eq("courseID", courseID));
+        Log.d("addStudentToThisCourse",
+                String.format("Looking for %s:%s:%s", schoolID, departmentID, courseID));
         //Project just the id
         Document projection = new Document()
                 .append("_id", 0);
@@ -106,7 +106,7 @@ public class Course {
                 .projection(projection);
 
         //task to find object id of course matching this
-        final Task <Document> findCourse = BindrController.studentsCollection
+        final Task <Document> findCourse = BindrController.coursesCollection
                 .findOne(filter, options);
 
         //listens for when the query finishes and updates flag courseExistsInCollection
@@ -195,8 +195,23 @@ public class Course {
         while(!findCourse.isComplete());
     }
 
+    public void removeStudentFromThisCourseInDatabase(String studentID){
+        Bson filter = Filters.and(
+                Filters.eq("schoolID", schoolID),
+                Filters.eq("departmentID", departmentID),
+                Filters.eq("courseID", departmentID));
+        Document studentsArrayWithStudentToRemoveDocument = new Document()
+                .append("students", studentID);
+        Document updateCourseStudentsArrayDocument = new Document()
+                .append("$pull", studentsArrayWithStudentToRemoveDocument);
+
+
+    }
+
     public boolean equals(Course course){
-        return schoolID.equals(course.getCourseID())
+        if(course==null)
+            return false;
+        return schoolID.equals(course.getSchoolID())
                 && departmentID.equals(course.getDepartmentID())
                 && courseID.equals(course.getCourseID());
     }
