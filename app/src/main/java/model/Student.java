@@ -74,9 +74,10 @@ public class Student implements Serializable {
                 else if (task.isSuccessful()) {
                     Log.d("emailLogin", String.format("Successfully found document: %s",
                             task.getResult()));
-                    String id = task.getResult().getString("_id");
+                    ObjectId id = task.getResult().getObjectId("_id");
+                    String id_string = id.toString();
 
-                    BindrController.setCurrentUser(new Student(id));
+                    BindrController.setCurrentUser(new Student(id_string));
 
                     //Sends success flag back
                     dbCallBack.onCallback(new Boolean(true));
@@ -101,7 +102,45 @@ public class Student implements Serializable {
      * @param dbCallBack call back method that is passed true if successful or false otherwise
      */
     public static void usernameLogin(String username, String password, DatabaseCallBack<Boolean> dbCallBack) {
+        //Query to find the document to edit
+        Document query = new Document()
+                .append("username", username)
+                .append("password", password);
+        //Project the id
+        Document projection = new Document()
+                .append("_id", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
 
+        final Task<Document> findUser = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findUser.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("usernameLogin", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("usernameLogin", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    ObjectId id = task.getResult().getObjectId("_id");
+                    String id_string = id.toString();
+
+                    BindrController.setCurrentUser(new Student(id_string));
+
+                    //Sends success flag back
+                    dbCallBack.onCallback(new Boolean(true));
+
+
+                } else {
+                    Log.e("usernameLogin", "Failed to findOne: ", task.getException());
+
+                    //Sends success flag back
+                    dbCallBack.onCallback(new Boolean(false));
+                }
+            }
+        });
     }
 
     /**

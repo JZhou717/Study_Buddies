@@ -65,9 +65,12 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     @Override
     public void onStart(){
         super.onStart();
-        List<Course> courses = student.getCourses();
-        courseAdapter = new CourseAdapter(this,courses);
-        courseListView.setAdapter(courseAdapter);
+        //TO GET THE COURSES YOU HAVE TO USE THE CALLBACK LIKE THE ONES IN THE LOGIN METHOD ON BINDR
+        //CHECK FEIYING'S IMPLEMENTATION OF GETCHATS TO SEE HOW SHE USED IT
+
+        //List<Course> courses = student.getCourses();
+        //courseAdapter = new CourseAdapter(this,courses);
+        //courseListView.setAdapter(courseAdapter);
     }
 
     @Override

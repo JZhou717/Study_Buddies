@@ -15,25 +15,27 @@ import model.Student;
 
 public class Bindr extends AppCompatActivity {
 
-    private EditText email = (EditText) findViewById(R.id.input_email);
-    private EditText password = (EditText) findViewById(R.id.input_password);
+    private EditText email;
+    private EditText password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Linking view components
+        email = (EditText) findViewById(R.id.input_email);
+        password = (EditText) findViewById(R.id.input_password);
+
         //connect client to database
         BindrController.setUpDatabaseConnection();
 
-        RemoteFindIterable findResults = BindrController.studentsCollection
+        /*RemoteFindIterable findResults = BindrController.studentsCollection
                 .find();
 
         findResults.forEach(item -> {
             System.out.println("successfully found student doc: "+ item.toString());
-        });
-
-
+        });*/
     }
 
     /**
