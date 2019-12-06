@@ -1,14 +1,22 @@
 package com.study.bindr;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 
 import model.Student;
 
 public class Bindr extends AppCompatActivity {
+
+    private EditText email = (EditText) findViewById(R.id.input_email);
+    private EditText password = (EditText) findViewById(R.id.input_password);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,43 +36,87 @@ public class Bindr extends AppCompatActivity {
 
     }
 
-    public void login(View view) {
-        //TESTING REMOVE LATER
-        Student student = new Student("5ddb3fd5c3de9037b0b2ced6");
-        student.getEmail(new DatabaseCallBack<String>() {
-            @Override
-            public void onCallback(String item) {
-                System.out.println(item);
-            }
+    /**
+     * On every start of this activity, the user is inherently logged out of the system
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-        });
-
-        /*
-        student.editEmail("test@rutgers.edu", new DatabaseCallBack<Boolean> () {
-            @Override
-            public void onCallback(Boolean success) {
-                if(success.booleanValue() == false) {
-                    AlertDialog alert = new AlertDialog.Builder(Bindr.this).create();
-                    alert.setTitle("Email Update Unsuccessful");
-                    alert.setMessage("Your email did not update properly. Please try again");
-                    alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alert.show();
-                }
-            }
-        });
-         */
-        //END OF TESTING
-
-
-        Intent intent = new Intent(Bindr.this, Home_Activity.class);
-        startActivity(intent);
+        //Logout
+        BindrController.setCurrentUser(null);
     }
 
+    /**
+     * Attempts to login in with the information in the fields provided
+     * @param view
+     */
+    public void login(View view) {
+
+        //Grab the inputted values from the fields
+        String email_username = email.getText().toString();
+        String pass = password.getText().toString();
+
+        //If it is an email
+        if(email_username.indexOf('@') > -1 ) {
+            Student.emailLogin(email_username, pass, new DatabaseCallBack<Boolean>() {
+                @Override
+                public void onCallback(Boolean success) {
+                    //Current user already set in the emailLogin method of Student
+                    if(success.booleanValue()) {
+                        //Transition to home page
+                        Intent intent = new Intent(Bindr.this, Home_Activity.class);
+                        startActivity(intent);
+                    } //If it was not successful, alert the user
+                    else {
+                        AlertDialog alert = new AlertDialog.Builder(Bindr.this).create();
+                        alert.setTitle("Email Login Unsuccessful");
+                        alert.setMessage("Your email and password did not match an existing account. Please try again");
+                        alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alert.show();
+                    }
+                }
+
+            });
+        } //Else it is a username
+        else {
+            Student.usernameLogin(email_username, pass, new DatabaseCallBack<Boolean>() {
+                @Override
+                public void onCallback(Boolean success) {
+                    //Current user already set in the emailLogin method of Student
+                    if(success.booleanValue()) {
+                        //Transition to home page
+                        Intent intent = new Intent(Bindr.this, Home_Activity.class);
+                        startActivity(intent);
+                    } //If it was not successful, alert the user
+                    else {
+                        AlertDialog alert = new AlertDialog.Builder(Bindr.this).create();
+                        alert.setTitle("Email Login Unsuccessful");
+                        alert.setMessage("Your email and password did not match an existing account. Please try again");
+                        alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alert.show();
+                    }
+                }
+
+            });
+        }
+
+    }
+
+    /**
+     * Moves to the register activity where the user may register
+     * @param view
+     */
     public void register(View view) {
         Intent intent = new Intent(Bindr.this, RegisterActivity.class);
         startActivity(intent);
