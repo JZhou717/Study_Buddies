@@ -50,7 +50,7 @@ public class MatchActivity extends AppCompatActivity {
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         nameTextView = (TextView)findViewById(R.id.textViewName);
         coursesTextView = (TextView)findViewById(R.id.textViewCourses);
-        gpaTextView = (TextView)findViewById(R.id.textViewGPA); //TODO check GPA type when getting from student
+        gpaTextView = (TextView)findViewById(R.id.textViewGPA);
         bioTextView = (TextView)findViewById(R.id.textViewBio);
 
 
@@ -124,10 +124,10 @@ public class MatchActivity extends AppCompatActivity {
         idOfDisplayedStudent = student.getId();
     }
     public void match(View v){
-
+        //TODO: IMPLEMENT
     }
 
     public void pass(View v){
-
+        //TODO: IMPLEMENT
     }
 }
