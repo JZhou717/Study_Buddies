@@ -31,6 +31,11 @@ public class MatchActivity extends AppCompatActivity {
     private String idOfDisplayedStudent;
     private final Student me = BindrController.getCurrentUser();
     private ListIterator<String> studentIDsInCourseIterator;
+
+    /**
+     * sets up initial layout and starts loading other students.
+     * @param savedInstanceState - data for this instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,14 @@ public class MatchActivity extends AppCompatActivity {
             displayNextStudent(); //once the students are loaded, display potential match.
         });
     }
+
+    /**
+     * displays the next potential match for the course if one exists
+     * otherwise, tells the current user no other users in the course were found
+     * Note: a potential match is another user who has NOT passed on the current user
+     *    and who has NOT been passed on by the current user
+     *    and who has NOT been requested to match with by the current user
+     */
     private void displayNextStudent(){
         //hide the match/pass buttons while we are loading the next student
         matchButton.setVisibility(View.INVISIBLE);
@@ -102,6 +115,11 @@ public class MatchActivity extends AppCompatActivity {
             });
         });
     }
+
+    /**
+     * Displays the given student
+     * @param student - the student to display
+     */
     private void displayStudent(Student student){
         student.getCourses(items -> {
             String coursesOfNextStudent = "";
@@ -126,6 +144,11 @@ public class MatchActivity extends AppCompatActivity {
         matchButton.setVisibility(View.VISIBLE);
         passButton.setVisibility(View.VISIBLE);
     }
+
+    /**
+     * updates database based on the current user requesting to match with the displayed student
+     * @param v - the view calling this method (i.e., match button)
+     */
     public void match(View v){
         Student otherStudent = new Student(idOfDisplayedStudent);
         final String FULL_NAME_OF_OTHER_STUDENT = nameTextView.getText().toString();
@@ -153,6 +176,10 @@ public class MatchActivity extends AppCompatActivity {
         displayNextStudent();
     }
 
+    /**
+     * updates database based on the current user passing on the displayed student
+     * @param v - the view calling this method (i.e., the pass button)
+     */
     public void pass(View v){
         //Add otherStudent.id to me's passed
         //Display the next student
