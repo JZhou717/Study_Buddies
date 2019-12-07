@@ -387,14 +387,23 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     }
 
     public void onStudySessionClick(View view) {
+        chat.getRequestedSession(new DatabaseCallBack<Document>() {
+            @Override
+            public void onCallback(Document request) {
+                if(request!=null){
+                    Toast.makeText(ChatboxActivity.this, "A Study Session has already been sent. Please wait until they respond.", Toast.LENGTH_LONG).show();
+                }else{
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Chat", chat);
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("Chat", chat);
+                    Intent intent = new Intent(ChatboxActivity.this, SetStudySessionActivity.class);
+                    intent.putExtras(bundle);
 
-        Intent intent = new Intent(ChatboxActivity.this, SetStudySessionActivity.class);
-        intent.putExtras(bundle);
+                    startActivity(intent);
+                }
 
-        startActivity(intent);
+            }});
+
 
     }
 
