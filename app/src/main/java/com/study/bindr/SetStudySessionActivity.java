@@ -14,6 +14,7 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class SetStudySessionActivity extends AppCompatActivity{
 
     private TextView timeTextView;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
+    private EditText reminderEditText;
     private Chat chat=null;
     Calendar setCalendar = Calendar.getInstance();
 
@@ -43,7 +45,7 @@ public class SetStudySessionActivity extends AppCompatActivity{
 
         dateTextView= (TextView) findViewById(R.id.dateTextView);
         timeTextView=(TextView) findViewById(R.id.timeTextView);
-
+        reminderEditText=(EditText) findViewById(R.id.reminderEditText);
         //get chats class
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
@@ -79,8 +81,13 @@ public class SetStudySessionActivity extends AppCompatActivity{
             return;
         }
         Date date=setCalendar.getTime();
+        String reminderString=reminderEditText.getText().toString();
+        int reminder=0;
+        if(!reminderString.equals("")){
+            reminder=Integer.parseInt(reminderEditText.getText().toString());
+        }
         System.out.println("DATE "+date);
-        Session session=new Session(chat.getChattingStudentID(), date,0);
+        Session session=new Session(chat.getChattingStudentID(), date,reminder);
         Bundle bundle = new Bundle();
         bundle.putSerializable("Chat", chat);
         bundle.putString("type", "chat");

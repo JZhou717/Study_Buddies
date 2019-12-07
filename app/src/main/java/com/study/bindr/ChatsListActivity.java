@@ -45,9 +45,8 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     private ArrayList<Chat> chatsList = new ArrayList<>();
 
 
-    //CURRENT STUDENT TEST
-    private String id="5ddc5d142b665e671c7ff7bd";
-    private Student me=new Student(id);
+
+    private Student currentUser=BindrController.getCurrentUser();
 
     /**
      * Populates and displays the matched students list and chats list.
@@ -197,7 +196,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
      * Finds the matches for the current user from the database and displays them using the adapter
      */
     private void populateMatches(){
-        me.getMatchedNotChatting(new DatabaseCallBack<List<String>>() {
+        currentUser.getMatchedNotChatting(new DatabaseCallBack<List<String>>() {
             @Override
             public void onCallback(List<String> items) {
                 //populate and set the adapter
@@ -215,7 +214,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
      * Finds the chats for the current user from the database and displays them using the adapter
      */
     private void populateChats(){
-        me.getChatRooms(new DatabaseCallBack<List<Document>>() {
+        currentUser.getChatRooms(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> items) {
                 //populate and set the adapter
@@ -225,7 +224,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
                     Chat chat=new Chat(chatRoom,studentID);
                     chatsList.add(chat);
                 }
-                chatsAdapter=new ChatsAdapter(chatsList,id, ChatsListActivity.this, ChatsListActivity.this);
+                chatsAdapter=new ChatsAdapter(chatsList,currentUser.getId(), ChatsListActivity.this, ChatsListActivity.this);
                 chatsRecyclerView.setAdapter(chatsAdapter);
             }
         });

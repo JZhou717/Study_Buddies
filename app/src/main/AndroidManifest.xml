@@ -17,7 +17,6 @@
             android:parentActivityName=".Session_Activity"/>
         <activity
             android:name=".SetStudySessionActivity"
-            android:parentActivityName=".ChatboxActivity"
             android:theme="@style/ShowActionBar" />
         <activity
             android:name=".ChatboxActivity"

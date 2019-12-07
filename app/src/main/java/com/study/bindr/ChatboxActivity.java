@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 import com.scaledrone.lib.Listener;
@@ -29,22 +33,22 @@ import com.scaledrone.lib.SubscribeOptions;
 
 import org.bson.Document;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import model.Chat;
 import model.Session;
 import model.Student;
 
-public class ChatboxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RoomListener {
+public class ChatboxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RoomListener, DialogReturn{
 
     private Button blockButton;
     private Button studyButton;
     //Need this for our drawer layout
     private DrawerLayout drawer;
 
-    //CURRENT STUDENT TEST
-    private String id="5ddc5d142b665e671c7ff7bd";
-    private Student me=new Student(id);
+    private Student currentUser=BindrController.getCurrentUser();
     private Student chattingStudent;
     private String channelID = "EgTZXDSK6J2eOp6U";
     private EditText editText;
@@ -54,9 +58,10 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
     private Chat chat=null;
     private String firstMessage=null;
+    private String requestedSessionMessage=null;
 
     DialogInterface.OnClickListener blockClickListener;
-
+    DialogInterface.OnClickListener sessionRequestListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +90,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
 
-        scaledrone = new Scaledrone(channelID);
-
+        scaledrone = new Scaledrone(channelID, currentUser.getId());
 
         if(bundle.getString("type").equals("chat")){
             chat=(Chat)bundle.getSerializable("Chat");
@@ -96,13 +100,28 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
             scaledrone.connect(new ScaledroneListener());
             if(bundle.containsKey("Session")){
                 Session session=(Session)bundle.get("Session");
-                me.addSession(session);
+                Date dateTime=session.getDateTime();
+                Calendar calendar=Calendar.getInstance();
+                calendar.setTime(dateTime);
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH)+1;
+                int date = calendar.get(Calendar.DATE);
+                String dateText=month + "/" + date + "/" + year;
+                String timeText = DateFormat.format("h:mm a", calendar).toString();
+
+                requestedSessionMessage="Study Session Request \nDate: "+dateText+"\nTime: "+timeText;
                 chat.requestSession(new DatabaseCallBack<String>() {
                     @Override
                     public void onCallback(String items) {
-                        scaledrone.publish(chat.getRoom(), "Session: "+chat.getRoom());;
+                        scaledrone.publish(chat.getRoom(), chat.getSessionRequestMessage());
+
+                        scaledrone.publish(chat.getRoom(), requestedSessionMessage);
+                        chat.saveMesssage(currentUser.getId(), requestedSessionMessage);
                     }
-                }, me.getId());
+                }, currentUser.getId(), session.getDateTime(), session.getReminder());
+
+
+
             }
 
 
@@ -137,6 +156,27 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 }
             }
         };
+        /*sessionRequestListener= new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Toast.makeText(ChatboxActivity.this, "Successfully Set Up Study Session", Toast.LENGTH_LONG).show();
+                        String acceptMessage="Study Session Accepted";
+                        scaledrone.publish(chat.getRoom(), acceptMessage);
+                        chat.saveMesssage(currentUser.getId(), acceptMessage);
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        Toast.makeText(ChatboxActivity.this, "Study Session is Cancelled", Toast.LENGTH_LONG).show();
+                        String declineMessage="Study Session Declined";
+                        scaledrone.publish(chat.getRoom(), declineMessage);
+                        chat.saveMesssage(currentUser.getId(), declineMessage);
+                        break;
+                }
+            }
+        };*/
 
         //Chatbox code
         //get user input
@@ -163,14 +203,14 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                     @Override
                     public void onCallback(String item) {
                         chat.setRoom(item);
-                        me.saveChatRoom(item, chattingStudent.getId());
-                        chattingStudent.saveChatRoom(item, me.getId());
+                        currentUser.saveChatRoom(item, chattingStudent.getId());
+                        chattingStudent.saveChatRoom(item, currentUser.getId());
 
                         //initial connection
                         System.out.println("connecting");
                         scaledrone.connect(new ScaledroneListener());
                         firstMessage=message;
-                        chat.saveNewChatMessage(me.getId(), message, chat.getRoom());
+                        chat.saveNewChatMessage(currentUser.getId(), message, chat.getRoom());
 
                     }
 
@@ -179,7 +219,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
             }else{
                 scaledrone.publish(chat.getRoom(), message);
-                chat.saveMesssage(id, message);
+                chat.saveMesssage(currentUser.getId(), message);
 
 
             }
@@ -210,7 +250,28 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         // parse as string
         System.out.println("Message client : "+receivedMessage.getClientID()+" "+receivedMessage.getMember()+" " + receivedMessage.getData().asText());
         boolean belongsToCurrentUser = receivedMessage.getClientID().equals(scaledrone.getClientID());
-        final model.Message message = new model.Message(receivedMessage.getData().asText(), "1" );
+        String studentID=currentUser.getId();
+        System.out.println("Message sender "+receivedMessage.getClientID()+ "current client  "+scaledrone.getClientID());
+        String messageString=receivedMessage.getData().asText();
+        if (!belongsToCurrentUser){
+            studentID=chat.getChattingStudentID();
+            if(messageString.equals(chat.getSessionRequestMessage()) ){
+                System.out.println("SESSION REQUEST FROM Other");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSessionRequest(requestedSessionMessage);
+                    }
+                });
+                return;
+
+            }
+        }
+        else if (belongsToCurrentUser&& messageString.equals(chat.getSessionRequestMessage())){
+            System.out.println("SESSION REQUEST FROM you");
+            return;
+        }
+        final model.Message message = new model.Message(messageString, studentID);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -274,9 +335,34 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     /* End Navigation Stuff */
 
 
+    public void onSessionRequest(String message) {
+        /*final EditText input = new EditText(this);
+        input.setHint("reminder (minutes)");
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
+        builder.setTitle("From "+chat.getChattingStudentFullName());
+        builder.setMessage(message).setPositiveButton("Accept", sessionRequestListener)
+                .setNegativeButton("Decline", sessionRequestListener).show();*/
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SetSessionDialogFrag.MESSAGE_KEY, message);
+        String title="From "+chat.getChattingStudentFullName();
+        bundle.putString(SetSessionDialogFrag.TITLE, title);
+        DialogFragment newFragment = new SetSessionDialogFrag();
+        newFragment.setCancelable(false);
+        newFragment.setArguments(bundle);
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(newFragment, "sessionRequest");
+        ft.commitAllowingStateLoss();
+
+        //newFragment.show(getSupportFragmentManager(), "sessionRequest");
+
+    }
+
     public void onBlockClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
-        builder.setMessage("Are you sure you want to block?").setPositiveButton("Yes", blockClickListener)
+        builder.setMessage("Are you sure you want to block? This cannot be undone").setPositiveButton("Yes", blockClickListener)
                 .setNegativeButton("No", blockClickListener).show();
     }
 
@@ -308,6 +394,46 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
             }
         });
+    }
+
+    @Override
+    public void onPositive(String message) {
+        Toast.makeText(ChatboxActivity.this, "Successfully Set Up Study Session", Toast.LENGTH_LONG).show();
+        String acceptMessage="Study Session Accepted";
+        scaledrone.publish(chat.getRoom(), acceptMessage);
+        chat.saveMesssage(currentUser.getId(), acceptMessage);
+
+        chat.getRequestedSession(new DatabaseCallBack<Document>() {
+            @Override
+            public void onCallback(Document request) {
+                if(request==null){
+                    return;
+                }
+                int reminder=0;
+                if(!message.equals("")){
+                    reminder=Integer.parseInt(message);
+                }
+                Date date= (Date) request.get("dateTime");
+                int partnerReminder=request.getInteger("reminder");
+                setUpStudySession(partnerReminder, reminder, date);
+
+            }
+        });
+
+
+    }
+
+    private void setUpStudySession(int partnerReminder, int reminder, Date date){
+        currentUser.addSession(date, reminder, chat.getChattingStudentID());
+        chat.getChattingStudent().addSession(date, partnerReminder, currentUser.getId());
+    }
+
+    @Override
+    public void onNegative(String message) {
+        Toast.makeText(ChatboxActivity.this, "Study Session is Cancelled", Toast.LENGTH_LONG).show();
+        String declineMessage="Study Session Declined";
+        scaledrone.publish(chat.getRoom(), declineMessage);
+        chat.saveMesssage(currentUser.getId(), declineMessage);
     }
 
     private class ScaledroneListener implements Listener{

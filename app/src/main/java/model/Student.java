@@ -1212,10 +1212,7 @@ public class Student implements Serializable {
         });
     }
 
-    public void addSession(Session session){
-        String studentID =session.getPartnerID();
-        Date date=session.getDateTime();
-        int reminder=session.getReminder();
+    public void addSession(Date date, int reminder, String studentID){
         Document filterDoc = new Document().append("_id", new ObjectId(this.id));
         Document updateDoc = new Document().append("$push",
                 new Document().append("sessions", new Document().append("partner", new ObjectId(studentID))
