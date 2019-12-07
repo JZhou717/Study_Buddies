@@ -329,5 +329,8 @@ public class Chat implements Serializable {
             }
         });
     }
+    public void removeChat(){
+
+    }
 
 }

@@ -2,9 +2,11 @@ package com.study.bindr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -16,13 +18,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,21 +29,22 @@ import model.Chat;
 import model.Student;
 
 public class ChatsListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ChatsAdapter.OnChatListener,
-        MatchedStudentAdapter.OnMatchIconListener {
+        MatchedStudentAdapter.OnMatchIconListener, AdapterView.OnItemSelectedListener {
     //Need this for our drawer layout
     private DrawerLayout drawer;
 
     private RecyclerView matchedStudentsRecyclerView;
-    private RecyclerView.Adapter matchedStudentAdapter;
+    private MatchedStudentAdapter matchedStudentAdapter;
 
     private RecyclerView chatsRecyclerView;
-    private RecyclerView.Adapter chatsAdapter;
-
+    private ChatsAdapter chatsAdapter;
+    private SearchView searchView;
     private ArrayList<Student> matchedStudentsList = new ArrayList<>();
     private ArrayList<Chat> chatsList = new ArrayList<>();
 
 
-
+    private static String USER="User";
+    private static String COURSE_NAME="Course Name";
     private Student currentUser=BindrController.getCurrentUser();
 
     /**
@@ -81,15 +80,15 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         /* Start setup drop down for search filter */
         final Spinner searchByDropDown=findViewById(R.id.searchByDropDown);
         List<String> searchOptions = new ArrayList<String>();
-        searchOptions.add("User");
-        searchOptions.add("Course Name");
+        searchOptions.add(USER);
+        searchOptions.add(COURSE_NAME);
 
         ArrayAdapter<String> searchOptionsAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, searchOptions);
 
         searchOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         searchByDropDown.setAdapter(searchOptionsAdapter);
+        searchByDropDown.setOnItemSelectedListener(this);
         /* End setup drop down for search filter */
 
         /* Start setup adapters and populates matched and chatting students */
@@ -100,6 +99,22 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         chatsRecyclerView = findViewById(R.id.chatsRecyclerView);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         chatsRecyclerView.setLayoutManager(layoutManager);
+
+
+        searchView = findViewById(R.id.searchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                matchedStudentAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
 
         populateMatches();
@@ -231,4 +246,19 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
 
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        String selection = (String)parent.getItemAtPosition(pos);
+        if(selection.equals(USER)) {
+
+        }
+        else{
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        //do nothing
+    }
 }
