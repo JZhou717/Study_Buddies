@@ -94,9 +94,10 @@ public class MatchActivity extends AppCompatActivity {
                         displayNextStudent();
                         return;
                     }
+                    //if we get to this point, all the aforementioned conditions are met
+                    // so display nextStudent
+                    displayStudent(nextStudent);
                 });
-                displayStudent(nextStudent);
-
             });
         });
     }
@@ -116,9 +117,21 @@ public class MatchActivity extends AppCompatActivity {
     }
     public void match(View v){
         //TODO: IMPLEMENT
+        Student otherStudent = new Student(idOfDisplayedStudent);
+        //IF me.id is in otherStudent's requestedMatches,
+        //  remove me.id from otherStudent's requestedMatches
+        //  add me.id to otherStudents matches
+        //  add otherStudent.id to me's matches
+        //  display "Matched! You can now message <otherStudent's full name>!"
+        //OTHERWISE (if me. id is NOT in otherStudent's requestedMatches),
+        //  add otherStudent.id to me's requestedMatches
+        //FINALLY, display the next student
+
     }
 
     public void pass(View v){
         //TODO: IMPLEMENT
+        //Add otherStudent.id to me's passed
+        //Display the next student
     }
 }
