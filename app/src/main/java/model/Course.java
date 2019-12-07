@@ -27,6 +27,14 @@ public class Course {
     private String courseID;
     private String courseName;
 
+    /**
+     * Constructor
+     * @param schoolID
+     * @param departmentID
+     * @param courseID
+     * @param courseName
+     *
+     */
     public Course(String schoolID, String departmentID, String courseID, String courseName){
         this.schoolID = schoolID;
         this.departmentID = departmentID;
@@ -34,20 +42,40 @@ public class Course {
         this.courseName = courseName;
     }
 
+    /**
+     * get the schoolID
+     * @return the school ID
+     */
     public String getSchoolID(){ return schoolID; }
 
+    /**
+     * get the department ID
+     * @return the department ID
+     */
     public String getDepartmentID(){
         return departmentID;
     }
 
+    /**
+     * get the course ID
+     * @return the course ID
+     */
     public String getCourseID(){
         return courseID;
     }
 
+    /**
+     * get the course name
+     * @return the course name
+     */
     public String getCourseName(){
         return courseName;
     }
 
+    /**
+     * get a BSON filter to find this course in the courses collection
+     * @return a BSON filter to find this course in the courses collection
+     */
     private Bson docEqualsFilter() {
         return Filters.and(
                 Filters.eq("schoolID", schoolID),
@@ -55,6 +83,11 @@ public class Course {
                 Filters.eq("courseID", courseID));
     }
 
+    /**
+     * calls dbCallBack(studentIDs)
+     * where studentIDs is a list of the ids (as strings) of the students in this course
+     * @param dbCallBack - an implementation of the interface DatabaseCallBack
+     */
     public void getStudentIDsInCourse(DatabaseCallBack<List<String>> dbCallBack){
         //Filter based on school/dept/course ids
         Bson filter = docEqualsFilter();
@@ -95,6 +128,10 @@ public class Course {
         });
     }
 
+    /**
+     * adds the student with the given student ID to the coruse in the database
+     * @param studentID
+     */
     public void addStudentToThisCourseInDatabase(String studentID){
         Bson filter = docEqualsFilter();
         Log.d("addStudentToThisCourse",
@@ -196,6 +233,10 @@ public class Course {
         while(!findCourse.isComplete());
     }
 
+    /**
+     * Removes the student matching the given studentID from the course in the database
+     * @param studentID
+     */
     public void removeStudentFromThisCourseInDatabase(String studentID){
         Log.d("Course.removeStudent...", String.format("Attempting to remove %s", studentID));
         Bson filter = docEqualsFilter();
@@ -222,6 +263,11 @@ public class Course {
         });
     }
 
+    /**
+     * method to determine if this course matches the given course
+     * @param course
+     * @return true if the courses' schoolID, departmentID, and courseID match, false otherwise.
+     */
     public boolean equals(Course course){
         if(course==null)
             return false;
