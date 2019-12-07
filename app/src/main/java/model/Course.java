@@ -130,7 +130,7 @@ public class Course {
 
     /**
      * adds the student with the given student ID to the coruse in the database
-     * @param studentID
+     * @param studentID - ID of the student to be added to this course
      */
     public void addStudentToThisCourseInDatabase(String studentID){
         Bson filter = docEqualsFilter();
@@ -235,7 +235,7 @@ public class Course {
 
     /**
      * Removes the student matching the given studentID from the course in the database
-     * @param studentID
+     * @param studentID - ID of the student to be removed from this course
      */
     public void removeStudentFromThisCourseInDatabase(String studentID){
         Log.d("Course.removeStudent...", String.format("Attempting to remove %s", studentID));
