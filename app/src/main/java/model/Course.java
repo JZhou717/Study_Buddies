@@ -48,12 +48,16 @@ public class Course {
         return courseName;
     }
 
-    public void getStudentIDsInCourse(DatabaseCallBack<List<String>> dbCallBack){
-        //Filter based on school/dept/course ids
-        Bson filter = Filters.and(
+    private Bson docEqualsFilter() {
+        return Filters.and(
                 Filters.eq("schoolID", schoolID),
                 Filters.eq("departmentID", departmentID),
-                Filters.eq("courseID", departmentID));
+                Filters.eq("courseID", courseID));
+    }
+
+    public void getStudentIDsInCourse(DatabaseCallBack<List<String>> dbCallBack){
+        //Filter based on school/dept/course ids
+        Bson filter = docEqualsFilter();
         //Project the students array
         Document projection = new Document()
                 .append("_id", 0)
@@ -92,10 +96,7 @@ public class Course {
     }
 
     public void addStudentToThisCourseInDatabase(String studentID){
-        Bson filter = Filters.and(
-                Filters.eq("schoolID", schoolID),
-                Filters.eq("departmentID", departmentID),
-                Filters.eq("courseID", courseID));
+        Bson filter = docEqualsFilter();
         Log.d("addStudentToThisCourse",
                 String.format("Looking for %s:%s:%s", schoolID, departmentID, courseID));
         //Project just the id
@@ -145,12 +146,12 @@ public class Course {
                     Log.d("findCourse",
                             String.format("Successfully found document: %s", task.getResult()));
                     Document courseDocumentIDAsDocument = task.getResult();
-                    Document studentsArrayWithStudentToAddDocument = new Document()
+                    Document studentIDDocument = new Document()
                             .append("students", studentID);
                     Document updateCourseStudentsArrayDocument = new Document()
-                            .append("$addToSet", studentsArrayWithStudentToAddDocument);
+                            .append("$addToSet", studentIDDocument);
 
-                    //add the course to the array
+                    //add the student to the course array
                     Task<RemoteUpdateResult> updateCourseStudentsArray =
                             BindrController.coursesCollection.updateOne(
                                     courseDocumentIDAsDocument, updateCourseStudentsArrayDocument);
@@ -196,16 +197,13 @@ public class Course {
     }
 
     public void removeStudentFromThisCourseInDatabase(String studentID){
-        Bson filter = Filters.and(
-                Filters.eq("schoolID", schoolID),
-                Filters.eq("departmentID", departmentID),
-                Filters.eq("courseID", departmentID));
-        Document studentsArrayWithStudentToRemoveDocument = new Document()
+        Log.d("Course.removeStudent...", String.format("Attempting to remove %s", studentID));
+        Bson filter = docEqualsFilter();
+        Document studentIDDoc = new Document()
                 .append("students", studentID);
-        Document updateCourseStudentsArrayDocument = new Document()
-                .append("$pull", studentsArrayWithStudentToRemoveDocument);
-
-
+        Document removeCourseStudentsArrayDocument = new Document()
+                .append("$pull", studentIDDoc);
+        BindrController.coursesCollection.updateOne(filter, removeCourseStudentsArrayDocument);
     }
 
     public boolean equals(Course course){

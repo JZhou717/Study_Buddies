@@ -121,17 +121,46 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
     }
 
     public void addCourse(View view){
+        //Force withdraw keyboard:
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         String schoolNum = ((EditText)findViewById(R.id.editSchoolNum)).getText().toString();
         String deptNum = ((EditText)findViewById(R.id.editDeptNum)).getText().toString();
         String courseNum = ((EditText)findViewById(R.id.editCourseNum)).getText().toString();
         String courseName = ((EditText)findViewById(R.id.editCourseName)).getText().toString();
 
+        //Ensure valid input
+        if(courseName.equals("") || schoolNum.equals("")
+                || deptNum.equals("") || courseNum.equals("")){
+            Snackbar.make(view, "You must fill all fields", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        if(schoolNum.length() > 2){
+            Snackbar.make(view, "School number too long", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        if(deptNum.length() > 3){
+            Snackbar.make(view, "Department number too long", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        if(courseNum.length() > 3){
+            Snackbar.make(view, "Course number too long", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Make sure there's the correct # of leading 0s:
+        while(schoolNum.length() < 2){
+            schoolNum = "0" + schoolNum;
+        }
+        while(deptNum.length() < 3){
+            deptNum = "0" + deptNum;
+        }
+        while(courseNum.length() < 3){
+            courseNum = "0" + courseNum;
+        }
+
         TableLayout table = (TableLayout)findViewById(R.id.tableCoursesAdded);
         Course courseToBeAdded = new Course(schoolNum, deptNum, courseNum, courseName);
-
-        //Force withdraw keyboard:
-        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
         //Make sure course has not already been added:
         for(int i=1, j=table.getChildCount(); i<j; i++){
