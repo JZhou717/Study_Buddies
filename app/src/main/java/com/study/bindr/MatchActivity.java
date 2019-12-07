@@ -1,5 +1,6 @@
 package com.study.bindr;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -123,6 +124,7 @@ public class MatchActivity extends AppCompatActivity {
      * Displays the given student
      * @param student - the student to display
      */
+    @SuppressLint("DefaultLocale")
     private void displayStudent(Student student){
         student.getCourses(items -> {
             String coursesOfNextStudent = "";
@@ -142,6 +144,7 @@ public class MatchActivity extends AppCompatActivity {
         student.getFullName(items -> nameTextView.setText(items));
         student.getGPA(items -> gpaTextView.setText(String.format("%.2f", items)));
         student.getBio(items -> bioTextView.setText(items));
+        student.getRating(items -> ratingBar.setRating(items.floatValue()));
         idOfDisplayedStudent = student.getId();
         //unhide the match and pass buttons once the other student is displayed
         matchButton.setVisibility(View.VISIBLE);
