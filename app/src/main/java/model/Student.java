@@ -1278,10 +1278,6 @@ public class Student implements Serializable {
         });
     }
 
-    public void addChatRoom(String room){
-        //TODO: IMPLEMENT
-    }
-
     //Saves new chat room into database
     public void saveChatRoom(String room, String studentID){
         Document filterDoc = new Document().append("_id", new ObjectId(this.id));
@@ -1335,7 +1331,36 @@ public class Student implements Serializable {
     }
 
     public void removeChatRoom(String room) {
-        //TODO: IMPLEMENT
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$pull",
+                new Document().append("chats",
+                        new Document()
+                                .append("room", room)
+        ));
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> removeChats = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        removeChats.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeChatRoom", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeChatRoom", "failed to update document with: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void getInterests(DatabaseCallBack <String > databaseCallBack){
+
     }
 
 }
