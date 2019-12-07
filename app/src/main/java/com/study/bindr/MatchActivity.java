@@ -41,10 +41,7 @@ public class MatchActivity extends AppCompatActivity {
         String departmentID = courseCodeSplit[1];
         String courseID = courseCodeSplit[2];
         Course course = new Course(schoolID, departmentID, courseID, "");
-        course.getStudentIDsInCourse(items -> {
-            studentIDsInCourse = items;
-            studentIDsInCourseIterator = studentIDsInCourse.listIterator();
-        });
+
 
 
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
@@ -62,19 +59,13 @@ public class MatchActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        displayNextStudent();
+        course.getStudentIDsInCourse(items -> {
+            studentIDsInCourse = items;
+            studentIDsInCourseIterator = studentIDsInCourse.listIterator();
+            displayNextStudent(); //once the students are loaded, display potential match.
+        });
     }
     private void displayNextStudent(){
-        while(studentIDsInCourseIterator==null) { //students have yet to load
-            Snackbar.make(findViewById(R.id.buttonReject),
-                    "Loading students...", Snackbar.LENGTH_SHORT).show();
-            try {
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         if(!studentIDsInCourseIterator.hasNext()){
             Snackbar.make(findViewById(R.id.buttonReject),
                     "No other students in this course found", Snackbar.LENGTH_INDEFINITE)
