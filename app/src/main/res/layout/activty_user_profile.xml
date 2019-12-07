@@ -38,7 +38,7 @@
                 tools:context=".UserProfileActivity">
 
                 <ImageView
-                    android:id="@+id/imageViewStar1"
+                    android:id="@+id/ratingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -56,7 +56,7 @@
                     android:src="@drawable/ic_star_on"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.039"
-                    app:layout_constraintStart_toEndOf="@+id/imageViewStar1"
+                    app:layout_constraintStart_toEndOf="@+id/ratingBar"
                     app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
                 <ImageView
@@ -138,7 +138,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/textViewName"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewStar1" />
+                    app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
                 <TextView
                     android:id="@+id/textViewCourses"

@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.view.View;
 import android.content.Intent;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ public class MatchActivity extends AppCompatActivity {
     private TextView coursesTextView;
     private TextView gpaTextView;
     private TextView bioTextView;
+    private RatingBar ratingBar;
     private List<String> studentIDsInCourse;
     private String idOfDisplayedStudent;
     private final Student me = BindrController.getCurrentUser();
@@ -54,6 +56,7 @@ public class MatchActivity extends AppCompatActivity {
         coursesTextView = (TextView)findViewById(R.id.textViewCourses);
         gpaTextView = (TextView)findViewById(R.id.textViewGPA);
         bioTextView = (TextView)findViewById(R.id.textViewBio);
+        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
 
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {

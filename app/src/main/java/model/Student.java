@@ -1314,6 +1314,26 @@ public class Student implements Serializable {
         //TODO: IMPLEMENT
     }
 
+    public void getRating(DatabaseCallBack<Double> dbCallBack){
+        //TODO: IMPLEMENT
+    }
+
+    /**
+     * Computes the average A of the given ratings.
+     * That is,
+     *  A := (focusRating + productivityRating + engagementRating + environmentRating)/4.0
+     * Then updates the student's rating in the database to be
+     *  (A + student.rating*student.numRates)/(1 + student.numRates)
+     * @param focusRating - focus rating
+     * @param productivityRating - productivity rating
+     * @param engagementRating - engagement rating
+     * @param environmentRating - environment rating
+     */
+    public void addNewRating(double focusRating, double productivityRating, double engagementRating,
+                             double environmentRating){
+        //TODO: IMPLEMENT
+    }
+
     public void removeChatRoom(String room) {
         //TODO: IMPLEMENT
     }
