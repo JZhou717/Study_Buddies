@@ -1319,8 +1319,8 @@ public class Student implements Serializable {
     }
 
     /**
-     * Computes the average A of the given ratings.
-     * That is,
+     * First computes the average A of the given ratings;
+     * that is,
      *  A := (focusRating + productivityRating + engagementRating + environmentRating)/4.0
      * Then updates the student's rating in the database to be
      *  (A + student.rating*student.numRates)/(1 + student.numRates)
