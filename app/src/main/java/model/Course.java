@@ -203,7 +203,23 @@ public class Course {
                 .append("students", studentID);
         Document removeCourseStudentsArrayDocument = new Document()
                 .append("$pull", studentIDDoc);
-        BindrController.coursesCollection.updateOne(filter, removeCourseStudentsArrayDocument);
+        Task<RemoteUpdateResult> task = BindrController.coursesCollection
+                .updateOne(filter, removeCourseStudentsArrayDocument);
+        task.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> ()
+        {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("removeStudent",
+                            String.format("successfully removed with id %s",
+                                    studentID));
+                } else {
+                    Log.e("removeStudent",
+                            "failed to remove student with: ",
+                            task.getException());
+                }
+            }
+        });
     }
 
     public boolean equals(Course course){
