@@ -1324,10 +1324,10 @@ public class Student implements Serializable {
      *  A := (focusRating + productivityRating + engagementRating + environmentRating)/4.0
      * Then updates the student's rating in the database to be
      *  (A + student.rating*student.numRates)/(1 + student.numRates)
-     * @param focusRating - focus rating
-     * @param productivityRating - productivity rating
-     * @param engagementRating - engagement rating
-     * @param environmentRating - environment rating
+     * @param focusRating - new focus rating to be added
+     * @param productivityRating - new productivity rating to be added
+     * @param engagementRating - new engagement rating to be added
+     * @param environmentRating - new environment rating to be added
      */
     public void addNewRating(double focusRating, double productivityRating, double engagementRating,
                              double environmentRating){
