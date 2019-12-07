@@ -30,7 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextName" />
 
             <TextView
                 android:id="@+id/textViewBioLabel"
@@ -57,7 +57,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textViewName"
+                android:id="@+id/editTextName"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:text="John"
@@ -78,11 +78,11 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewName"
+                app:layout_constraintStart_toStartOf="@+id/editTextName"
                 app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
             <TextView
-                android:id="@+id/textViewCourses"
+                android:id="@+id/editTextCourses"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -109,23 +109,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/textViewCoursesLabel" />
 
             <TextView
-                android:id="@+id/textViewGPA"
+                android:id="@+id/editTextGPA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3.64"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewCourses"
+                app:layout_constraintStart_toStartOf="@+id/editTextCourses"
                 app:layout_constraintTop_toTopOf="@+id/textViewGPALabel" />
 
             <TextView
-                android:id="@+id/textViewBio"
+                android:id="@+id/editTextBio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I'm a computer science major and lingu..."
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewGPA"
+                app:layout_constraintStart_toStartOf="@+id/editTextGPA"
                 app:layout_constraintTop_toTopOf="@+id/textViewBioLabel"
                 android:maxLines="4"
                 android:ellipsize="end" />
