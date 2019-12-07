@@ -34,7 +34,7 @@ public class SetSessionDialogFrag extends DialogFragment {
         final Bundle bundle = getArguments();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(TITLE);
+        builder.setTitle(bundle.getString(TITLE));
         builder.setMessage(bundle.getString(MESSAGE_KEY))
                 .setPositiveButton("Accept",
                         new DialogInterface.OnClickListener() {

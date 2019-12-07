@@ -58,7 +58,6 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
     private Chat chat=null;
     private String firstMessage=null;
-    private String requestedSessionMessage=null;
 
     DialogInterface.OnClickListener blockClickListener;
     DialogInterface.OnClickListener sessionRequestListener;
@@ -98,22 +97,16 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
             loadHistoryMessages();
             //initial connection
             scaledrone.connect(new ScaledroneListener());
+            onSessionRequest();
             if(bundle.containsKey("Session")){
                 Session session=(Session)bundle.get("Session");
                 Date dateTime=session.getDateTime();
-                Calendar calendar=Calendar.getInstance();
-                calendar.setTime(dateTime);
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH)+1;
-                int date = calendar.get(Calendar.DATE);
-                String dateText=month + "/" + date + "/" + year;
-                String timeText = DateFormat.format("h:mm a", calendar).toString();
 
-                requestedSessionMessage="Study Session Request \nDate: "+dateText+"\nTime: "+timeText;
                 chat.requestSession(new DatabaseCallBack<String>() {
                     @Override
                     public void onCallback(String items) {
-                        scaledrone.publish(chat.getRoom(), chat.getSessionRequestMessage());
+                        String requestedSessionMessage="Study Session Request \n"+convertDateTimeToString(dateTime);
+                        scaledrone.publish(chat.getRoom(), chat.getSessionRequestMessageID());
 
                         scaledrone.publish(chat.getRoom(), requestedSessionMessage);
                         chat.saveMesssage(currentUser.getId(), requestedSessionMessage);
@@ -191,6 +184,19 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
     }
 
+    private String convertDateTimeToString(Date dateTime){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(dateTime);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH)+1;
+        int date = calendar.get(Calendar.DATE);
+        String dateText=month + "/" + date + "/" + year;
+        String timeText = DateFormat.format("h:mm a", calendar).toString();
+
+        String dateTimeString="Date: "+dateText+"\nTime: "+timeText;
+        return dateTimeString;
+    }
+
     public void sendMessage(View view) {
 
         String message = editText.getText().toString();
@@ -255,19 +261,19 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         String messageString=receivedMessage.getData().asText();
         if (!belongsToCurrentUser){
             studentID=chat.getChattingStudentID();
-            if(messageString.equals(chat.getSessionRequestMessage()) ){
+            if(messageString.equals(chat.getSessionRequestMessageID()) ){
                 System.out.println("SESSION REQUEST FROM Other");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        onSessionRequest(requestedSessionMessage);
+                        onSessionRequest();
                     }
                 });
                 return;
 
             }
         }
-        else if (belongsToCurrentUser&& messageString.equals(chat.getSessionRequestMessage())){
+        else if (belongsToCurrentUser&& messageString.equals(chat.getSessionRequestMessageID())){
             System.out.println("SESSION REQUEST FROM you");
             return;
         }
@@ -335,26 +341,40 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     /* End Navigation Stuff */
 
 
-    public void onSessionRequest(String message) {
+    public void onSessionRequest() {
         /*final EditText input = new EditText(this);
         input.setHint("reminder (minutes)");
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
         builder.setTitle("From "+chat.getChattingStudentFullName());
         builder.setMessage(message).setPositiveButton("Accept", sessionRequestListener)
                 .setNegativeButton("Decline", sessionRequestListener).show();*/
+        chat.getRequestedSession(new DatabaseCallBack<Document>() {
+            @Override
+            public void onCallback(Document request) {
+                if (request!=null){
+                    String sessionSender=request.get("sender").toString();
+                    if (!sessionSender.equals(currentUser.getId())){
+                        System.out.println("SESSION POPUP REQUEST FROM PARTNER");
+                        Date dateTime=request.getDate("datetime");
+                        String dialogMessage=convertDateTimeToString(dateTime);
+                        String title="Session Request From "+chat.getChattingStudentFullName();
 
-        Bundle bundle = new Bundle();
-        bundle.putString(SetSessionDialogFrag.MESSAGE_KEY, message);
-        String title="From "+chat.getChattingStudentFullName();
-        bundle.putString(SetSessionDialogFrag.TITLE, title);
-        DialogFragment newFragment = new SetSessionDialogFrag();
-        newFragment.setCancelable(false);
-        newFragment.setArguments(bundle);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(SetSessionDialogFrag.MESSAGE_KEY, dialogMessage);
+                        bundle.putString(SetSessionDialogFrag.TITLE, title);
+                        DialogFragment newFragment = new SetSessionDialogFrag();
+                        newFragment.setCancelable(false);
+                        newFragment.setArguments(bundle);
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(newFragment, "sessionRequest");
-        ft.commitAllowingStateLoss();
+                        FragmentManager fm = getSupportFragmentManager();
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.add(newFragment, "sessionRequest");
+                        ft.commitAllowingStateLoss();
+                    }
+                }
+            }
+        });
+
 
         //newFragment.show(getSupportFragmentManager(), "sessionRequest");
 
@@ -413,9 +433,10 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 if(!message.equals("")){
                     reminder=Integer.parseInt(message);
                 }
-                Date date= (Date) request.get("dateTime");
+                Date date= request.getDate("datetime");
                 int partnerReminder=request.getInteger("reminder");
                 setUpStudySession(partnerReminder, reminder, date);
+                chat.removeRequest();
 
             }
         });
@@ -434,6 +455,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         String declineMessage="Study Session Declined";
         scaledrone.publish(chat.getRoom(), declineMessage);
         chat.saveMesssage(currentUser.getId(), declineMessage);
+        chat.removeRequest();
     }
 
     private class ScaledroneListener implements Listener{

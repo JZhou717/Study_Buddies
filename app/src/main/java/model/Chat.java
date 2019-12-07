@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.BasicDBObject;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteDeleteResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOneAndModifyOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
@@ -50,7 +51,7 @@ public class Chat implements Serializable {
         return messages.get(messages.size()-1);
 
     }
-    public String getSessionRequestMessage(){
+    public String getSessionRequestMessageID(){
         return "Session "+room;
     }
     /**
@@ -276,30 +277,54 @@ public class Chat implements Serializable {
     }
     public void getRequestedSession(DatabaseCallBack<Document> databaseCallBack){
 
-        Document query = new Document().append("room", room);
+        Document query = new Document().append("room", this.room).append("request", new Document("$exists", true));
+
         Document projection = new Document()
                 .append("_id", 0)
                 .append("request", 1);
 
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
 
-        //listens for when the query finishes and sends result to callback method (given in parameter)
-        RemoteFindOneAndModifyOptions options =
-                new RemoteFindOneAndModifyOptions()
-                        .projection(projection);
-
-        final Task <Document> findRequestAndDeleteTask =
-                BindrController.chatsCollection.findOneAndDelete(query, options, Document.class);
-        findRequestAndDeleteTask.addOnCompleteListener(new OnCompleteListener <Document> () {
+        final Task<Document> findRequest = BindrController.chatsCollection.findOne(query, options);
+        findRequest.addOnCompleteListener(new OnCompleteListener<Document>() {
             @Override
             public void onComplete(@NonNull Task <Document> task) {
-                if (task.isSuccessful()) {
-                    Log.d("getRequestedSession", String.format("Successfully deleted document: %s",
-                            task.getResult()));
-                    Document request= (Document) task.getResult().get("request");
-                    databaseCallBack.onCallback(request);
-                } else {
-                    Log.e("getRequestedSession", "Failed to findOneAndDelete: ", task.getException());
+                if (task.getResult() == null) {
+                    Log.d("getRequestedSession", String.format("No document matches the provided query"));
                     databaseCallBack.onCallback(null);
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getRequestedSession", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document item = (Document) task.getResult().get("request");
+
+                    databaseCallBack.onCallback(item);
+
+                } else {
+                    Log.e("getRequestedSession", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+    public void removeRequest() {
+        Document filterDoc = new Document().append("room", room);
+        Document updateDoc = new Document().append("$unset", new Document()
+                .append("request", 1));
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> removeRequest =
+                BindrController.chatsCollection.updateOne(filterDoc, updateDoc, options);
+        removeRequest.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeRequest", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeRequest", "failed to remove request ", task.getException());
                 }
             }
         });
