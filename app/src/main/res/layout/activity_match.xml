@@ -114,7 +114,9 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textViewCoursesLabel"
                 app:layout_constraintTop_toTopOf="@+id/textViewCoursesLabel"
-                tools:layout_constraintHorizontal_bias="0.1" />
+                tools:layout_constraintHorizontal_bias="0.1"
+                android:maxLines="4"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/textViewGPALabel"
@@ -147,7 +149,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textViewGPA"
-                app:layout_constraintTop_toTopOf="@+id/textViewBioLabel" />
+                app:layout_constraintTop_toTopOf="@+id/textViewBioLabel"
+                android:maxLines="4"
+                android:ellipsize="end" />
 
             <ImageView
                 android:id="@+id/imageViewStar2"
