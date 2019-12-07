@@ -116,22 +116,36 @@ public class MatchActivity extends AppCompatActivity {
         idOfDisplayedStudent = student.getId();
     }
     public void match(View v){
-        //TODO: IMPLEMENT
         Student otherStudent = new Student(idOfDisplayedStudent);
+        final String fullNameOfOtherStudent = nameTextView.getText().toString();
         //IF me.id is in otherStudent's requestedMatches,
         //  remove me.id from otherStudent's requestedMatches
         //  add me.id to otherStudents matches
         //  add otherStudent.id to me's matches
         //  display "Matched! You can now message <otherStudent's full name>!"
-        //OTHERWISE (if me. id is NOT in otherStudent's requestedMatches),
+        //OTHERWISE (if me.id is NOT in otherStudent's requestedMatches),
         //  add otherStudent.id to me's requestedMatches
         //FINALLY, display the next student
-
+        otherStudent.getRequestedMatched(items -> {
+            if(items.contains(me.getId())){
+                otherStudent.removeRequestedMatchedStudent(me.getId());
+                otherStudent.addMatchedStudent(me.getId());
+                me.addMatchedStudent(otherStudent.getId());
+                Snackbar.make(v, String.format("Matched! You can now message %s!",
+                        fullNameOfOtherStudent),
+                        Snackbar.LENGTH_SHORT).show();
+            }
+            else{
+                me.addRequestedMatchedStudent(otherStudent.getId());
+            }
+        });
+        displayNextStudent();
     }
 
     public void pass(View v){
-        //TODO: IMPLEMENT
         //Add otherStudent.id to me's passed
         //Display the next student
+        me.addPassedStudent(idOfDisplayedStudent);
+        displayNextStudent();
     }
 }

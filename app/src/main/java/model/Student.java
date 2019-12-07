@@ -1310,6 +1310,10 @@ public class Student implements Serializable {
 
     }
 
+    public void removeRequestedMatchedStudent(String idOfStudentToBeRemoved){
+        //TODO: IMPLEMENT
+    }
+
     public void removeChatRoom(String room) {
         //TODO: IMPLEMENT
     }
