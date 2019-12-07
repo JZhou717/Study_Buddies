@@ -29,10 +29,10 @@ public class Course {
 
     /**
      * Constructor
-     * @param schoolID
-     * @param departmentID
-     * @param courseID
-     * @param courseName
+     * @param schoolID - school ID of the course (e.g., 1 for SAS)
+     * @param departmentID - department ID of the course (e.g., 198 for CS)
+     * @param courseID - course ID of the course (e.g., 112 for Data Structures)
+     * @param courseName - the user's choice of what to call this course
      *
      */
     public Course(String schoolID, String departmentID, String courseID, String courseName){
