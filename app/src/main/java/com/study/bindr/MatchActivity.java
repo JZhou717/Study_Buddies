@@ -1,6 +1,8 @@
 package com.study.bindr;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.view.View;
 import android.content.Intent;
@@ -10,17 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import org.bson.Document;
-
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.TimeUnit;
 
 import model.Course;
 import model.Student;
 
 
 public class MatchActivity extends AppCompatActivity {
+    private Button matchButton = (Button)findViewById(R.id.buttonMatch);
+    private Button passButton = (Button)findViewById(R.id.buttonPass);
     private ImageView profilePictureImageView;
     private TextView nameTextView;
     private TextView coursesTextView;
@@ -35,13 +36,14 @@ public class MatchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        matchButton.setVisibility(View.INVISIBLE);
+        passButton.setVisibility(View.INVISIBLE);
         //COURSE_CODE is "schoolID:departmentID:courseID"
         String[] courseCodeSplit = getIntent().getStringExtra("COURSE_CODE").split(":");
         String schoolID = courseCodeSplit[0];
         String departmentID = courseCodeSplit[1];
         String courseID = courseCodeSplit[2];
         Course course = new Course(schoolID, departmentID, courseID, "");
-
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         nameTextView = (TextView)findViewById(R.id.textViewName);
         coursesTextView = (TextView)findViewById(R.id.textViewCourses);
@@ -62,8 +64,11 @@ public class MatchActivity extends AppCompatActivity {
         });
     }
     private void displayNextStudent(){
+        //hide the match/pass buttons while we are loading the next student
+        matchButton.setVisibility(View.INVISIBLE);
+        passButton.setVisibility(View.INVISIBLE);
         if(!studentIDsInCourseIterator.hasNext()){
-            Snackbar.make(findViewById(R.id.buttonReject),
+            Snackbar.make(findViewById(R.id.buttonPass),
                     "No other students in this course found", Snackbar.LENGTH_INDEFINITE)
                     .show();
             return;
@@ -100,8 +105,15 @@ public class MatchActivity extends AppCompatActivity {
     private void displayStudent(Student student){
         student.getCourses(items -> {
             String coursesOfNextStudent = "";
-            for(int i=0; i<items.size(); i++){
-                coursesOfNextStudent += ", " + items.get(i).getString("courseName");
+            //There is an obscure edge case that might occur if the other student
+            // removes their courses while we're loading the student for display,
+            // which would mean they don't have any courses to display.
+            //In practice, this won't happen for our app, but this if statement is just in case.
+            if(items.size() > 0) {
+                for (int i = 0; i < items.size() - 1; i++) {
+                    coursesOfNextStudent += ", " + items.get(i).getString("courseName");
+                }
+                coursesOfNextStudent += items.get(items.size() - 1).getString("courseName");
             }
             coursesTextView.setText(coursesOfNextStudent);
         });
@@ -110,10 +122,13 @@ public class MatchActivity extends AppCompatActivity {
         student.getGPA(items -> gpaTextView.setText(String.format("%.2f", items)));
         student.getBio(items -> bioTextView.setText(items));
         idOfDisplayedStudent = student.getId();
+        //unhide the match and pass buttons once the other student is displayed
+        matchButton.setVisibility(View.VISIBLE);
+        passButton.setVisibility(View.VISIBLE);
     }
     public void match(View v){
         Student otherStudent = new Student(idOfDisplayedStudent);
-        final String fullNameOfOtherStudent = nameTextView.getText().toString();
+        final String FULL_NAME_OF_OTHER_STUDENT = nameTextView.getText().toString();
         //IF me.id is in otherStudent's requestedMatches,
         //  remove me.id from otherStudent's requestedMatches
         //  add me.id to otherStudents matches
@@ -128,7 +143,7 @@ public class MatchActivity extends AppCompatActivity {
                 otherStudent.addMatchedStudent(me.getId());
                 me.addMatchedStudent(otherStudent.getId());
                 Snackbar.make(v, String.format("Matched! You can now message %s!",
-                        fullNameOfOtherStudent),
+                        FULL_NAME_OF_OTHER_STUDENT),
                         Snackbar.LENGTH_SHORT).show();
             }
             else{
