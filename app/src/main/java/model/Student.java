@@ -42,7 +42,6 @@ public class Student implements Serializable {
     public Student(String id){
         this.id = id;
     }
-
     /**
      * Takes the input email and password and checks to see if a student document with this info exists
      * If so, set the current user in BindrController to the student id with the found document
@@ -92,7 +91,6 @@ public class Student implements Serializable {
             }
         });
     }
-
     /**
      * Takes the input username and password and checks to see if a student document with this info exists
      * If so, set the current user in BindrController to the student id with the found document
@@ -711,6 +709,10 @@ public class Student implements Serializable {
         BindrController.setCurrentUser(null);
     }
 
+    /**
+     * Runs a query to retrieve documents representing the list of courses that the user with this studentID would be in
+     * @param dbCallBack The method to which the list is passed to
+     */
     public void getCourses(DatabaseCallBack<List<Document>> dbCallBack){
         //Query by id
         Document query = new Document().append("_id", new ObjectId(id));
@@ -750,53 +752,92 @@ public class Student implements Serializable {
         });
     }
 
-    public void getSessions(DatabaseCallBack<List<Document>> dbCallBack){
-        //Query by id
-        Document query = new Document().append("_id", new ObjectId(id));
+    /**
+     * Inserts the provided course to the user's Student database document's list of courses
+     * @param course the course to be inserted
+     */
+    public void addCourse(Course course) {
 
-        //Project the chats array
-        Document projection = new Document()
-                .append("_id", 0)
-                .append("sessions", 1);
+        //Get the fields of the course we are uploading
+        String schoolID = course.getSchoolID();
+        String departmentID = course.getDepartmentID();
+        String courseID = course.getCourseID();
+        String courseName = course.getCourseName();
 
-        RemoteFindOptions options = new RemoteFindOptions()
-                .projection(projection);
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$push",
+                new Document().append("courses",
+                        new Document()
+                                .append("schoolID", schoolID)
+                                .append("departmentID", departmentID)
+                                .append("courseID", courseID)
+                                .append("courseName", courseName))
+        );
 
-        final Task <Document> findSessions = BindrController.studentsCollection.findOne(query, options);
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
 
-        //listens for when the query finishes and sends result to callback method (given in parameter)
-        findSessions.addOnCompleteListener(new OnCompleteListener <Document> () {
+        final Task<RemoteUpdateResult> addCourse = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        addCourse.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
             @Override
-            public void onComplete(@NonNull Task <Document> task) {
-                if (task.getResult() == null) {
-                    Log.d("getSessions", String.format("No document matches the provided query"));
-                }
-                else if (task.isSuccessful()) {
-                    Log.d("getSessions", String.format("Successfully found document: %s",
-                            task.getResult()));
-                    Document items = task.getResult();
-                    //Get the chatrooms results as a list
-                    List<Document> sessions = (List<Document>) items.get("sessions");
-                    if (sessions==null){
-                        sessions=new ArrayList<>();
-                    }
-                    dbCallBack.onCallback(sessions);
-
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("addCourse", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
                 } else {
-                    Log.e("getSessions", "Failed to findOne: ", task.getException());
+                    Log.e("addCourse", "failed to update document with: ", task.getException());
                 }
             }
         });
     }
 
-    public void addCourse(Course course) {
-        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY, ADD TO STUDENT'S DOCUMENT'S COURSES FIELD
-    }
-
     public void removeCourse(Course course) {
-        return;  //TODO: IMPLEMENT FOR COURSE ACTIVITY REMOVE FROM STUDENT'S DOCUMENT'S COURSES FIELD
+
+        //Get the fields of the course we are removing
+        String schoolID = course.getSchoolID();
+        String departmentID = course.getDepartmentID();
+        String courseID = course.getCourseID();
+        String courseName = course.getCourseName();
+
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$pull",
+                new Document().append("courses",
+                        new Document()
+                                .append("schoolID", schoolID)
+                                .append("departmentID", departmentID)
+                                .append("courseID", courseID)
+                                .append("courseName", courseName))
+        );
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> removeCourse = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        removeCourse.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeCourse", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeCourse", "failed to update document with: ", task.getException());
+                }
+            }
+        });
     }
 
+    /**
+     * Runs a query to get a list of Strings of student ids of students this user has matched with
+     * @param dbCallBack The method to which the list of Strings is passed to
+     */
     public void getMatched(DatabaseCallBack<List<String>> dbCallBack){
         //Query by id
         Document query = new Document().append("_id", new ObjectId(this.id));
@@ -840,24 +881,162 @@ public class Student implements Serializable {
         });
     }
 
+    /**
+     * Adds the parameter to this Student's list of matches
+     * @param matchedStudentID the string id equivalent to the objectid of the matched student in the student collection of the database
+     */
     public void addMatchedStudent(String matchedStudentID){
-        //TODO: IMPLEMENT
+
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$push",
+                new Document().append("matches", new ObjectId(matchedStudentID))
+        );
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> addMatched = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        addMatched.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("addMatched", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("addPassed", "failed to update document with: ", task.getException());
+                }
+            }
+        });
     }
 
-    public void getPassed(){
-        //TODO: IMPLEMENT
+    /**
+     * Runs a query to get a list of Strings of student ids of students this user has passed on or blocked
+     * @param dbCallBack The method to which the list of Strings is passed to
+     */
+    public void getPassed(DatabaseCallBack<List<String>> dbCallBack) {
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+
+        //Project the matches array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("passed", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findPassedStudents = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findPassedStudents.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task<Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getPassed", String.format("No document matches the provided query"));
+                } else if (task.isSuccessful()) {
+                    Log.d("getPassed", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    //Get the student ID results as a list
+                    Document item = task.getResult();
+                    List<ObjectId> passed = (List<ObjectId>) item.get("passed");
+                    List<String> passedString = new ArrayList<>();
+
+                    for (int i = 0; i < passed.size(); i++) {
+                        String passedStudentID = passed.get(i).toString();
+                        passedString.add(passedStudentID);
+                    }
+                    dbCallBack.onCallback(passedString);
+
+                } else {
+                    Log.e("getPassed", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
+    /**
+     * Adds the parameter to this Student's list of passed
+     * @param passedStudentID the string id equivalent to the objectid of the passed  student in the student collection of the database
+     */
     public void addPassedStudent(String passedStudentID){
-        //TODO: IMPLEMENT
+
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$push",
+                new Document().append("passed", new ObjectId(passedStudentID))
+        );
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> addPassed = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        addPassed.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("addPassed", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("addPassed", "failed to update document with: ", task.getException());
+                }
+            }
+        });
     }
 
-    public void getPendingMatches(){
-        //TODO: IMPLEMENT
+    /**
+     * Runs a query to get a list of Strings of student ids of students that has tried to match with this user
+     * @param dbCallBack The method to which the list of Strings is passed to
+     */
+    public void getPendingMatches(DatabaseCallBack<List<String>> dbCallBack){
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+
+        //Project the matches array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("pending", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findPendingMatches = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findPendingMatches.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getPending", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getPending", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    //Get the student ID results as a list
+                    Document item = task.getResult();
+                    List<ObjectId> pending = (List<ObjectId>) item.get("pending");
+                    List<String> pendingString =new ArrayList<>();
+
+                    for (int i=0; i< pending.size(); i++){
+                        String pendingStudentID = pending.get(i).toString();
+                        pendingString.add(pendingStudentID);
+                    }
+                    dbCallBack.onCallback(pendingString);
+
+
+                } else {
+                    Log.e("getPending", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
     }
 
-
-    //
     //This will get the matched students that the user has not chatted with yet.
     public void getMatchedNotChatting(DatabaseCallBack<List<String>> dbCallBack){
 //Query by id
@@ -910,6 +1089,45 @@ public class Student implements Serializable {
 
                 } else {
                     Log.e("getMatchedNotChatting", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void getSessions(DatabaseCallBack<List<Document>> dbCallBack){
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(id));
+
+        //Project the chats array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("sessions", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findSessions = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findSessions.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getSessions", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getSessions", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document items = task.getResult();
+                    //Get the chatrooms results as a list
+                    List<Document> sessions = (List<Document>) items.get("sessions");
+                    if (sessions==null){
+                        sessions=new ArrayList<>();
+                    }
+                    dbCallBack.onCallback(sessions);
+
+                } else {
+                    Log.e("getSessions", "Failed to findOne: ", task.getException());
                 }
             }
         });
@@ -1015,6 +1233,7 @@ public class Student implements Serializable {
         });
 
     }
+
     public void removeChatRoom(String room) {
         //TODO: IMPLEMENT
     }
