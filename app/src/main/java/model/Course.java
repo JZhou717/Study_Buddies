@@ -147,7 +147,7 @@ public class Course {
                             String.format("Successfully found document: %s", task.getResult()));
                     Document courseDocumentIDAsDocument = task.getResult();
                     Document studentIDDocument = new Document()
-                            .append("students", studentID);
+                            .append("students", new ObjectId(studentID));
                     Document updateCourseStudentsArrayDocument = new Document()
                             .append("$addToSet", studentIDDocument);
 
@@ -200,7 +200,7 @@ public class Course {
         Log.d("Course.removeStudent...", String.format("Attempting to remove %s", studentID));
         Bson filter = docEqualsFilter();
         Document studentIDDoc = new Document()
-                .append("students", studentID);
+                .append("students", new ObjectId(studentID));
         Document removeCourseStudentsArrayDocument = new Document()
                 .append("$pull", studentIDDoc);
         Task<RemoteUpdateResult> task = BindrController.coursesCollection
