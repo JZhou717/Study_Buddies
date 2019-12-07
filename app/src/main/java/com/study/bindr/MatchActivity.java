@@ -42,20 +42,16 @@ public class MatchActivity extends AppCompatActivity {
         String courseID = courseCodeSplit[2];
         Course course = new Course(schoolID, departmentID, courseID, "");
 
-
-
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         nameTextView = (TextView)findViewById(R.id.textViewName);
         coursesTextView = (TextView)findViewById(R.id.textViewCourses);
         gpaTextView = (TextView)findViewById(R.id.textViewGPA);
         bioTextView = (TextView)findViewById(R.id.textViewBio);
 
-
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                //TODO: MUST ACTUALLY RETRIEVE THE SPECIFIC USER'S PROFILE
-                //(currently, we're just loading a mockup of a profile)
                 Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
+                i.putExtra("STUDENT_ID", idOfDisplayedStudent);
                 startActivity(i);
             }
         });
