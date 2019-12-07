@@ -27,6 +27,8 @@ public class MatchActivity extends AppCompatActivity {
     private TextView gpaTextView;
     private TextView bioTextView;
     private List<String> studentIDsInCourse;
+    private String idOfDisplayedStudent;
+    private final Student me = BindrController.getCurrentUser();
     private ListIterator<String> studentIDsInCourseIterator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,9 @@ public class MatchActivity extends AppCompatActivity {
         String departmentID = courseCodeSplit[1];
         String courseID = courseCodeSplit[2];
         Course course = new Course(schoolID, departmentID, courseID, "");
-        course.getStudentIDsInCourse(new DatabaseCallBack<List<String>>() {
-            @Override
-            public void onCallback(List<String> items) {
-                studentIDsInCourse = items;
-                studentIDsInCourseIterator = studentIDsInCourse.listIterator();
-            }
+        course.getStudentIDsInCourse(items -> {
+            studentIDsInCourse = items;
+            studentIDsInCourseIterator = studentIDsInCourse.listIterator();
         });
 
 
@@ -83,33 +82,52 @@ public class MatchActivity extends AppCompatActivity {
             return;
         }
         Student nextStudent = new Student(studentIDsInCourseIterator.next());
-        nextStudent.getCourses(new DatabaseCallBack<List<Document>>() {
-            @Override
-            public void onCallback(List<Document> items) {
-                String coursesOfNextStudent = "";
-                for(int i=0; i<items.size(); i++){
-                    coursesOfNextStudent += ", " + items.get(i).getString("courseName");
+        if(nextStudent.getId().equals(me.getId())){
+            displayNextStudent();
+            return;
+        }
+        //display nextStudent iff neither student has passed on the other
+        // and current user has not already requested to match with nextStudent
+        nextStudent.getPassed(items -> {
+            if(items.contains(me.getId())){
+                displayNextStudent();
+                return;
+            }
+            me.getPassed(items1 -> {
+                if(items1.contains(nextStudent.getId())){
+                    displayNextStudent();
+                    return;
                 }
-                coursesTextView.setText(coursesOfNextStudent);
-            }
+                me.getRequestedMatched(items2 -> {
+                    if(items2.contains(nextStudent.getId())){
+                        displayNextStudent();
+                        return;
+                    }
+                });
+                displayStudent(nextStudent);
+
+            });
         });
-        nextStudent.getFullName(new DatabaseCallBack<String>() {
-            @Override
-            public void onCallback(String items) {
-                nameTextView.setText(items);
+    }
+    private void displayStudent(Student student){
+        student.getCourses(items -> {
+            String coursesOfNextStudent = "";
+            for(int i=0; i<items.size(); i++){
+                coursesOfNextStudent += ", " + items.get(i).getString("courseName");
             }
+            coursesTextView.setText(coursesOfNextStudent);
         });
-        nextStudent.getGPA(new DatabaseCallBack<Double>() {
-            @Override
-            public void onCallback(Double items) {
-                gpaTextView.setText(String.format("%.2f", items));
-            }
-        });
-        nextStudent.getBio(new DatabaseCallBack<String>() {
-            @Override
-            public void onCallback(String items) {
-                bioTextView.setText(items);
-            }
-        });
+        //TODO: Get profile picture of student
+        student.getFullName(items -> nameTextView.setText(items));
+        student.getGPA(items -> gpaTextView.setText(String.format("%.2f", items)));
+        student.getBio(items -> bioTextView.setText(items));
+        idOfDisplayedStudent = student.getId();
+    }
+    public void match(View v){
+
+    }
+
+    public void pass(View v){
+
     }
 }
