@@ -213,14 +213,22 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     private void populateMatches(){
         currentUser.getMatchedNotChatting(new DatabaseCallBack<List<String>>() {
             @Override
-            public void onCallback(List<String> items) {
-                //populate and set the adapter
-                for (int i=0; i<items.size(); i++){
-                    Student matchedStudent=new Student(items.get(i).toString());
-                    matchedStudentsList.add(matchedStudent);
-                }
-                matchedStudentAdapter=new MatchedStudentAdapter(matchedStudentsList, ChatsListActivity.this, ChatsListActivity.this);
-                matchedStudentsRecyclerView.setAdapter(matchedStudentAdapter);
+            public void onCallback(List<String> studentIDs) {
+                DatabaseUtility.getFullNameList(new DatabaseCallBack<List<String>>() {
+                    @Override
+                    public void onCallback(List<String> fullNamesList) {
+
+                        //populate and set the adapter
+                        for (int i=0; i<studentIDs.size(); i++){
+                            Student matchedStudent=new Student(studentIDs.get(i).toString());
+                            matchedStudentsList.add(matchedStudent);
+                        }
+
+                        matchedStudentAdapter=new MatchedStudentAdapter(matchedStudentsList, fullNamesList,ChatsListActivity.this, ChatsListActivity.this);
+                        matchedStudentsRecyclerView.setAdapter(matchedStudentAdapter);
+                    }
+                },studentIDs);
+
             }
         });
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +22,7 @@ import model.Student;
 
 
 //This adapter follows the view holder design pattern, which means that it allows you to define a custom class that extends RecyclerView.ViewHolder.
-public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> {
+public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> implements Filterable {
 
     private ArrayList<Chat> chatRoomsList = new ArrayList<>();
 
@@ -121,4 +123,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         //Use this method in activity to send position of the clicked item
         void onChatClick(int position);
     }
+
+    @Override
+    public Filter getFilter() {
+        return null;
+    }
+
 }
