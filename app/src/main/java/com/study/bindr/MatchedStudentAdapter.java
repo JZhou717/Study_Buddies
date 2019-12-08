@@ -107,6 +107,7 @@ public class MatchedStudentAdapter extends RecyclerView.Adapter<MatchedStudentAd
             ArrayList<Student> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
+                fullNamesList.clear();
                 filteredList.addAll(studentsListFull);
                 fullNamesList.addAll(fullNamesListFull);
             } else {
@@ -138,5 +139,6 @@ public class MatchedStudentAdapter extends RecyclerView.Adapter<MatchedStudentAd
             System.out.println(fullNamesList);
         }
     };
+
 
 }

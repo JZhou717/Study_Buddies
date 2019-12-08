@@ -75,8 +75,20 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         chatRoom.getChattingStudent().getFullName(new DatabaseCallBack<String>() {
             @Override
             public void onCallback(String item) {
-                chatRoom.setChattingStudentFullName(item);
-                holder.name.setText(item);
+                chatRoom.getChattingStudent().getStatus(new DatabaseCallBack<Boolean>() {
+                    @Override
+                    public void onCallback(Boolean status) {
+                        chatRoom.setChattingStudentFullName(item);
+                        if(status){
+                            holder.name.setText(item+" (Inactive)");
+                        }else{
+                            holder.name.setText(item);
+                        }
+
+
+                    }
+                });
+
 
             }
         });
@@ -143,6 +155,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
             ArrayList<Chat> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
+                fullNamesList.clear();
                 filteredList.addAll(chatRoomsListFull);
                 fullNamesList.addAll(fullNamesListFull);
             } else {
