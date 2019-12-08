@@ -838,6 +838,53 @@ public class Student implements Serializable {
      * Runs a query to get a list of Strings of student ids of students this user has matched with
      * @param dbCallBack The method to which the list of Strings is passed to
      */
+    public void getRequestedMatched(DatabaseCallBack<List<String>> dbCallBack){
+        //Query by id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+
+        //Project the matches array
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("requestedMatches", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task <Document> findMatchedStudents = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findMatchedStudents.addOnCompleteListener(new OnCompleteListener <Document> () {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getRequestedMatched", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getRequestedMatched", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    //Get the student ID results as a list
+                    Document item = task.getResult();
+                    List<ObjectId> requestedMatches= (List<ObjectId>) item.get("requestedMatches");
+                    List<String> requestedMatchStrings=new ArrayList<>();
+
+                    for (int i=0; i<requestedMatches.size(); i++){
+                        String matchedStudentID=requestedMatches.get(i).toString();
+                        requestedMatchStrings.add(matchedStudentID);
+                    }
+                    dbCallBack.onCallback(requestedMatchStrings);
+
+
+                } else {
+                    Log.e("getRequestedMatched", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    /**
+     * Runs a query to get a list of Strings of student ids of students this user has matched with
+     * @param dbCallBack The method to which the list of Strings is passed to
+     */
     public void getMatched(DatabaseCallBack<List<String>> dbCallBack){
         //Query by id
         Document query = new Document().append("_id", new ObjectId(this.id));
@@ -876,6 +923,38 @@ public class Student implements Serializable {
 
                 } else {
                     Log.e("getMatched", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    /**
+     * Adds the parameter to this Student's list of matches
+     * @param requestedMatchedStudent the string id equivalent to the objectid of the matched student in the student collection of the database
+     */
+    public void addRequestedMatchedStudent(String requestedMatchedStudent){
+
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$push",
+                new Document().append("requestedMatches", new ObjectId(requestedMatchedStudent))
+        );
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> addMatched = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        addMatched.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("addRequestedMatched", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("addRequestedMatched", "failed to update document with: ", task.getException());
                 }
             }
         });
@@ -1133,10 +1212,7 @@ public class Student implements Serializable {
         });
     }
 
-    public void addSession(Session session){
-        String studentID =session.getPartnerID();
-        Date date=session.getDateTime();
-        int reminder=session.getReminder();
+    public void addSession(Date date, int reminder, String studentID){
         Document filterDoc = new Document().append("_id", new ObjectId(this.id));
         Document updateDoc = new Document().append("$push",
                 new Document().append("sessions", new Document().append("partner", new ObjectId(studentID))
@@ -1202,10 +1278,6 @@ public class Student implements Serializable {
         });
     }
 
-    public void addChatRoom(String room){
-        //TODO: IMPLEMENT
-    }
-
     //Saves new chat room into database
     public void saveChatRoom(String room, String studentID){
         Document filterDoc = new Document().append("_id", new ObjectId(this.id));
@@ -1234,8 +1306,61 @@ public class Student implements Serializable {
 
     }
 
-    public void removeChatRoom(String room) {
+    public void removeRequestedMatchedStudent(String idOfStudentToBeRemoved){
         //TODO: IMPLEMENT
+    }
+
+    public void getRating(DatabaseCallBack<Double> dbCallBack){
+        //TODO: IMPLEMENT
+    }
+
+    /**
+     * First computes the average A of the given ratings;
+     * that is,
+     *  A := (focusRating + productivityRating + engagementRating + environmentRating)/4.0
+     * Then updates the student's rating in the database to be
+     *  (A + student.rating*student.numRates)/(1 + student.numRates)
+     * @param focusRating - new focus rating to be added
+     * @param productivityRating - new productivity rating to be added
+     * @param engagementRating - new engagement rating to be added
+     * @param environmentRating - new environment rating to be added
+     */
+    public void addNewRating(double focusRating, double productivityRating, double engagementRating,
+                             double environmentRating){
+        //TODO: IMPLEMENT
+    }
+
+    public void removeChatRoom(String room) {
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$pull",
+                new Document().append("chats",
+                        new Document()
+                                .append("room", room)
+        ));
+
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> removeChats = BindrController.studentsCollection.updateOne(filterDoc, updateDoc, options);
+
+        removeChats.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeChatRoom", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeChatRoom", "failed to update document with: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void getInterests(DatabaseCallBack <String > databaseCallBack){
+
     }
 
 }

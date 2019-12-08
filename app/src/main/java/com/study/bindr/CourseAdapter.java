@@ -1,6 +1,7 @@
 package com.study.bindr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,14 @@ public class CourseAdapter extends ArrayAdapter<Course> {
         Course c = courseList.get(position);
         TextView name = (TextView) listItem.findViewById(R.id.name);
         name.setText(c.getCourseName());
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(),MatchActivity.class);
+                intent.putExtra("COURSE_CODE",c.getSchoolID()+":"+c.getDepartmentID()+":"+c.getCourseID());
+                view.getContext().startActivity(intent);
+            }
+        });
         return listItem;
     }
 

@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.BasicDBObject;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteDeleteResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOneAndModifyOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
@@ -23,6 +24,7 @@ import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Chat implements Serializable {
@@ -49,7 +51,9 @@ public class Chat implements Serializable {
         return messages.get(messages.size()-1);
 
     }
-
+    public String getSessionRequestMessageID(){
+        return "Session "+room;
+    }
     /**
      * finds the last message in this chat from database
      */
@@ -159,48 +163,7 @@ public class Chat implements Serializable {
     public Student getChattingStudent(){
         return this.chattingStudent;
     }
-    /**
-     * Finds the other student's id and full_name from database given the chatroom and the current user id
-     */
-   /* public void findChattingStudent(DatabaseCallBack<Document> dbCallBack, String currentStudentID){
-        //Query by chat room
-        Document filterDoc = new Document()
-                .append("chats", new BasicDBObject("$in", Arrays.asList(this.room)));
-        //Project id and full_name
-        RemoteFindIterable findResults = BindrController.studentsCollection
-                .find(filterDoc)
-                .projection(new Document()
-                        .append("_id", 1)
-                        .append("full_name", 1));
 
-        //Task finds multiple documents and puts them into an arraylist
-        Task<List<Document>> findChattingStudent = findResults.into(new ArrayList<Document>());
-
-        //listens for when the query finishes and calls the given callback method (from parameter)
-        findChattingStudent.addOnCompleteListener(new OnCompleteListener<List<Document>>() {
-            @Override
-            public void onComplete(@NonNull Task<List<Document>> task) {
-                if (task.isSuccessful()) {
-                    List<Document> items = task.getResult();
-                    Log.d("getChattingStudent", String.format("successfully found %d documents", items.size()));
-                    //Go through the documents and find the other student
-                    for (Document item: items) {
-                        Log.d("getChattingStudent", String.format("successfully found:  %s", item.toString()));
-
-                        if(!item.get("_id").toString().equals(currentStudentID)){
-
-                            System.out.println("Chatting student is "+item.getString("full_name"));
-                            //sends document containing id and full_name back
-                            dbCallBack.onCallback(item);
-                        }
-                    }
-                } else {
-                    Log.e("getChattingStudent", "failed to find documents with: ", task.getException());
-                }
-            }
-        });
-
-    }*/
     public ArrayList<Message> getMessages() {
         return messages;
     }
@@ -285,12 +248,14 @@ public class Chat implements Serializable {
 
     }
 
-    public void requestSession(DatabaseCallBack<String> databaseCallBack, String senderID){
+    public void requestSession(DatabaseCallBack<String> databaseCallBack, String senderID, Date dateTime, int reminder){
 
         Document filterDoc = new Document().append("room", room);
         Document updateDoc = new Document().append("$set", new Document()
                 .append("request", new Document()
-                        .append("sender", new ObjectId(senderID))));
+                        .append("sender", new ObjectId(senderID))
+                        .append("datetime", dateTime)
+                        .append("reminder", reminder)));
         RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
 
         final Task<RemoteUpdateResult> requestSessionTask =
@@ -310,4 +275,62 @@ public class Chat implements Serializable {
             }
         });
     }
+    public void getRequestedSession(DatabaseCallBack<Document> databaseCallBack){
+
+        Document query = new Document().append("room", this.room).append("request", new Document("$exists", true));
+
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("request", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findRequest = BindrController.chatsCollection.findOne(query, options);
+        findRequest.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getRequestedSession", String.format("No document matches the provided query"));
+                    databaseCallBack.onCallback(null);
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getRequestedSession", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document item = (Document) task.getResult().get("request");
+
+                    databaseCallBack.onCallback(item);
+
+                } else {
+                    Log.e("getRequestedSession", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+    public void removeRequest() {
+        Document filterDoc = new Document().append("room", room);
+        Document updateDoc = new Document().append("$unset", new Document()
+                .append("request", 1));
+        RemoteUpdateOptions options = new RemoteUpdateOptions().upsert(true);
+
+        final Task<RemoteUpdateResult> removeRequest =
+                BindrController.chatsCollection.updateOne(filterDoc, updateDoc, options);
+        removeRequest.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeRequest", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeRequest", "failed to remove request ", task.getException());
+                }
+            }
+        });
+    }
+    public void removeChat(){
+
+    }
+
 }

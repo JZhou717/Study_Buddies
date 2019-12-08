@@ -1,11 +1,14 @@
 package com.study.bindr;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,6 +53,21 @@ public class SessionAdapter extends ArrayAdapter<Session> {
 
         TextView name = (TextView) listItem.findViewById(R.id.name);
         name.setText("Click to rate your session on " + c.getDateTime());
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(getContext());
+                dialog.setContentView(R.layout.rating_dialog);
+                Button submitButton = dialog.findViewById(R.id.submitButton);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("Clicked submit rating");
+                    }
+                });
+                dialog.show();
+            }
+        });
         return listItem;
     }
 

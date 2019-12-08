@@ -39,6 +39,10 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
     private String id = "5ddb3fd5c3de9037b0b2ced6";
     private Student me = new Student(id);
 
+    /**
+     * displays activity, runs code for startup
+     * @param savedInstanceState - bundle passed by previous activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +84,10 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         });
     }
 
+    /**
+     * adds a table row for the given course
+     * @param course - the course to be added to the table
+     */
     private void addTableRowForCourse(Course course){
         //create table row tr
         //tr will have course name, courseID=schoolNum:deptNum:courseNum, remove button
@@ -120,6 +128,11 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         table.addView(tr);
     }
 
+    /**
+     * adds the course to the student's list of courses and to the displayed table
+     * also adds the student to the course's document in the database
+     * @param view
+     */
     public void addCourse(View view){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -184,6 +197,11 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         addTableRowForCourse(courseToBeAdded);
     }
 
+    /**
+     * removes the course from the student's list of courses and from the displayed table
+     * also removes the student to the course's document in the database
+     * @param courseToBeRemoved
+     */
     private void removeCourse(Course courseToBeRemoved){
         if(courseToBeRemoved==null){
             Log.d("EditCourses", "courseToBeRemoved is null");
@@ -215,11 +233,20 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    /**
+     * onClick method for the Done button. Goes back to home screen
+     * @param view - the view that called this method (i.e., the Done button)
+     */
     public void done(View view){
         Intent intent = new Intent(EditCoursesActivity.this, Home_Activity.class);
         startActivity(intent);
     }
 
+    /**
+     *
+     * @param item - the selected item of the navbar
+     * @return true so long as the app is able to transition to the selected activity
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
