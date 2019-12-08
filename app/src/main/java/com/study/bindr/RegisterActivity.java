@@ -32,6 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     //Flag for image retrieval
     private static final int RESULT_LOAD_IMAGE = 1;
+    //Max size of image that user can upload in bytes
+    private static final int MAX_IMAGE_SIZE = 1048576;
 
     //Byte representation of user image
     byte[] picture = new byte[0];
@@ -187,6 +189,11 @@ public class RegisterActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 picture = stream.toByteArray();
                 bitmap.recycle();
+
+                //Check to make sure image is not too large
+                if(picture.length > MAX_IMAGE_SIZE) {
+                    createAlert("Image too large", "Please select a new image of size 1MB or smaller");
+                }
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
