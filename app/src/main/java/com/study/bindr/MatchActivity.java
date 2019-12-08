@@ -58,11 +58,6 @@ public class MatchActivity extends AppCompatActivity {
         gpaTextView = (TextView)findViewById(R.id.editTextGPA);
         bioTextView = (TextView)findViewById(R.id.editTextBio);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
-        profilePictureImageView.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-
-            }
-        });
         course.getStudentIDsInCourse(items -> {
             studentIDsInCourse = items;
             studentIDsInCourseIterator = studentIDsInCourse.listIterator();
@@ -71,13 +66,6 @@ public class MatchActivity extends AppCompatActivity {
         makeTextViewsBlankAndSetDefaultProfilePic();
     }
 
-    public void onProfilePicClicked(View v){
-        if(idOfDisplayedStudent == null || idOfDisplayedStudent.equals(""))
-            return;
-        Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
-        i.putExtra("STUDENT_ID", idOfDisplayedStudent);
-        startActivity(i);
-    }
 
     private void makeTextViewsBlankAndSetDefaultProfilePic(){
         nameTextView.setText("");

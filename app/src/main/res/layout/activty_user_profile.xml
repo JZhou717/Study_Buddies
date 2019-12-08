@@ -194,14 +194,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
-                    android:layout_marginTop="16dp"
                     android:background="@color/colorPrimaryDark"
                     android:text="Confirm"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextInterests" />
+                    app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
                 <Button
                     android:id="@+id/buttonCancel"
@@ -215,13 +214,14 @@
                     app:layout_constraintTop_toTopOf="@+id/buttonConfirm" />
 
                 <Button
-                    android:id="@+id/buttonDeleteOrBlockAccount"
+                    android:id="@+id/buttonDeleteAccount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="64dp"
                     android:backgroundTint="#F44336"
+                    android:onClick="onDeleteClicked"
                     android:text="delete account"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -238,6 +238,30 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ratingBar"
                     tools:checked="false" />
+
+                <TextView
+                    android:id="@+id/textViewEmailLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="Email:"
+                    android:textColor="#646464"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/textViewInterestsLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextInterests" />
+
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="72dp"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/editTextInterests"
+                    app:layout_constraintTop_toTopOf="@+id/textViewEmailLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

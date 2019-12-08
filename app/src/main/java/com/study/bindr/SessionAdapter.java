@@ -53,7 +53,7 @@ public class SessionAdapter extends ArrayAdapter<Session> {
         Session c = sessionList.get(position);
 
         TextView name = (TextView) listItem.findViewById(R.id.name);
-        name.setText("Click to rate your session on " + c.getDateTime());
+        name.setText("How was your session on " + c.getDateTime() + "?");
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +69,7 @@ public class SessionAdapter extends ArrayAdapter<Session> {
                     public void onClick(View view) {
                         Student student = new Student(c.getPartnerID());
                         student.addNewRating(focusRating.getRating(), productivityRating.getRating(), engagementRating.getRating(), environmentRating.getRating());
+                        name.setText(c.getDateTime().toString());
                         dialog.dismiss();
                     }
                 });

@@ -14,6 +14,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -1545,6 +1546,77 @@ public class Student implements Serializable {
                     }
                 });
 
+            }
+        });
+    }
+    public void getChatRoomsFromStudents(DatabaseCallBack<List<Document>> dbCallBack, List<String> studentIDs){
+        Document query = new Document().append("_id",new ObjectId(id));
+
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("chats", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        final Task<Document> getChatRoomsFromStudents = BindrController.studentsCollection.findOne(query, options);
+        getChatRoomsFromStudents.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("chatRoomsFromStudents", String.format("No document matches the provided query"));
+                    dbCallBack.onCallback(new ArrayList<>());
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("chatRoomsFromStudents", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document item = task.getResult();
+                    List<Document> chatRooms= (List<Document>) item.get("chats");
+                    List<Document> filteredChatrooms=new ArrayList<>();
+                    for (int i=0; i<chatRooms.size();i++){
+                        Document chat=chatRooms.get(i);
+                        String id=chat.get("student").toString();
+                        for (int j=0 ; j<studentIDs.size(); j++){
+                            if(id.equals(studentIDs.get(j))){
+                                filteredChatrooms.add(chat);
+                                break;
+                            }
+                        }
+
+                    }
+                    dbCallBack.onCallback(filteredChatrooms);
+
+                } else {
+                    Log.e("chatRoomsFromStudents", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+    public void removeMatchedStudent(String studentIDToRemove) {
+
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$pull",
+                new Document().append("matches",
+                        new Document()
+                                .append("$in", Arrays.asList(new ObjectId(studentIDToRemove))))
+        );
+
+        final Task<RemoteUpdateResult> removeMatchedStudent = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        removeMatchedStudent.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeMatchedStudent", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeMatchedStudent", "failed to update document with: ", task.getException());
+                }
             }
         });
     }

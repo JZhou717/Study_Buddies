@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import model.Course;
 import model.Student;
 
 public class DatabaseUtility {
@@ -66,6 +67,52 @@ public class DatabaseUtility {
             }
         });
     }
+    public static void getOnlyStudentsInCourse(DatabaseCallBack<List<String>> dbCallBack, List<String> studentIDs, Course course){
+        Document query = new Document().append("schoolID", course.getSchoolID())
+                .append("departmentID", course.getDepartmentID())
+                .append("courseID", course.getCourseID());
+
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("students", 1);
+
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        final Task<Document> getStudentsCourse = BindrController.coursesCollection.findOne(query, options);
+        getStudentsCourse.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getStudentsInCourse", String.format("No document matches the provided query"));
+                    dbCallBack.onCallback(new ArrayList<>());
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getStudentsInCourse", String.format("Successfully found document: %s",
+                            task.getResult()));
+                    Document item = task.getResult();
+                    List<ObjectId> students= (List<ObjectId>) item.get("students");
+                    List<String> filteredStudentIDs=new ArrayList<>();
+                    for (int i=0; i<students.size();i++){
+                        String id=students.get(i).toString();
+                        for (int j=0 ; j<studentIDs.size(); j++){
+                            if(id.equals(studentIDs.get(j))){
+                                filteredStudentIDs.add(id);
+                                break;
+                            }
+                        }
+
+                    }
+                    dbCallBack.onCallback(filteredStudentIDs);
+
+                } else {
+                    Log.e("getStudentsInCourse", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
 
     /**
      * Runs a query to see if the inputted email is already taken by another user

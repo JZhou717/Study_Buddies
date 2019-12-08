@@ -83,7 +83,7 @@
                 android:id="@+id/reminderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reminder Time (Minutes):"
+                android:text="Remind me "
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="17sp" />
 
@@ -91,10 +91,19 @@
                 android:id="@+id/reminderEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:hint="Reminder"
                 android:inputType="numberSigned"
                 android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/reminderTextView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="minutes early."
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp" />
         </LinearLayout>
 
 
