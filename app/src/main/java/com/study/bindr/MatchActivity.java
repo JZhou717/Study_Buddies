@@ -60,9 +60,7 @@ public class MatchActivity extends AppCompatActivity {
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
-                i.putExtra("STUDENT_ID", idOfDisplayedStudent);
-                startActivity(i);
+
             }
         });
         course.getStudentIDsInCourse(items -> {
@@ -73,12 +71,21 @@ public class MatchActivity extends AppCompatActivity {
         makeTextViewsBlankAndSetDefaultProfilePic();
     }
 
+    public void onProfilePicClicked(View v){
+        if(idOfDisplayedStudent == null || idOfDisplayedStudent.equals(""))
+            return;
+        Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
+        i.putExtra("STUDENT_ID", idOfDisplayedStudent);
+        startActivity(i);
+    }
+
     private void makeTextViewsBlankAndSetDefaultProfilePic(){
         nameTextView.setText("");
         coursesTextView.setText("");
         gpaTextView.setText("");
         bioTextView.setText("");
         profilePictureImageView.setImageResource(R.drawable.john);
+        idOfDisplayedStudent = "";
     }
 
     /**
@@ -121,9 +128,16 @@ public class MatchActivity extends AppCompatActivity {
                         displayNextStudent();
                         return;
                     }
-                    //if we get to this point, all the aforementioned conditions are met
-                    // so display nextStudent
-                    displayStudent(nextStudent);
+                    me.getMatched(items3 -> {
+                        if(items3.contains(nextStudent.getId())){
+                            displayNextStudent();
+                            return;
+                        }
+                        //if we get to this point, all the aforementioned conditions are met
+                        // so display nextStudent
+                        displayStudent(nextStudent);
+                    });
+
                 });
             });
         });
