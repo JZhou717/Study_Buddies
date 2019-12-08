@@ -2,7 +2,6 @@ package com.study.bindr;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.view.View;
@@ -53,10 +52,10 @@ public class MatchActivity extends AppCompatActivity {
         String courseID = courseCodeSplit[2];
         Course course = new Course(schoolID, departmentID, courseID, "");
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
-        nameTextView = (TextView)findViewById(R.id.textViewName);
-        coursesTextView = (TextView)findViewById(R.id.textViewCourses);
-        gpaTextView = (TextView)findViewById(R.id.textViewGPA);
-        bioTextView = (TextView)findViewById(R.id.textViewBio);
+        nameTextView = (TextView)findViewById(R.id.editTextName);
+        coursesTextView = (TextView)findViewById(R.id.editTextCourses);
+        gpaTextView = (TextView)findViewById(R.id.editTextGPA);
+        bioTextView = (TextView)findViewById(R.id.editTextBio);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
 
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
