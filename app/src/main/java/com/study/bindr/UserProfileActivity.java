@@ -3,8 +3,13 @@ package com.study.bindr;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.method.KeyListener;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +28,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import model.Course;
 import model.Student;
@@ -45,12 +53,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private boolean isInEditMode;
     private Switch activeSwitch;
     private RatingBar ratingBar;
+    Uri imageUri;
 
     //TODO: STORE PREVIOUS PROFILE PICTURE
-    private final int KEY_LISTENER_INDEX = 0;
-    private final int TEXT_INDEX = 1;
     private Student displayedStudent;
     private Student me = BindrController.getCurrentUser();
+    private static final int PICK_IMAGE = 100;
 
     private static final String TAG = "UserProfileActivity";
 
@@ -97,6 +105,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         editProfileImageView = (ImageView)findViewById(R.id.imageViewEditProfile);
 
         profilePicImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
+        displayedStudent.getPicture(items -> {
+            byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
+            Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            profilePicImageView.setImageBitmap(decodedBytes);
+
+        });
         //TODO: RETRIEVE PROFILE PIC
 
         activeSwitch = (Switch)findViewById(R.id.activeSwitch);
@@ -112,7 +126,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
             String coursesListAsString = "";
             if(items.size() > 0) {
                 for (int i = 0; i < items.size() - 1; i++) {
-                    coursesListAsString += ", " + items.get(i).getString("courseName");
+                    coursesListAsString += items.get(i).getString("courseName") + ", ";
                 }
                 coursesListAsString += items.get(items.size() - 1).getString("courseName");
             }
@@ -235,8 +249,35 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         if(isInEditMode){
             //TODO: IMPLEMENT
             //Should allow user to select a new profile picture
+            openGallery();
         }
         //else do nothing
+    }
+
+    private void openGallery(){
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == PICK_IMAGE){
+            imageUri = data.getData();
+            profilePicImageView.setImageURI(imageUri);
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                me.editPicture(encoded);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed to get bitmap of profile pic");
+            }
+        } //else do nothing
     }
 
     /**

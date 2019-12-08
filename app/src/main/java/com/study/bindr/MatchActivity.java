@@ -47,9 +47,12 @@ public class MatchActivity extends AppCompatActivity {
         passButton.setVisibility(View.INVISIBLE);
         //COURSE_CODE is "schoolID:departmentID:courseID"
         String[] courseCodeSplit = getIntent().getStringExtra("COURSE_CODE").split(":");
-        String schoolID = courseCodeSplit[0];
-        String departmentID = courseCodeSplit[1];
-        String courseID = courseCodeSplit[2];
+        final int SCHOOL_ID_INDEX = 0;
+        final int DEPARTMENT_ID_INDEX = 1;
+        final int COURSE_ID_INDEX = 2;
+        String schoolID = courseCodeSplit[SCHOOL_ID_INDEX];
+        String departmentID = courseCodeSplit[DEPARTMENT_ID_INDEX];
+        String courseID = courseCodeSplit[COURSE_ID_INDEX];
         Log.d(DEBUG_TAG, "Getting students from course " + courseID);
         Course course = new Course(schoolID, departmentID, courseID, "");
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
@@ -148,7 +151,7 @@ public class MatchActivity extends AppCompatActivity {
             //In practice, this won't happen for our app, but this if statement is just in case.
             if(items.size() > 0) {
                 for (int i = 0; i < items.size() - 1; i++) {
-                    coursesOfNextStudent += ", " + items.get(i).getString("courseName");
+                    coursesOfNextStudent += items.get(i).getString("courseName") + ", ";
                 }
                 coursesOfNextStudent += items.get(items.size() - 1).getString("courseName");
             }
