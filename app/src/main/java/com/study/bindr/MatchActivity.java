@@ -2,6 +2,7 @@ package com.study.bindr;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.view.View;
@@ -29,6 +30,7 @@ public class MatchActivity extends AppCompatActivity {
     private String idOfDisplayedStudent;
     private final Student me = BindrController.getCurrentUser();
     private ListIterator<String> studentIDsInCourseIterator;
+    private final String DEBUG_TAG = "MatchActivity";
 
     /**
      * sets up initial layout and starts loading other students.
@@ -48,6 +50,7 @@ public class MatchActivity extends AppCompatActivity {
         String schoolID = courseCodeSplit[0];
         String departmentID = courseCodeSplit[1];
         String courseID = courseCodeSplit[2];
+        Log.d(DEBUG_TAG, "Getting students from course " + courseID);
         Course course = new Course(schoolID, departmentID, courseID, "");
         profilePictureImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         nameTextView = (TextView)findViewById(R.id.editTextName);
