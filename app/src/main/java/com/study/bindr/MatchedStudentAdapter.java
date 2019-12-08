@@ -35,7 +35,6 @@ public class MatchedStudentAdapter extends RecyclerView.Adapter<MatchedStudentAd
         this.onMatchIconListener=onMatchIconListener;
         this.fullNamesList=fullNamesList;
         this.fullNamesListFull=new ArrayList<>(this.fullNamesList);
-        System.out.println("Names List, "+fullNamesList);
     }
 
     private Context context;
@@ -52,7 +51,6 @@ public class MatchedStudentAdapter extends RecyclerView.Adapter<MatchedStudentAd
     @Override
     //will be called after viewholder is created. It binds data to the viewholder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        System.out.println("POSTION "+position );
         holder.name.setText(fullNamesList.get(position));
         /*Student student=studentsList.get(position);
         student.getFullName(new DatabaseCallBack<String>() {

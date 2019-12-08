@@ -112,6 +112,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
             @Override
             public boolean onQueryTextChange(String newText) {
                 matchedStudentAdapter.getFilter().filter(newText);
+                chatsAdapter.getFilter().filter(newText);
                 return false;
             }
         });
@@ -240,15 +241,25 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         currentUser.getChatRooms(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> items) {
+                List<String> studentIDs=new ArrayList<>();
                 //populate and set the adapter
                 for (int i=0; i<items.size(); i++){
                     String chatRoom=items.get(i).getString("room");
                     String studentID=items.get(i).get("student").toString();
                     Chat chat=new Chat(chatRoom,studentID);
                     chatsList.add(chat);
+                    studentIDs.add(studentID);
                 }
-                chatsAdapter=new ChatsAdapter(chatsList,currentUser.getId(), ChatsListActivity.this, ChatsListActivity.this);
-                chatsRecyclerView.setAdapter(chatsAdapter);
+
+
+                DatabaseUtility.getFullNameList(new DatabaseCallBack<List<String>>() {
+                    @Override
+                    public void onCallback(List<String> fullNamesList) {
+                        chatsAdapter=new ChatsAdapter(chatsList,fullNamesList,currentUser.getId(), ChatsListActivity.this, ChatsListActivity.this);
+                        chatsRecyclerView.setAdapter(chatsAdapter);
+                    }
+                },studentIDs);
+
             }
         });
 

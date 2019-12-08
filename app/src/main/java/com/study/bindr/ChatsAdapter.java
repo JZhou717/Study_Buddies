@@ -25,16 +25,25 @@ import model.Student;
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> implements Filterable {
 
     private ArrayList<Chat> chatRoomsList = new ArrayList<>();
+    private ArrayList<Chat> chatRoomsListFull = new ArrayList<>();
+    private List<String> fullNamesListFull=new ArrayList<>();
+    private List<String> fullNamesList=new ArrayList<>();
 
     //The interface (implemented in activity) will be passed to each individual view so will know where to go to when a chat is clicked
     private OnChatListener onChatListener;
     private String currentUserID;
 
-    public ChatsAdapter(ArrayList<Chat> chatRoomsList, String currentUserID, Context context, OnChatListener onChatListener) {
+    public ChatsAdapter(ArrayList<Chat> chatRoomsList, List<String> fullNamesList,String currentUserID, Context context, OnChatListener onChatListener) {
         this.chatRoomsList = chatRoomsList;
+        this.chatRoomsListFull=new ArrayList<>(this.chatRoomsList);
+
+        this.fullNamesList=fullNamesList;
+        this.fullNamesListFull=new ArrayList<>(this.fullNamesList);
+
         this.context = context;
         this.onChatListener=onChatListener;
         this.currentUserID=currentUserID;
+        System.out.println("Names List, "+fullNamesList);
     }
 
     private Context context;
@@ -126,7 +135,44 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
 
     @Override
     public Filter getFilter() {
-        return null;
+        return nameFilter;
     }
+    private Filter nameFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<Chat> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(chatRoomsListFull);
+                fullNamesList.addAll(fullNamesListFull);
+            } else {
+                fullNamesList.clear();
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (int i=0; i<chatRoomsListFull.size(); i++){
+                    Chat chat=chatRoomsListFull.get(i);
+                    String fullName=fullNamesListFull.get(i);
+                    if (fullName.toLowerCase().contains(filterPattern)) {
+                        System.out.println("INDEX "+i+" ID "+chat.getChattingStudentID()+" NAME "+fullName);
+                        filteredList.add(chat);
+                        fullNamesList.add(fullName);
+                    }
+                }
+
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            chatRoomsList.clear();
+            chatRoomsList.addAll((ArrayList) results.values);
+            notifyDataSetChanged();
+            System.out.println(fullNamesList);
+        }
+    };
 
 }
