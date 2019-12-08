@@ -2,8 +2,6 @@ package com.study.bindr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,13 +18,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,22 +33,34 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         MatchedStudentAdapter.OnMatchIconListener, AdapterView.OnItemSelectedListener {
     //Need this for our drawer layout
     private DrawerLayout drawer;
+
+    //Drop down to select which course to search by
     private Spinner searchByDropDown;
+    //Search by user name
+    private SearchView searchView;
+
+    //Adapter used for displaying the lists of matches(not chatting) and chats
     private RecyclerView matchedStudentsRecyclerView;
     private MatchedStudentAdapter matchedStudentAdapter;
 
     private RecyclerView chatsRecyclerView;
     private ChatsAdapter chatsAdapter;
-    private SearchView searchView;
+
+    //Stores matches and chats
     private ArrayList<Student> matchedStudentsList = new ArrayList<>();
     private ArrayList<Chat> chatsList = new ArrayList<>();
 
+    //Stores list of courses that the current user is in. Will be used for searching students by course.
     private ArrayList<Course> coursesList=new ArrayList<>();
+
+    //The current user
     private Student currentUser=BindrController.getCurrentUser();
 
+
     /**
-     * Populates and displays the matched students list and chats list.
-     * Sets up the search filters
+     * displays activity, runs code for startup.
+     * Creates navigation bar, dropdowns and matches/chats lists
+     * @param savedInstanceState -bundle passed by previous activity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +88,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         navigationView.setCheckedItem(R.id.nav_chatslist);
         /* End Navigation Stuff */
 
-        /* Start setup drop down for search filter */
-        searchByDropDown=findViewById(R.id.searchByDropDown);
-
-        /* End setup drop down for search filter */
-
-        /* Start setup adapters and populates matched and chatting students */
+        /* Set up the recyclerviews and adapters */
         matchedStudentsRecyclerView = findViewById(R.id.matchedRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         matchedStudentsRecyclerView.setLayoutManager(layoutManager);
@@ -97,25 +98,26 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         chatsRecyclerView.setLayoutManager(layoutManager);
 
 
-        searchView = findViewById(R.id.searchView);
+        /* Setup the drop down for search filter */
+        searchByDropDown=findViewById(R.id.searchByDropDown);
         populateCourseDropDown();
 
+        searchView = findViewById(R.id.searchView);
+
+        //Listens for changes in search input and displays the filtered results
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
 
-            @Override
+            @Override //Filter the matches and chats list whenever text changes
             public boolean onQueryTextChange(String newText) {
                 matchedStudentAdapter.getFilter().filter(newText);
                 chatsAdapter.getFilter().filter(newText);
                 return false;
             }
         });
-
-        /* End setup adapters and populates matched and chatting students */
-
     }
 
     /**
@@ -169,12 +171,13 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         return true;
     }
 
-
     /**
      * Navigates to the chatbox screen between current user and the selected student.
+     * @param position the chats list position that the selected chatting student is in
      */
     @Override
     public void onChatClick(int position) {
+        //Selecting a chatting student will return a Chat object, which already contains information about the chat room and chatting student
         Chat chat=chatsList.get(position);
         Bundle bundle = new Bundle();
         bundle.putSerializable("Chat", chat);
@@ -187,14 +190,15 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
 
     /**
      * Navigates to a new chatbox screen between current user and the selected student.
+     * @param position the matched students list position that the selected student is in
      */
     @Override
     public void OnMatchIconClick(int position) {
+        //Selecting a matched student will return the Student object of that student
         Student matchedStudent=matchedStudentsList.get(position);
         Bundle bundle = new Bundle();
         bundle.putString("type", "matched");
         bundle.putSerializable("Student", matchedStudent);
-
         Intent intent=new Intent(ChatsListActivity.this, ChatboxActivity.class);
         intent.putExtras(bundle);
 
@@ -203,7 +207,7 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
     }
 
     /**
-     * Finds the matches for the current user from the database and displays them using the adapter
+     * Finds ALL the matches for the current user from the database and displays them using the adapter
      */
     private void populateMatches(){
         currentUser.getMatchedNotChatting(new DatabaseCallBack<List<String>>() {
@@ -214,8 +218,27 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         });
 
     }
-    private void setMatchedStudentAdapter(List<String> studentIDs){
+    /**
+     * Finds the ALL chats for the current user from the database and displays them using the adapter
+     */
+    private void populateChats(){
 
+        currentUser.getChatRooms(new DatabaseCallBack<List<Document>>() {
+            @Override
+            public void onCallback(List<Document> items) {
+                List<String> studentIDs=convertToChatList(items);
+                setChatsAdapter(studentIDs);
+            }
+        });
+
+    }
+
+    /**
+     * Sets the matched adapter with the matched list.
+     * @param studentIDs
+     */
+    private void setMatchedStudentAdapter(List<String> studentIDs){
+        //Get the full name of each student id so adapter can do filtering
         DatabaseUtility.getFullNameList(new DatabaseCallBack<List<String>>() {
             @Override
             public void onCallback(List<String> fullNamesList) {
@@ -234,38 +257,15 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         },studentIDs);
 
     }
+
+
     /**
-     * Finds the chats for the current user from the database and displays them using the adapter
+     * Sets the chats adapter with the chats list.
+     * @param studentIDs a list of chatting student IDs that the
      */
-    private void populateChats(){
-
-        currentUser.getChatRooms(new DatabaseCallBack<List<Document>>() {
-            @Override
-            public void onCallback(List<Document> items) {
-                List<String> studentIDs=convertToChatList(items);
-                setChatsAdapter(studentIDs);
-
-            }
-        });
-
-    }
-    private List<String>  convertToChatList(List<Document> items){
-        chatsList.clear();
-        List<String> studentIDs=new ArrayList<>();
-        //populate and set the adapter
-        for (int i=0; i<items.size(); i++){
-            String chatRoom=items.get(i).getString("room");
-            String studentID=items.get(i).get("student").toString();
-            Chat chat=new Chat(chatRoom,studentID);
-            chatsList.add(chat);
-            studentIDs.add(studentID);
-        }
-        return studentIDs;
-
-    }
-
     private void setChatsAdapter(List<String> studentIDs){
 
+        //Get the full name of each student id so adapter can do filtering
         DatabaseUtility.getFullNameList(new DatabaseCallBack<List<String>>() {
             @Override
             public void onCallback(List<String> fullNamesList) {
@@ -275,106 +275,129 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
         },studentIDs);
 
     }
+
+    /**
+     * Filters and displays the chats and matches lists according to the selected courses in drop down.
+     * @param parent The AdapterView where the selection happened
+     * @param view The view within the AdapterView that was clicked
+     * @param pos The position of the view in the adapter
+     * @param id The row id of the item that is selected
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+        //Clear search when user selects another course to search by
         searchView.setIconified(true);
             searchView.clearFocus();
 
         String selection = (String)parent.getItemAtPosition(pos);
-        System.out.println("SELECTION "+selection);
+
+        //Display all
         if (selection.equals("All")){
             populateChats();
             populateMatches();
         }
         else {
+            //Get all the current user's matched not chatting students
             currentUser.getMatchedNotChatting(new DatabaseCallBack<List<String>>() {
 
                 @Override
                 public void onCallback(List<String> studentIDs) {
-                    //find course
-                    Course course = null;
-                    for (int i = 0; i < coursesList.size(); i++) {
-                        if (coursesList.get(i).getCourseName().equals(selection)) {
-                            course = coursesList.get(i);
-                            break;
-                        }
-                    }
+                    //find the course in the courselist
+                    Course course = getCourseFromName(selection);
+                    //Get only the students in this course
                     DatabaseUtility.getOnlyStudentsInCourse(new DatabaseCallBack<List<String>>() {
                         @Override
                         public void onCallback(List<String> filteredStudentIDs) {
+                            //reset the matches adapter
                             setMatchedStudentAdapter(filteredStudentIDs);
 
                         }
                     }, studentIDs, course);
                 }
             });
-
+            //Get all the current user's chats
             currentUser.getChatRooms(new DatabaseCallBack<List<Document>>() {
                 @Override
                 public void onCallback(List<Document> items) {
-                    //find course
-                    Course course = null;
-                    for (int i = 0; i < coursesList.size(); i++) {
-                        if (coursesList.get(i).getCourseName().equals(selection)) {
-                            course = coursesList.get(i);
-                            break;
-                        }
-                    }
+                    //find the course in the courselist
+                    Course course = getCourseFromName(selection);
+
+                    //Get the list of chatting student IDs
                     List<String> studentIDs=new ArrayList<>();
-                    //populate and set the adapter
+
                     for (int i=0; i<items.size(); i++){
-                        String chatRoom=items.get(i).getString("room");
                         String studentID=items.get(i).get("student").toString();
                         studentIDs.add(studentID);
                     }
-
+                    //Get only the students in this course
                     DatabaseUtility.getOnlyStudentsInCourse(new DatabaseCallBack<List<String>>() {
                         @Override
                         public void onCallback(List<String> filteredStudentIDs) {
-                            System.out.println("FILTERED "+filteredStudentIDs);
+                            //Get the chat rooms from the filtered students
                             currentUser.getChatRoomsFromStudents(new DatabaseCallBack<List<Document>>() {
                                 @Override
                                 public void onCallback(List<Document> chatRooms) {
                                     List<String >ids=convertToChatList(chatRooms);
+                                    //reset the chats adapter
                                     setChatsAdapter(ids);
                                 }
                             },filteredStudentIDs);
-
-
                         }
                     }, studentIDs, course);
                 }
             });
-
         }
-
-
     }
 
+    /**
+     * Nothing should occur when the selection disappears from this view.
+     * @param parent The AdapterView where the selection happened
+     */
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //do nothing
     }
 
 
+    /**
+     * Populates the searchByDropDown Spinner with the courses that the current user has.
+     * Stores the courses in coursesList
+     */
     public void populateCourseDropDown(){
         currentUser.getCourses(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> courses) {
+                //User can search from All students or search students in selected courses
                 List<String> searchOptions = new ArrayList<String>();
                 searchOptions.add("All");
-                for (int i=0; i<courses.size();i++){
-                    String courseName=courses.get(i).getString("courseName");
-                    String schoolID=courses.get(i).getString("schoolID");
-                    String departmentID=courses.get(i).getString("departmentID");;
-                    String courseID=courses.get(i).getString("courseID");
 
+                //parse course documents
+                for (int i=0; i<courses.size();i++){
+                    Document courseDoc=courses.get(i);
+                    String courseName="";
+                    if (courseDoc.containsKey("courseName")){
+                        courseName=courseDoc.getString("courseName");
+                    }
+                    String schoolID="";
+                    if(courseDoc.containsKey("schoolID")){
+                        schoolID=courseDoc.getString("schoolID");
+                    }
+                    String departmentID="";
+                    if(courseDoc.containsKey("departmentID")){
+                        schoolID=courseDoc.getString("departmentID");
+                    }
+                    String courseID="";
+                    if(courseDoc.containsKey("courseID")){
+                        schoolID=courseDoc.getString("courseID");
+                    }
                     searchOptions.add(courseName);
                     Course course=new Course(schoolID, departmentID, courseID, courseName);
-                    coursesList.add(course);
 
+                    coursesList.add(course);
                 }
 
+                //set the dropdown with the course names
                 ArrayAdapter<String> searchOptionsAdapter = new ArrayAdapter<String>(ChatsListActivity.this,
                         android.R.layout.simple_spinner_item, searchOptions);
 
@@ -383,6 +406,44 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
                 searchByDropDown.setOnItemSelectedListener(ChatsListActivity.this);
             }
         });
+
+    }
+
+    /**
+     * Searches for the course object in the courses list given a course name.
+     * @param courseName
+     * @return the course object of the given course name
+     */
+    private Course getCourseFromName(String courseName){
+        Course course = null;
+        for (int i = 0; i < coursesList.size(); i++) {
+            if (coursesList.get(i).getCourseName().equals(courseName)) {
+                course = coursesList.get(i);
+                break;
+            }
+        }
+        return course;
+    }
+
+    /**
+     * Converts a list of chat documents into a list of chat objects and stores them in chatsList\
+     * Returns a list of the chatting student's ids from each chat
+     * @param items list of chat documents.
+     * @return
+     */
+    private List<String> convertToChatList(List<Document> items){
+        //reset the chats list
+        chatsList.clear();
+        List<String> studentIDs=new ArrayList<>();
+        //repopulate chats list
+        for (int i=0; i<items.size(); i++){
+            String chatRoom=items.get(i).getString("room");
+            String studentID=items.get(i).get("student").toString();
+            Chat chat=new Chat(chatRoom,studentID);
+            chatsList.add(chat);
+            studentIDs.add(studentID);
+        }
+        return studentIDs;
 
     }
 }

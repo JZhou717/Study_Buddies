@@ -4,11 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.mongodb.BasicDBObject;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteDeleteResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOneAndModifyOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
@@ -29,11 +26,18 @@ import java.util.List;
 
 public class Chat implements Serializable {
 
+
     private String room="";
     private ArrayList<Message> messages;
     private String chattingStudentFullName;
     private Student chattingStudent;
 
+    /**
+     * Constructor that takes in room and the chatting student's id.
+     * This constructor is mainly used when the current user and the other student has previously chatted.
+     * @param room the chatroom that the current user and chatting student are sending messages in (a unique string id).
+     * @param chattingStudentID the chatting student's id equal to the object id in the database
+     */
     public Chat(String room, String chattingStudentID) {
         this.room = room;
         this.chattingStudent=new Student(chattingStudentID);
