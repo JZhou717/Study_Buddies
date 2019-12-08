@@ -21,8 +21,8 @@ import model.Student;
 
 
 public class MatchActivity extends AppCompatActivity {
-    private Button matchButton = (Button)findViewById(R.id.buttonMatch);
-    private Button passButton = (Button)findViewById(R.id.buttonPass);
+    private Button matchButton;
+    private Button passButton;
     private ImageView profilePictureImageView;
     private TextView nameTextView;
     private TextView coursesTextView;
@@ -43,7 +43,9 @@ public class MatchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        matchButton = (Button)findViewById(R.id.buttonMatch);
         matchButton.setVisibility(View.INVISIBLE);
+        passButton = (Button)findViewById(R.id.buttonPass);
         passButton.setVisibility(View.INVISIBLE);
         //COURSE_CODE is "schoolID:departmentID:courseID"
         String[] courseCodeSplit = getIntent().getStringExtra("COURSE_CODE").split(":");
