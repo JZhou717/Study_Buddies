@@ -31,7 +31,6 @@ public class MatchActivity extends AppCompatActivity {
     private final Student me = BindrController.getCurrentUser();
     private ListIterator<String> studentIDsInCourseIterator;
     private final String DEBUG_TAG = "MatchActivity";
-    //TODO: MAKE RATING BAR UNINTERACTIVE
 
     /**
      * sets up initial layout and starts loading other students.

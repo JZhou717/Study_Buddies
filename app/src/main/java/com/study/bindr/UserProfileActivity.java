@@ -46,9 +46,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private Switch activeSwitch;
     private RatingBar ratingBar;
 
-    //TODO: Make rating bar uninteractive
     //TODO: STORE PREVIOUS PROFILE PICTURE
-    //TODO: user status
     private final int KEY_LISTENER_INDEX = 0;
     private final int TEXT_INDEX = 1;
     private Student displayedStudent;
