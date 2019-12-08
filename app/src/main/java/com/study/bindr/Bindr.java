@@ -63,6 +63,9 @@ public class Bindr extends AppCompatActivity {
                         Intent intent = new Intent(Bindr.this, Home_Activity.class);
                         startActivity(intent);
                     }
+                    else {
+                        failedLogin();
+                    }
                 }
             });
         } //Else it is a username
@@ -77,12 +80,12 @@ public class Bindr extends AppCompatActivity {
                         Intent intent = new Intent(Bindr.this, Home_Activity.class);
                         startActivity(intent);
                     }
+                    else {
+                        failedLogin();
+                    }
                 }
             });
         }
-
-        //This is gimmicky and bad, but we can't create an alert from within the callback method from some unknown reason. We are going to display this regardless of success or fail, and the user won't be able to read it if we login successfully
-        failedLogin();
     }
 
     /**

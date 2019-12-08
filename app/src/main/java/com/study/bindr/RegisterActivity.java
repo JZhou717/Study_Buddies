@@ -25,7 +25,8 @@ public class RegisterActivity extends AppCompatActivity {
     EditText interestsField;
     EditText GPAField;
 
-    //The iamge
+    //Byte representation of user image
+    byte[] picture = new byte[0];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,19 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         /* * * End of validating fields * * */
+
+        //Create Account
+        DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {
+            @Override
+            public void onCallback(Boolean success) {
+                if(success) {
+                    goToEditCourses();
+                }
+                else {
+                    createAlert("Account creation failed", "Something went wrong in trying to create your account. Please try again");
+                }
+            }
+        });
     }
 
     /**
@@ -155,9 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     //Transitions to the edit course activity, called when the account creation is successful
-    //Sets the current user to the one that was created in createAccount
-    private void goToEditCourses(String id) {
-        BindrController.setCurrentUser(new Student(id));
+    private void goToEditCourses() {
         Intent intent = new Intent(RegisterActivity.this, EditCoursesActivity.class);
         startActivity(intent);
     }
