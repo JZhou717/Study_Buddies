@@ -1301,7 +1301,7 @@ public class Student implements Serializable {
                     //Get the chatrooms results as a list
                     List<Document> sessions = (List<Document>) items.get("sessions");
                     if (sessions==null){
-                        sessions=new ArrayList<>();
+                        sessions=new ArrayList<Document>();
                     }
                     dbCallBack.onCallback(sessions);
 
