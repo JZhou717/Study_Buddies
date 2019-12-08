@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteFindOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -108,7 +109,7 @@ public class DatabaseUtility {
      * @param username the username that we are checking for in the database
      * @param dbCallBack the method that we pass a boolean to on query completion
      */
-    protected static void usernameTaken(String username, DatabaseCallBack<Boolean> dbCallBack) {
+    static void usernameTaken(String username, DatabaseCallBack<Boolean> dbCallBack) {
         //Query by field
         Document query = new Document().append("username", username);
         //Hide the id
@@ -139,5 +140,57 @@ public class DatabaseUtility {
                 }
             }
         });
+    }
+
+    /**
+     * Creates this user as a document in the students collection of the database
+     * Sets this user as the current logged in user in BindrController
+     * @param email email of the user
+     * @param username username of the user
+     * @param password password of the user
+     * @param picture byte array representation of the user image
+     * @param fullName full name of the user
+     * @param bio bio of the user
+     * @param interests interests of the user
+     * @param gpa gpa of the user, 0.0 if none inputted
+     * @param dbCallBack the callback method to which we pass our boolean of success or fail
+     */
+    static void createAccount(String email, String username, String password, byte[] picture, String fullName, String bio, String interests, double gpa, DatabaseCallBack<Boolean> dbCallBack) {
+
+        //The document that we are trying to insert
+        Document newItem = new Document()
+                .append("email", email)
+                .append("rating", 0.0)
+                .append("rating_count", 0)
+                .append("username", username)
+                .append("password", password)
+                .append("picture", picture)
+                .append("full_name", fullName)
+                .append("bio", bio)
+                .append("gpa", gpa);
+
+        final Task <RemoteInsertOneResult> insertTask = BindrController.studentsCollection.insertOne(newItem);
+
+        insertTask.addOnCompleteListener(new OnCompleteListener <RemoteInsertOneResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteInsertOneResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("accountCreation", String.format("successfully inserted item with %s",
+                            task.getResult()));
+
+                    String studentID = task.getResult().getInsertedId().toString();
+                    //Set the current user to the new account
+                    BindrController.setCurrentUser(new Student(studentID));
+                    //Sends success flag back
+                    dbCallBack.onCallback(true);
+
+                } else {
+                    Log.e("accountCreation", "failed to insert document with: ", task.getException());
+                    //Sends fail flag back
+                    dbCallBack.onCallback(false);
+                }
+            }
+        });
+
     }
 }

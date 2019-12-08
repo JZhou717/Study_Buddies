@@ -57,6 +57,8 @@ public class Student implements Serializable {
             public void onComplete(@NonNull Task <Document> task) {
                 if (task.getResult() == null) {
                     Log.d("emailLogin", String.format("No document matches the provided query"));
+                    dbCallBack.onCallback(false);
+
                 }
                 else if (task.isSuccessful()) {
                     Log.d("emailLogin", String.format("Successfully found document: %s",
@@ -67,14 +69,14 @@ public class Student implements Serializable {
                     BindrController.setCurrentUser(new Student(id_string));
 
                     //Sends success flag back
-                    dbCallBack.onCallback(new Boolean(true));
+                    dbCallBack.onCallback(true);
 
 
                 } else {
                     Log.e("emailLogin", "Failed to findOne: ", task.getException());
 
                     //Sends success flag back
-                    dbCallBack.onCallback(new Boolean(false));
+                    dbCallBack.onCallback(false);
                 }
             }
         });
@@ -107,6 +109,7 @@ public class Student implements Serializable {
             public void onComplete(@NonNull Task <Document> task) {
                 if (task.getResult() == null) {
                     Log.d("usernameLogin", String.format("No document matches the provided query"));
+                    dbCallBack.onCallback(false);
                 }
                 else if (task.isSuccessful()) {
                     Log.d("usernameLogin", String.format("Successfully found document: %s",
@@ -1079,7 +1082,7 @@ public class Student implements Serializable {
                     Log.d("addMatched", String.format("successfully matched %d and modified %d documents",
                             numMatched, numModified));
                 } else {
-                    Log.e("addPassed", "failed to update document with: ", task.getException());
+                    Log.e("addMatched", "failed to update document with: ", task.getException());
                 }
             }
         });
