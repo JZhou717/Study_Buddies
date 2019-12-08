@@ -11,6 +11,8 @@ import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.concurrent.TimeUnit;
+
 import model.Student;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -27,6 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     //Byte representation of user image
     byte[] picture = new byte[0];
+    //Flag to see if we have valid login info
+    private boolean valid_info = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
         String gpaString = GPAField.getText().toString();
         Double gpa;
 
+        valid_info = true;
+
         /* * * Validate fields * * */
         //Check email
         if(email.indexOf('@') == -1 || email.indexOf('.') == -1) {
@@ -77,7 +83,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onCallback(Boolean taken) {
                 if(taken) {
                     createAlert("Email Taken", "Please enter a new unique email");
-                    return;
                 }
             }
         });
@@ -93,7 +98,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onCallback(Boolean taken) {
                 if(taken) {
                     createAlert("Username Taken", "Please enter a new unique username");
-                    return;
                 }
             }
         });
@@ -120,18 +124,26 @@ public class RegisterActivity extends AppCompatActivity {
         }
         /* * * End of validating fields * * */
 
-        //Create Account
-        DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {
-            @Override
-            public void onCallback(Boolean success) {
-                if(success) {
-                    goToEditCourses();
+        //Wait one second for queries to finish running
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+
+        }
+
+        if(valid_info) {
+            //Create Account
+            DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {
+                @Override
+                public void onCallback(Boolean success) {
+                    if (success) {
+                        goToEditCourses();
+                    } else {
+                        createAlert("Account creation failed", "Something went wrong in trying to create your account. Please try again");
+                    }
                 }
-                else {
-                    createAlert("Account creation failed", "Something went wrong in trying to create your account. Please try again");
-                }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -156,6 +168,8 @@ public class RegisterActivity extends AppCompatActivity {
      * @param message Message in the alert
      */
     private void createAlert(String title, String message) {
+        valid_info = false;
+
         AlertDialog alert = new AlertDialog.Builder(RegisterActivity.this).create();
         alert.setTitle(title);
         alert.setMessage(message);
