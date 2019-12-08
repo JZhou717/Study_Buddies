@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -37,6 +38,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private Button cancelButton;
     private Button deleteOrBlockButton;
     private boolean isInEditMode;
+    private Switch activeSwitch;
     //TODO: email
 
     //TODO: STORE PREVIOUS PROFILE PICTURE
@@ -85,6 +87,8 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         profilePicImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         //TODO: RETRIEVE PROFILE PIC
 
+        activeSwitch = (Switch)findViewById(R.id.activeSwitch);
+
         nameEditText = (EditText)findViewById(R.id.editTextName);
         displayedStudent.getFullName(items -> nameEditText.setText(items));
         toggleEditable(nameEditText);
@@ -128,6 +132,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         if(!displayedStudentIsMe){
             editProfileImageView.setVisibility(View.INVISIBLE);
             deleteOrBlockButton.setText("Block User");
+            activeSwitch.setClickable(false);
         }
     }
 
@@ -165,6 +170,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         //TODO: Uncomment
         //displayedStudent.editInterests(interestsEditText.getText().toString(), items -> {});
         //TODO: email
+        //TODO: Hide confirm, cancel; reshow edit button
     }
 
     public void onCancelClicked(View v){
@@ -173,6 +179,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         toggleEditable(bioEditText);
         toggleEditable(interestsEditText);
         //TODO: email
+        //TODO: Hide confirm, cancel; reshow edit button
         restoreValues();
     }
 
