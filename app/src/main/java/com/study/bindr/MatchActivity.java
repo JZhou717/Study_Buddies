@@ -58,7 +58,6 @@ public class MatchActivity extends AppCompatActivity {
         gpaTextView = (TextView)findViewById(R.id.editTextGPA);
         bioTextView = (TextView)findViewById(R.id.editTextBio);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
-
         profilePictureImageView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
@@ -71,6 +70,15 @@ public class MatchActivity extends AppCompatActivity {
             studentIDsInCourseIterator = studentIDsInCourse.listIterator();
             displayNextStudent(); //once the students are loaded, display potential match.
         });
+        makeTextViewsBlankAndSetDefaultProfilePic();
+    }
+
+    private void makeTextViewsBlankAndSetDefaultProfilePic(){
+        nameTextView.setText("");
+        coursesTextView.setText("");
+        gpaTextView.setText("");
+        bioTextView.setText("");
+        profilePictureImageView.setImageResource(R.drawable.john);
     }
 
     /**
@@ -88,6 +96,7 @@ public class MatchActivity extends AppCompatActivity {
             Snackbar.make(findViewById(R.id.buttonPass),
                     "No other students in this course found", Snackbar.LENGTH_INDEFINITE)
                     .show();
+            makeTextViewsBlankAndSetDefaultProfilePic();
             return;
         }
         Student nextStudent = new Student(studentIDsInCourseIterator.next());
@@ -142,7 +151,13 @@ public class MatchActivity extends AppCompatActivity {
         });
         //TODO: Get profile picture of student
         student.getFullName(items -> nameTextView.setText(items));
-        student.getGPA(items -> gpaTextView.setText(String.format("%.2f", items)));
+        student.getGPA(items -> {
+            if(items != 0)
+                gpaTextView.setText(String.format("%.2f", items));
+            else
+                gpaTextView.setText("");
+        }
+            );
         student.getBio(items -> bioTextView.setText(items));
         student.getRating(items -> ratingBar.setRating(items.getDouble("rating").floatValue()));
         idOfDisplayedStudent = student.getId();
