@@ -29,7 +29,7 @@ import java.util.List;
 
 public class Chat implements Serializable {
 
-    private String room;
+    private String room="";
     private ArrayList<Message> messages;
     private String chattingStudentFullName;
     private Student chattingStudent;
@@ -330,6 +330,22 @@ public class Chat implements Serializable {
         });
     }
     public void removeChat(){
+
+        Document query = new Document()
+                .append("room", this.room);
+
+        final Task<RemoteDeleteResult> deleteTask = BindrController.chatsCollection.deleteOne(query);
+        deleteTask.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteDeleteResult> task) {
+                if (task.isSuccessful()) {
+                    long numDeleted = task.getResult().getDeletedCount();
+                    Log.d("removeChat", String.format("successfully deleted %d documents", numDeleted));
+                } else {
+                    Log.e("removeChat", "Failed to deleted documents ", task.getException());
+                }
+            }
+        });
 
     }
 

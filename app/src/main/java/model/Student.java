@@ -14,6 +14,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -1588,6 +1589,33 @@ public class Student implements Serializable {
 
                 } else {
                     Log.e("chatRoomsFromStudents", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+    public void removeMatchedStudent(String studentIDToRemove) {
+
+        //Query for the document relating to this student object by their shared ID
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document listing the updates that we are performing
+        Document updateDoc = new Document().append("$pull",
+                new Document().append("matches",
+                        new Document()
+                                .append("$in", Arrays.asList(new ObjectId(studentIDToRemove))))
+        );
+
+        final Task<RemoteUpdateResult> removeMatchedStudent = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        removeMatchedStudent.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
+            @Override
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("removeMatchedStudent", String.format("successfully matched %d and modified %d documents",
+                            numMatched, numModified));
+                } else {
+                    Log.e("removeMatchedStudent", "failed to update document with: ", task.getException());
                 }
             }
         });
