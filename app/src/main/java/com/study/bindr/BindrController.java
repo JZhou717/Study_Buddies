@@ -28,7 +28,7 @@ public class BindrController {
     public static RemoteMongoCollection<Document> studentsCollection = mongoClient.getDatabase("bindr").getCollection("students");
     public static RemoteMongoCollection<Document> chatsCollection = mongoClient.getDatabase("bindr").getCollection("chats");
     public static RemoteMongoCollection<Document> coursesCollection = mongoClient.getDatabase("bindr").getCollection("courses");
-    
+
     //called in Bindr (login)
     public static void setUpDatabaseConnection(){
 

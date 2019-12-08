@@ -143,7 +143,7 @@ public class MatchActivity extends AppCompatActivity {
         student.getFullName(items -> nameTextView.setText(items));
         student.getGPA(items -> gpaTextView.setText(String.format("%.2f", items)));
         student.getBio(items -> bioTextView.setText(items));
-        student.getRating(items -> ratingBar.setRating(items.floatValue()));
+        student.getRating(items -> ratingBar.setRating(items.getDouble("rating").floatValue()));
         idOfDisplayedStudent = student.getId();
         //unhide the match and pass buttons once the other student is displayed
         matchButton.setVisibility(View.VISIBLE);
