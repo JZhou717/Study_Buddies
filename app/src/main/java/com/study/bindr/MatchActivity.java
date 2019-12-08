@@ -8,14 +8,10 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.snackbar.Snackbar;
-
 import java.util.List;
 import java.util.ListIterator;
-
 import model.Course;
 import model.Student;
 

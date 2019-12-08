@@ -33,11 +33,7 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
     //Need this for our drawer layout
     private DrawerLayout drawer;
 
-    //private Student me = BindrController.getCurrentUser();
-
-    //TODO: DELETE THESE TWO STATEMENTS AND UNCOMMENT ABOVE STATEMENT
-    private String id = "5ddb3fd5c3de9037b0b2ced6";
-    private Student me = new Student(id);
+    private Student me = BindrController.getCurrentUser();
 
     /**
      * displays activity, runs code for startup

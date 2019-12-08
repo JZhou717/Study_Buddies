@@ -46,7 +46,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private final int KEY_LISTENER_INDEX = 0;
     private final int TEXT_INDEX = 1;
     private Student displayedStudent;
-    private Student me;
+    private Student me = BindrController.getCurrentUser();
 
     private static final String TAG = "UserProfileActivity";
 
