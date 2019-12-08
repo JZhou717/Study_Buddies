@@ -1,11 +1,14 @@
 package com.study.bindr;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,10 +22,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-
-import org.bson.Document;
-
-import java.util.List;
 
 import model.Course;
 import model.Student;
@@ -53,6 +52,9 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private Student me = BindrController.getCurrentUser();
 
     private static final String TAG = "UserProfileActivity";
+
+    DialogInterface.OnClickListener deleteClickListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +143,42 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         }
         else{
             displayedStudent.getEmail(items -> emailEditText.setText(items));
+            deleteClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //for each s in me's matches,
+                            //    pull me from s' matches
+                            //for each c in me's courses,
+                            //    pull me from c's students
+                            //delete me's student document
+                            me.getMatched(items -> {
+                                for(int i=0; i<items.size(); i++){
+                                    Student s = new Student(items.get(i));
+                                    s.removeMatchedStudent(me.getId());
+                                }
+                            });
+                            me.getCourses(items -> {
+                                for(int i=0; i<items.size(); i++){
+                                    String schoolID = items.get(i).get("schoolID").toString();
+                                    String departmentID = items.get(i).get("departmentID").toString();
+                                    String courseID = items.get(i).get("courseID").toString();
+                                    new Course(schoolID, departmentID, courseID, "")
+                                            .removeStudentFromThisCourseInDatabase(me.getId());
+                                }
+                            });
+                            me.deleteAccount();
+                            Intent intent =
+                                    new Intent(UserProfileActivity.this, Bindr.class);
+                            startActivity(intent);
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+                    }
+                }
+            };
         }
     }
 
@@ -168,11 +206,14 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
     public void onConfirmClicked(View v){
         exitEditMode();
+        //Force withdraw keyboard:
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         displayedStudent.editName(nameEditText.getText().toString(), items -> {});
         displayedStudent.editGPA(Double.parseDouble(gpaEditText.getText().toString()),
                 items -> {});
         displayedStudent.editBio(bioEditText.getText().toString(), items -> {});
-        displayedStudent.editEmail(bioEditText.getText().toString(), items -> {});
+        displayedStudent.editEmail(emailEditText.getText().toString(), items -> {});
         displayedStudent.editInterests(interestsEditText.getText().toString());
     }
 
@@ -189,49 +230,39 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     }
 
     public void onCancelClicked(View v){
+        //Force withdraw keyboard:
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         exitEditMode();
         restoreValues();
     }
 
     private void restoreValues(){
-        nameEditText.setText((String)nameEditText.getTag(TEXT_INDEX));
-        gpaEditText.setText((String)gpaEditText.getTag(TEXT_INDEX));
-        bioEditText.setText((String)bioEditText.getTag(TEXT_INDEX));
-        interestsEditText.setText((String)interestsEditText.getTag(TEXT_INDEX));
-        emailEditText.setText((String)emailEditText.getTag(TEXT_INDEX));
+        nameEditText.setText((String)nameEditText.getTag(R.id.TAG_TEXT_INDEX));
+        gpaEditText.setText((String)gpaEditText.getTag(R.id.TAG_TEXT_INDEX));
+        bioEditText.setText((String)bioEditText.getTag(R.id.TAG_TEXT_INDEX));
+        interestsEditText.setText((String)interestsEditText.getTag(R.id.TAG_TEXT_INDEX));
+        emailEditText.setText((String)emailEditText.getTag(R.id.TAG_TEXT_INDEX));
     }
 
     public void onDeleteClicked(View v){
-        //for each s in me's matches,
-        //    pull me from s' matches
-        //for each c in me's courses,
-        //    pull me from c's students
-        //delete me's student document
-        me.getMatched(items -> {
-            for(int i=0; i<items.size(); i++){
-                Student s = new Student(items.get(i));
-                s.removeMatchedStudent(me.getId());
-            }
-        });
-        me.getCourses(items -> {
-            for(int i=0; i<items.size(); i++){
-                String schoolID = items.get(i).get("schoolID").toString();
-                String departmentID = items.get(i).get("departmentID").toString();
-                String courseID = items.get(i).get("courseID").toString();
-                new Course(schoolID, departmentID, courseID, "")
-                        .removeStudentFromThisCourseInDatabase(me.getId());
-            }
-        });
-        me.deleteAccount();
+        //Force withdraw keyboard:
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
+        Log.d(TAG, "Trying to delete account...");
+        builder.setMessage("Are you sure you want to delete your account? This cannot be undone")
+                .setPositiveButton("Yes", deleteClickListener)
+                .setNegativeButton("No", deleteClickListener).show();
     }
 
     private void toggleEditable(EditText et){
         if(isInEditMode){
-            et.setTag(TEXT_INDEX, et.getText().toString());
-            et.setKeyListener((KeyListener)(et.getTag(KEY_LISTENER_INDEX)));
+            et.setTag(R.id.TAG_TEXT_INDEX, et.getText().toString());
+            et.setKeyListener((KeyListener)(et.getTag(R.id.TAG_KEYLISTENER_INDEX)));
         }
         else{
-            et.setTag(KEY_LISTENER_INDEX, et.getKeyListener());
+            et.setTag(R.id.TAG_KEYLISTENER_INDEX, et.getKeyListener());
             et.setKeyListener(null);
         }
     }
