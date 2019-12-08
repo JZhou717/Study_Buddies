@@ -20,6 +20,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.bson.Document;
+
+import java.util.List;
+
+import model.Course;
 import model.Student;
 
 public class UserProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -195,14 +200,25 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     }
 
     public void onDeleteClicked(View v){
-        //TODO: IMPLEMENT
         //for each s in me's matches,
         //    pull me from s' matches
-        //for each c in course collection,
+        //for each c in me's courses,
         //    pull me from c's students
-        //delete account
+        //delete me's student document
         me.getMatched(items -> {
-
+            for(int i=0; i<items.size(); i++){
+                Student s = new Student(items.get(i));
+                s.removeMatchedStudent(me.getId());
+            }
+        });
+        me.getCourses(items -> {
+            for(int i=0; i<items.size(); i++){
+                String schoolID = items.get(i).get("schoolID").toString();
+                String departmentID = items.get(i).get("departmentID").toString();
+                String courseID = items.get(i).get("courseID").toString();
+                new Course(schoolID, departmentID, courseID, "")
+                        .removeStudentFromThisCourseInDatabase(me.getId());
+            }
         });
         me.deleteAccount();
     }
