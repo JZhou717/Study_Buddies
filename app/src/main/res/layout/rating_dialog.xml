@@ -10,9 +10,11 @@
         android:text="Rate Focus"
         android:textAlignment="center"/>
     <RatingBar
+        android:id="@+id/focusRating"
         android:layout_width="240dp"
         android:layout_height="40dp"
         android:numStars="5"
+        android:stepSize="0.5"
         android:layout_gravity="center"/>
     <TextView
         android:layout_width="match_parent"
@@ -20,9 +22,11 @@
         android:text="Rate Productivity"
         android:textAlignment="center"/>
     <RatingBar
+        android:id="@+id/productivityRating"
         android:layout_width="240dp"
         android:layout_height="40dp"
         android:numStars="5"
+        android:stepSize="0.5"
         android:layout_gravity="center"/>
     <TextView
         android:layout_width="match_parent"
@@ -30,9 +34,11 @@
         android:text="Rate Engagement"
         android:textAlignment="center"/>
     <RatingBar
+        android:id="@+id/engagementRating"
         android:layout_width="240dp"
         android:layout_height="40dp"
         android:numStars="5"
+        android:stepSize="0.5"
         android:layout_gravity="center"/>
     <TextView
         android:layout_width="match_parent"
@@ -40,9 +46,11 @@
         android:text="Rate Environment"
         android:textAlignment="center"/>
     <RatingBar
+        android:id="@+id/environmentRating"
         android:layout_width="240dp"
         android:layout_height="40dp"
         android:numStars="5"
+        android:stepSize="0.5"
         android:layout_gravity="center"/>
     <Button
         android:id="@+id/submitButton"
@@ -50,5 +58,6 @@
         android:layout_height="40dp"
         android:text="Submit"
         android:layout_margin="5dp"
+
         android:layout_gravity="center"/>
 </LinearLayout>

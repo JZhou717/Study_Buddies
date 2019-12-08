@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,11 +59,17 @@ public class SessionAdapter extends ArrayAdapter<Session> {
             public void onClick(View view) {
                 Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(R.layout.rating_dialog);
+                RatingBar focusRating = dialog.findViewById(R.id.focusRating);
+                RatingBar productivityRating = dialog.findViewById(R.id.productivityRating);
+                RatingBar engagementRating = dialog.findViewById(R.id.engagementRating);
+                RatingBar environmentRating = dialog.findViewById(R.id.environmentRating);
                 Button submitButton = dialog.findViewById(R.id.submitButton);
                 submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        System.out.println("Clicked submit rating");
+                        Student student = new Student(c.getPartnerID());
+                        student.addNewRating(focusRating.getRating(), productivityRating.getRating(), engagementRating.getRating(), environmentRating.getRating());
+                        dialog.dismiss();
                     }
                 });
                 dialog.show();
