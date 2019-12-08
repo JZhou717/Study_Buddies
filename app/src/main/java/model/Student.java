@@ -805,7 +805,7 @@ public class Student implements Serializable {
                     //Get the chatrooms results as a list
                     List<Document> courses = (List<Document>) items.get("courses");
                     if (courses==null){
-                        courses=new ArrayList<>();
+                        courses=new ArrayList<Document>();
                     }
                     dbCallBack.onCallback(courses);
 

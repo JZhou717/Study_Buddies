@@ -14,6 +14,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import model.Student;
@@ -167,6 +168,7 @@ public class DatabaseUtility {
                 .append("picture", picture)
                 .append("full_name", fullName)
                 .append("bio", bio)
+                .append("interests", interests)
                 .append("gpa", gpa);
 
         final Task <RemoteInsertOneResult> insertTask = BindrController.studentsCollection.insertOne(newItem);
@@ -179,6 +181,8 @@ public class DatabaseUtility {
                             task.getResult()));
 
                     String studentID = task.getResult().getInsertedId().toString();
+                    studentID = studentID.substring(19, studentID.length() - 1);
+
                     //Set the current user to the new account
                     BindrController.setCurrentUser(new Student(studentID));
                     //Sends success flag back
