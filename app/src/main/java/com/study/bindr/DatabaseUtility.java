@@ -209,13 +209,8 @@ public class DatabaseUtility {
 
         String encoded_pic;
 
-        //Encoding picture as UTF-8
-        try {
-            encoded_pic = new String(picture, "UTF-8");
-        } catch(UnsupportedEncodingException e) {
-            e.printStackTrace();
-            encoded_pic = "";
-        }
+        //Encoding picture as Base64
+        encoded_pic = Base64.getEncoder().encodeToString(picture);
 
         //The document that we are trying to insert
         Document newItem = new Document()

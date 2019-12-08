@@ -227,7 +227,7 @@ public class Student implements Serializable {
 
     /**
      * Takes in new image as binary array to upload to database
-     * @param newImage String encoding (UTF-8) of byte array representation of the user image
+     * @param newImage String encoding (Base64) of byte array representation of the user image
      */
     public void editPicture(String newImage){
         //Query to find the document to edit
@@ -259,7 +259,7 @@ public class Student implements Serializable {
 
     /**
      * Runs a query to find the profile image associated with this Student object's id
-     * Image as a encoded byte array (String in UTF-8) is passed as a parameter to the callback method
+     * Image as a encoded byte array (String in Base64) is passed as a parameter to the callback method
      * @param dbCallBack method to which the image is passed to
      */
     public void getPicture(DatabaseCallBack<String> dbCallBack){
