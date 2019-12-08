@@ -31,9 +31,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
 
     private ArrayList<Course> courses = new ArrayList<>();
 
-    //CURRENT STUDENT TEST
-    private String id = "5ddb3fd5c3de9037b0b2ced6";
-    private Student me = new Student(id);
+    private Student me = BindrController.getCurrentUser();
 
 
     @Override

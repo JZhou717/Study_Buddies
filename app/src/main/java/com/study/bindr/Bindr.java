@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import java.util.concurrent.TimeUnit;
+
 import model.Student;
 
 public class Bindr extends AppCompatActivity {
@@ -26,13 +29,6 @@ public class Bindr extends AppCompatActivity {
 
         //connect client to database
         BindrController.setUpDatabaseConnection();
-
-        /*RemoteFindIterable findResults = BindrController.studentsCollection
-                .find();
-
-        findResults.forEach(item -> {
-            System.out.println("successfully found student doc: "+ item.toString());
-        });*/
     }
 
     /**
@@ -67,9 +63,6 @@ public class Bindr extends AppCompatActivity {
                         Intent intent = new Intent(Bindr.this, Home_Activity.class);
                         startActivity(intent);
                     }
-                    else {
-                        failedLogin();
-                    }
                 }
             });
         } //Else it is a username
@@ -77,18 +70,19 @@ public class Bindr extends AppCompatActivity {
             Student.usernameLogin(email_username, pass, new DatabaseCallBack<Boolean>() {
                 @Override
                 public void onCallback(Boolean success) {
+
                     //Current user already set in the emailLogin method of Student
                     if(success) {
                         //Transition to home page
                         Intent intent = new Intent(Bindr.this, Home_Activity.class);
                         startActivity(intent);
                     }
-                    else {
-                        failedLogin();
-                    }
                 }
             });
         }
+
+        //This is gimmicky and bad, but we can't create an alert from within the callback method from some unknown reason. We are going to display this regardless of success or fail, and the user won't be able to read it if we login successfully
+        failedLogin();
     }
 
     /**
