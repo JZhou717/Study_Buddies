@@ -13,8 +13,10 @@ import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import model.Course;
@@ -205,6 +207,16 @@ public class DatabaseUtility {
      */
     static void createAccount(String email, String username, String password, byte[] picture, String fullName, String bio, String interests, double gpa, DatabaseCallBack<Boolean> dbCallBack) {
 
+        String encoded_pic;
+
+        //Encoding picture as UTF-8
+        try {
+            encoded_pic = new String(picture, "UTF-8");
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+            encoded_pic = "";
+        }
+
         //The document that we are trying to insert
         Document newItem = new Document()
                 .append("email", email)
@@ -212,7 +224,7 @@ public class DatabaseUtility {
                 .append("rating_count", 0)
                 .append("username", username)
                 .append("password", password)
-                .append("picture", picture)
+                .append("picture", encoded_pic)
                 .append("full_name", fullName)
                 .append("bio", bio)
                 .append("interests", interests)

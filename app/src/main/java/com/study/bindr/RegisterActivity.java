@@ -12,6 +12,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -135,6 +137,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         }
 
+        //Wait 1 second for validation queries to complete
+        try{
+            TimeUnit.SECONDS.sleep(1);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if(valid_info) {
             //Create Account
             DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {
@@ -171,7 +180,14 @@ public class RegisterActivity extends AppCompatActivity {
             Uri selectedImage = data.getData();
             Bitmap bitmap = null;
             try {
+                //The image file as a bitmap that we grabbed
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                //Converting bitmap to byte array
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                picture = stream.toByteArray();
+                bitmap.recycle();
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 createAlert("Image Upload Failure", "Could not find the image you attempted to upload");

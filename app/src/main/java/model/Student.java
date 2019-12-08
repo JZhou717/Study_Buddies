@@ -226,6 +226,78 @@ public class Student implements Serializable {
     }
 
     /**
+     * Takes in new image as binary array to upload to database
+     * @param newImage String encoding (UTF-8) of byte array representation of the user image
+     */
+    public void editPicture(String newImage){
+        //Query to find the document to edit
+        Document filterDoc = new Document().append("_id", new ObjectId(this.id));
+        //Document of changes that we have to make
+        Document updateDoc = new Document().append("$set",
+                new Document()
+                        .append("picture", newImage)
+        );
+
+        final Task<RemoteUpdateResult> updateTask = BindrController.studentsCollection.updateOne(filterDoc, updateDoc);
+
+        //listens for the update query and logs response
+        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+            @Override
+            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+
+                if (task.isSuccessful()) {
+                    long numMatched = task.getResult().getMatchedCount();
+                    long numModified = task.getResult().getModifiedCount();
+                    Log.d("app", String.format("successfully matched %d and modified %d documents for update picture",
+                            numMatched, numModified));
+                } else {
+                    Log.e("app", "failed to update picture of document with: ", task.getException());
+                }
+            }
+        });
+    }
+
+    /**
+     * Runs a query to find the profile image associated with this Student object's id
+     * Image as a encoded byte array (String in UTF-8) is passed as a parameter to the callback method
+     * @param dbCallBack method to which the image is passed to
+     */
+    public void getPicture(DatabaseCallBack<String> dbCallBack){
+        //Query by _id
+        Document query = new Document().append("_id", new ObjectId(this.id));
+        //Project the picture
+        Document projection = new Document()
+                .append("_id", 0)
+                .append("picture", 1);
+        RemoteFindOptions options = new RemoteFindOptions()
+                .projection(projection);
+
+        final Task<Document> findTask = BindrController.studentsCollection.findOne(query, options);
+
+        //listens for when the query finishes and sends result to callback method (given in parameter)
+        findTask.addOnCompleteListener(new OnCompleteListener<Document>() {
+            @Override
+            public void onComplete(@NonNull Task <Document> task) {
+                if (task.getResult() == null) {
+                    Log.d("getPicture", String.format("No document matches the provided query"));
+                }
+                else if (task.isSuccessful()) {
+                    Log.d("getPicture", String.format("Successfully found document: %s",
+                            task.getResult()));
+
+                    String encoded_picture = task.getResult().getString("picture");
+
+                    //Sends full_name back
+                    dbCallBack.onCallback(encoded_picture);
+
+                } else {
+                    Log.e("getPicture", "Failed to findOne: ", task.getException());
+                }
+            }
+        });
+    }
+
+    /**
      * Takes in new name to upload to database, notifies success to call back method
      * @param newName String of new student full name
      * @param dbCallBack gets passed true if successful update, false otherwise
