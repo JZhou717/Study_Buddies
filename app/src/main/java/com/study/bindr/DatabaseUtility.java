@@ -228,7 +228,8 @@ public class DatabaseUtility {
                 .append("full_name", fullName)
                 .append("bio", bio)
                 .append("interests", interests)
-                .append("gpa", gpa);
+                .append("gpa", gpa)
+                .append("status", true);
 
         final Task <RemoteInsertOneResult> insertTask = BindrController.studentsCollection.insertOne(newItem);
 
