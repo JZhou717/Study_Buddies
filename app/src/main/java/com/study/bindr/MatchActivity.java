@@ -68,7 +68,9 @@ public class MatchActivity extends AppCompatActivity {
         makeTextViewsBlankAndSetDefaultProfilePic();
     }
 
-
+    /**
+     *  makes info text views blank and sets the shown picture to be the default profile pic
+     */
     private void makeTextViewsBlankAndSetDefaultProfilePic(){
         nameTextView.setText("");
         coursesTextView.setText("");

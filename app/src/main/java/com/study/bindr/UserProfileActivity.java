@@ -58,7 +58,10 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
     DialogInterface.OnClickListener deleteClickListener;
 
-
+    /**
+     * initialization of activity
+     * @param savedInstanceState - data of saved instance (passes "STUDENT_ID")
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,6 +193,10 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    /**
+     * sets the active/inactive status of the user.
+     * @param v - view calling this method (the activeSwitch)
+     */
     public void onActiveSwitchClicked(View v){
         if(!me.getId().equals(displayedStudent.getId()))
             return;
@@ -201,6 +208,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    /**
+     * lets user edit their name, gpa, bio, interests, and email
+     * note the button that calls this method is only visible if the displayed user
+     *  is the current user
+     * @param v
+     */
     public void onEditProfileClicked(View v){
         editProfileImageView.setVisibility(View.INVISIBLE);
         confirmButton.setVisibility(View.VISIBLE);
@@ -215,6 +228,11 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         //only edit courses through the edit courses screen
     }
 
+    /**
+     * if the user is in edit mode, lets the user select a new profile picture
+     * otherwise, does nothing
+     * @param v - the view calling this method (i.e., the profile pic ImageView)
+     */
     public void onProfilePicClicked(View v){
         if(isInEditMode){
             //TODO: IMPLEMENT
@@ -223,6 +241,10 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         //else do nothing
     }
 
+    /**
+     * writes the user's edits to the database and exits edit mode
+     * @param v - the view calling this method (the confirm button)
+     */
     public void onConfirmClicked(View v){
         exitEditMode();
         //Force withdraw keyboard:
@@ -236,6 +258,11 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         displayedStudent.editInterests(interestsEditText.getText().toString());
     }
 
+    /**
+     * makes the edittexts uneditable, sets isInEditMode to false
+     * hides confirm, cancel buttons
+     * re-shows edit profile ImageView (the pencil)
+     */
     private void exitEditMode(){
         isInEditMode = false;
         toggleEditable(nameEditText);
@@ -248,6 +275,11 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         editProfileImageView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * restores the EditTexts as though the user never tried to edit
+     * exits edit mode
+     * @param v
+     */
     public void onCancelClicked(View v){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -256,6 +288,9 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         restoreValues();
     }
 
+    /**
+     * restores previous values of name, gpa, bio, interests, email
+     */
     private void restoreValues(){
         nameEditText.setText((String)nameEditText.getTag(R.id.TAG_TEXT_INDEX));
         gpaEditText.setText((String)gpaEditText.getTag(R.id.TAG_TEXT_INDEX));
@@ -264,6 +299,10 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         emailEditText.setText((String)emailEditText.getTag(R.id.TAG_TEXT_INDEX));
     }
 
+    /**
+     * opens dialog that allows user to delete their account
+     * @param v - View calling this method (i.e., the Delete Account button)
+     */
     public void onDeleteClicked(View v){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -275,6 +314,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
                 .setNegativeButton("No", deleteClickListener).show();
     }
 
+    /**
+     * if isInEditMode is true, saves the current text of the given EditText et as a tag of et,
+     *  and makes et Editable
+     * Otherwise (if not isInEditMode), makes the given EditText et uneditable
+     * @param et
+     */
     private void toggleEditable(EditText et){
         if(isInEditMode){
             et.setTag(R.id.TAG_TEXT_INDEX, et.getText().toString());
@@ -288,6 +333,10 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
     /* Start Navigation Stuff */
     //Navbar closes on activity change
+
+    /**
+     * when the back arrow button is pressed, goes back to previous activity
+     */
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -296,6 +345,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
             super.onBackPressed();
         }
     }
+
+    /**
+     * takes user to the Activity selected from the nav bar
+     * @param item - the item of the nav bar selected
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
