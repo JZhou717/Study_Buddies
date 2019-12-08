@@ -138,6 +138,17 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
+                        currentUser.removeChatRoom(chat.getRoom());
+                        chat.getChattingStudent().removeChatRoom(chat.getRoom());
+
+                        chat.removeChat();
+
+                        currentUser.addPassedStudent(chat.getChattingStudentID());
+                        chat.getChattingStudent().addPassedStudent(currentUser.getId());
+
+                        currentUser.removeMatchedStudent(chat.getChattingStudentID());
+                        chat.getChattingStudent().removeMatchedStudent(currentUser.getId());
+
                         Toast.makeText(ChatboxActivity.this, "Successfully Blocked", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ChatboxActivity.this, ChatsListActivity.class);
                         startActivity(intent);
@@ -201,7 +212,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
         String message = editText.getText().toString();
         if (message.length() > 0) {
-            if(chat.getRoom()==null){
+            if(chat.getRoom()==null ||chat.getRoom().equals("") ){
                 studyButton.setEnabled(true);
                 studyButton.setAlpha(1f);
 
@@ -384,6 +395,7 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
         builder.setMessage("Are you sure you want to block? This cannot be undone").setPositiveButton("Yes", blockClickListener)
                 .setNegativeButton("No", blockClickListener).show();
+
     }
 
     public void onStudySessionClick(View view) {
