@@ -931,8 +931,12 @@ public class Student implements Serializable {
                             task.getResult()));
                     //Get the student ID results as a list
                     Document item = task.getResult();
+
                     List<ObjectId> requestedMatches= (List<ObjectId>) item.get("requestedMatches");
-                    List<String> requestedMatchStrings=new ArrayList<>();
+                    if(requestedMatches == null) {
+                        requestedMatches = new ArrayList<ObjectId>();
+                    }
+                    List<String> requestedMatchStrings = new ArrayList<>();
 
                     for (int i=0; i<requestedMatches.size(); i++){
                         String matchedStudentID=requestedMatches.get(i).toString();
@@ -1041,6 +1045,10 @@ public class Student implements Serializable {
                     //Get the student ID results as a list
                     Document item = task.getResult();
                     List<ObjectId> matches= (List<ObjectId>) item.get("matches");
+                    if(matches == null) {
+                        matches = new ArrayList<ObjectId>();
+                    }
+
                     List<String> matchesString=new ArrayList<>();
 
                     for (int i=0; i<matches.size(); i++){
@@ -1119,6 +1127,9 @@ public class Student implements Serializable {
                     //Get the student ID results as a list
                     Document item = task.getResult();
                     List<ObjectId> passed = (List<ObjectId>) item.get("passed");
+                    if(passed == null) {
+                        passed = new ArrayList<ObjectId>();
+                    }
                     List<String> passedString = new ArrayList<>();
 
                     for (int i = 0; i < passed.size(); i++) {
@@ -1166,53 +1177,6 @@ public class Student implements Serializable {
         });
     }
 
-    /*
-     * Runs a query to get a list of Strings of student ids of students that has tried to match with this user
-     * @param dbCallBack The method to which the list of Strings is passed to
-     *
-    public void getPendingMatches(DatabaseCallBack<List<String>> dbCallBack){
-        //Query by id
-        Document query = new Document().append("_id", new ObjectId(this.id));
-
-        //Project the matches array
-        Document projection = new Document()
-                .append("_id", 0)
-                .append("pending", 1);
-
-        RemoteFindOptions options = new RemoteFindOptions()
-                .projection(projection);
-
-        final Task <Document> findPendingMatches = BindrController.studentsCollection.findOne(query, options);
-
-        //listens for when the query finishes and sends result to callback method (given in parameter)
-        findPendingMatches.addOnCompleteListener(new OnCompleteListener <Document> () {
-            @Override
-            public void onComplete(@NonNull Task <Document> task) {
-                if (task.getResult() == null) {
-                    Log.d("getPending", String.format("No document matches the provided query"));
-                }
-                else if (task.isSuccessful()) {
-                    Log.d("getPending", String.format("Successfully found document: %s",
-                            task.getResult()));
-                    //Get the student ID results as a list
-                    Document item = task.getResult();
-                    List<ObjectId> pending = (List<ObjectId>) item.get("pending");
-                    List<String> pendingString =new ArrayList<>();
-
-                    for (int i=0; i< pending.size(); i++){
-                        String pendingStudentID = pending.get(i).toString();
-                        pendingString.add(pendingStudentID);
-                    }
-                    dbCallBack.onCallback(pendingString);
-
-
-                } else {
-                    Log.e("getPending", "Failed to findOne: ", task.getException());
-                }
-            }
-        });
-    }*/
-
     //This will get the matched students that the user has not chatted with yet.
     public void getMatchedNotChatting(DatabaseCallBack<List<String>> dbCallBack){
 //Query by id
@@ -1242,11 +1206,15 @@ public class Student implements Serializable {
                     //Get the student ID results as a list
                     Document item = task.getResult();
                     List<ObjectId> matches= (List<ObjectId>) item.get("matches");
+                    if(matches == null) {
+                        matches = new ArrayList<ObjectId>();
+                    }
+
                     List<String> matchesString=new ArrayList<>();
 
                     List<Document> chats=(List<Document>) item.get("chats");
                     if (chats==null){
-                        chats=new ArrayList<>();
+                        chats=new ArrayList<Document>();
                     }
                     for (int i = 0; i < matches.size(); i++) {
                         String matchedStudentID = matches.get(i).toString();
@@ -1378,7 +1346,7 @@ public class Student implements Serializable {
                     //Get the chatrooms results as a list
                     List<Document> chatRooms= (List<Document>) items.get("chats");
                     if (chatRooms==null){
-                        chatRooms=new ArrayList<>();
+                        chatRooms=new ArrayList<Document>();
                     }
                     dbCallBack.onCallback(chatRooms);
 
@@ -1549,6 +1517,10 @@ public class Student implements Serializable {
             }
         });
     }
+
+    /**
+     * Runs a query to get chat rooms from students
+     */
     public void getChatRoomsFromStudents(DatabaseCallBack<List<Document>> dbCallBack, List<String> studentIDs){
         Document query = new Document().append("_id",new ObjectId(id));
 
@@ -1566,13 +1538,17 @@ public class Student implements Serializable {
             public void onComplete(@NonNull Task <Document> task) {
                 if (task.getResult() == null) {
                     Log.d("chatRoomsFromStudents", String.format("No document matches the provided query"));
-                    dbCallBack.onCallback(new ArrayList<>());
+                    dbCallBack.onCallback(new ArrayList<Document>());
                 }
                 else if (task.isSuccessful()) {
                     Log.d("chatRoomsFromStudents", String.format("Successfully found document: %s",
                             task.getResult()));
                     Document item = task.getResult();
                     List<Document> chatRooms= (List<Document>) item.get("chats");
+                    if(chatRooms == null) {
+                        chatRooms = new ArrayList<Document>();
+                    }
+
                     List<Document> filteredChatrooms=new ArrayList<>();
                     for (int i=0; i<chatRooms.size();i++){
                         Document chat=chatRooms.get(i);

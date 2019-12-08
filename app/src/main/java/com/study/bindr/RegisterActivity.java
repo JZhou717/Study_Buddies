@@ -1,19 +1,20 @@
 package com.study.bindr;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
-import model.Student;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -26,6 +27,9 @@ public class RegisterActivity extends AppCompatActivity {
     EditText bioField;
     EditText interestsField;
     EditText GPAField;
+
+    //Flag for image retrieval
+    private static final int RESULT_LOAD_IMAGE = 1;
 
     //Byte representation of user image
     byte[] picture = new byte[0];
@@ -150,15 +154,32 @@ public class RegisterActivity extends AppCompatActivity {
      * Initiates the upload of an image from the user device to the system
      */
     public void uploadImage(View view) {
-        //TODO: IMPLEMENT THIS
+        //Starting activity to get image
+        Intent getImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(getImage, RESULT_LOAD_IMAGE);
+    }
 
+    /**
+     * Extends the existing onActivityResult to grab the user uploaded image as a bitmap
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-
-
-
-
-
-
+        //Detects request codes
+        if(requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                createAlert("Image Upload Failure", "Could not find the image you attempted to upload");
+            } catch (IOException e) {
+                e.printStackTrace();
+                createAlert("Image Upload Failure", "Could not find the image you attempted to upload");
+            }
+        }
     }
 
     /**
