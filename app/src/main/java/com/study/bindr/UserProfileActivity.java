@@ -19,7 +19,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import model.Student;
 
@@ -34,12 +33,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private EditText gpaEditText;
     private EditText bioEditText;
     private EditText interestsEditText;
+    private EditText emailEditText;
     private Button confirmButton;
     private Button cancelButton;
-    private Button deleteOrBlockButton;
+    private Button deleteButton;
     private boolean isInEditMode;
     private Switch activeSwitch;
-    //TODO: email
 
     //TODO: STORE PREVIOUS PROFILE PICTURE
     //TODO: user status
@@ -107,19 +106,13 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         });
 
         gpaEditText = (EditText)findViewById(R.id.editTextGPA);
-        toggleEditable(gpaEditText);
         displayedStudent.getGPA(items -> gpaEditText.setText(String.format("%.2f", items)));
 
         bioEditText = (EditText)findViewById(R.id.editTextBio);
-        toggleEditable(bioEditText);
         displayedStudent.getBio(items -> bioEditText.setText(items));
 
         interestsEditText = (EditText)findViewById(R.id.editTextInterests);
-        toggleEditable(interestsEditText);
-        //TODO: uncomment this:
-        //displayedStudent.getInterests(items -> interestsEditText.setText(items));
-
-        //TODO: email
+        displayedStudent.getInterests(items -> interestsEditText.setText(items));
 
         confirmButton = (Button)findViewById(R.id.buttonConfirm);
         confirmButton.setVisibility(View.INVISIBLE);
@@ -127,12 +120,20 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         cancelButton = (Button)findViewById(R.id.buttonCancel);
         cancelButton.setVisibility(View.INVISIBLE);
 
-        deleteOrBlockButton = (Button)findViewById(R.id.buttonDeleteOrBlockAccount);
+        deleteButton = (Button)findViewById(R.id.buttonDeleteAccount);
+
+        emailEditText = (EditText)findViewById(R.id.editTextEmail);
+        exitEditMode();
 
         if(!displayedStudentIsMe){
             editProfileImageView.setVisibility(View.INVISIBLE);
-            deleteOrBlockButton.setText("Block User");
+            emailEditText.setVisibility(View.INVISIBLE);
+            deleteButton.setVisibility(View.INVISIBLE);
+            (findViewById(R.id.textViewEmailLabel)).setVisibility(View.INVISIBLE);
             activeSwitch.setClickable(false);
+        }
+        else{
+            displayedStudent.getEmail(items -> emailEditText.setText(items));
         }
     }
 
@@ -145,7 +146,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         toggleEditable(gpaEditText);
         toggleEditable(bioEditText);
         toggleEditable(interestsEditText);
-        //TODO: email
+        toggleEditable(emailEditText);
         //do NOT toggleEditable(coursesEditText)
         //only edit courses through the edit courses screen
     }
@@ -159,27 +160,29 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     }
 
     public void onConfirmClicked(View v){
-        toggleEditable(nameEditText);
-        toggleEditable(gpaEditText);
-        toggleEditable(bioEditText);
-        toggleEditable(interestsEditText);
+        exitEditMode();
         displayedStudent.editName(nameEditText.getText().toString(), items -> {});
         displayedStudent.editGPA(Double.parseDouble(gpaEditText.getText().toString()),
                 items -> {});
         displayedStudent.editBio(bioEditText.getText().toString(), items -> {});
-        //TODO: Uncomment
-        //displayedStudent.editInterests(interestsEditText.getText().toString(), items -> {});
-        //TODO: email
-        //TODO: Hide confirm, cancel; reshow edit button
+        displayedStudent.editEmail(bioEditText.getText().toString(), items -> {});
+        displayedStudent.editInterests(interestsEditText.getText().toString());
     }
 
-    public void onCancelClicked(View v){
+    private void exitEditMode(){
+        isInEditMode = false;
         toggleEditable(nameEditText);
         toggleEditable(gpaEditText);
         toggleEditable(bioEditText);
         toggleEditable(interestsEditText);
-        //TODO: email
-        //TODO: Hide confirm, cancel; reshow edit button
+        toggleEditable(emailEditText);
+        confirmButton.setVisibility(View.INVISIBLE);
+        cancelButton.setVisibility(View.INVISIBLE);
+        editProfileImageView.setVisibility(View.VISIBLE);
+    }
+
+    public void onCancelClicked(View v){
+        exitEditMode();
         restoreValues();
     }
 
@@ -188,11 +191,20 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         gpaEditText.setText((String)gpaEditText.getTag(TEXT_INDEX));
         bioEditText.setText((String)bioEditText.getTag(TEXT_INDEX));
         interestsEditText.setText((String)interestsEditText.getTag(TEXT_INDEX));
-        //TODO: email
+        emailEditText.setText((String)emailEditText.getTag(TEXT_INDEX));
     }
 
-    public void onDeleteOrBlockClicked(View v){
+    public void onDeleteClicked(View v){
+        //TODO: IMPLEMENT
+        //for each s in me's matches,
+        //    pull me from s' matches
+        //for each c in course collection,
+        //    pull me from c's students
+        //delete account
+        me.getMatched(items -> {
 
+        });
+        me.deleteAccount();
     }
 
     private void toggleEditable(EditText et){
