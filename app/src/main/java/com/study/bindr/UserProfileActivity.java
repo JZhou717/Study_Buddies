@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
@@ -43,7 +44,9 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private Button deleteButton;
     private boolean isInEditMode;
     private Switch activeSwitch;
+    private RatingBar ratingBar;
 
+    //TODO: Make rating bar uninteractive
     //TODO: STORE PREVIOUS PROFILE PICTURE
     //TODO: user status
     private final int KEY_LISTENER_INDEX = 0;
@@ -96,6 +99,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         //TODO: RETRIEVE PROFILE PIC
 
         activeSwitch = (Switch)findViewById(R.id.activeSwitch);
+        displayedStudent.getStatus(items -> activeSwitch.setChecked(items));
 
         nameEditText = (EditText)findViewById(R.id.editTextName);
         displayedStudent.getFullName(items -> nameEditText.setText(items));
@@ -133,6 +137,10 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
         emailEditText = (EditText)findViewById(R.id.editTextEmail);
         exitEditMode();
+
+        ratingBar = findViewById(R.id.ratingBar);
+        displayedStudent.getRating(items -> ratingBar.setRating(items.getDouble("rating").floatValue()));
+        ratingBar.setIsIndicator(true);
 
         if(!displayedStudentIsMe){
             editProfileImageView.setVisibility(View.INVISIBLE);
@@ -179,6 +187,17 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
                     }
                 }
             };
+        }
+    }
+
+    public void onActiveSwitchClicked(View v){
+        if(!me.getId().equals(displayedStudent.getId()))
+            return;
+        if(activeSwitch.isChecked()){ //user wants to be active
+            me.setStatus(true, items -> {});
+        }
+        else{ //user wants to be inactive
+            me.setStatus(false, items -> {});
         }
     }
 
