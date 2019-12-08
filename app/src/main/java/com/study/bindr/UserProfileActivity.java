@@ -82,6 +82,8 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         /* End Navigation Stuff */
         Log.d(TAG, "Ended navigation");
         String displayedStudentID = getIntent().getStringExtra("STUDENT_ID");
+        if(displayedStudentID==null)
+            displayedStudentID=me.getId();
         displayedStudent = new Student(displayedStudentID);
         isInEditMode = false;
         final boolean displayedStudentIsMe = displayedStudentID.equals(me.getId());
