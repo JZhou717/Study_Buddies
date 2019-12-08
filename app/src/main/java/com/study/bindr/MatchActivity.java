@@ -58,13 +58,6 @@ public class MatchActivity extends AppCompatActivity {
         gpaTextView = (TextView)findViewById(R.id.editTextGPA);
         bioTextView = (TextView)findViewById(R.id.editTextBio);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
-        profilePictureImageView.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                Intent i = new Intent(MatchActivity.this,UserProfileActivity.class);
-                i.putExtra("STUDENT_ID", idOfDisplayedStudent);
-                startActivity(i);
-            }
-        });
         course.getStudentIDsInCourse(items -> {
             studentIDsInCourse = items;
             studentIDsInCourseIterator = studentIDsInCourse.listIterator();
@@ -73,12 +66,14 @@ public class MatchActivity extends AppCompatActivity {
         makeTextViewsBlankAndSetDefaultProfilePic();
     }
 
+
     private void makeTextViewsBlankAndSetDefaultProfilePic(){
         nameTextView.setText("");
         coursesTextView.setText("");
         gpaTextView.setText("");
         bioTextView.setText("");
         profilePictureImageView.setImageResource(R.drawable.john);
+        idOfDisplayedStudent = "";
     }
 
     /**
@@ -121,9 +116,16 @@ public class MatchActivity extends AppCompatActivity {
                         displayNextStudent();
                         return;
                     }
-                    //if we get to this point, all the aforementioned conditions are met
-                    // so display nextStudent
-                    displayStudent(nextStudent);
+                    me.getMatched(items3 -> {
+                        if(items3.contains(nextStudent.getId())){
+                            displayNextStudent();
+                            return;
+                        }
+                        //if we get to this point, all the aforementioned conditions are met
+                        // so display nextStudent
+                        displayStudent(nextStudent);
+                    });
+
                 });
             });
         });
