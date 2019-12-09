@@ -13,10 +13,10 @@ public class ChatTest {
     Message message1;
     Message message2;
     ArrayList<Message> messages;
+    Student chattingStudent;
 
     @Before
     public void setup() {
-
         message1=new Message("Hello", "1");
         message2=new Message("Hi", "1");
         messages=new ArrayList<Message>();
@@ -45,4 +45,8 @@ public class ChatTest {
         assertTrue(messages.size()==3);
     }
 
+    @Test
+    public void testGetSessionRequestMessageID() {
+        assertTrue(chat.getSessionRequestMessageID().equals("Session "+chat.getRoom()));
+    }
 }

@@ -55,16 +55,27 @@ public class Chat implements Serializable {
 
     }
 
+    /**
+     * Get the last message sent from list
+     * @return The last message in the list
+     */
     public Message getLastMessage(){
 
         return messages.get(messages.size()-1);
 
     }
+
+    /**
+     * When a student requests a study session, we send a message containing this room
+     * @return String containing "Session [room]"
+     */
     public String getSessionRequestMessageID(){
         return "Session "+room;
     }
+
     /**
-     * finds the last message in this chat from database
+     * Gets the last message sent in this chat room from the database.
+     * @param dbCallBackResult The method to which the message document is passed to
      */
     public void findLastMessage(DatabaseCallBack<Document> dbCallBackResult){
         Document query = new Document().append("room", this.room);
@@ -101,7 +112,11 @@ public class Chat implements Serializable {
 
     }
 
-
+    /**
+     * Saves the message and the sender to the chat document with this room in the database.
+     * @param senderID the message sender's id
+     * @param message the chat message to be saved
+     */
     public void saveMesssage(String senderID, String message) {
 
         Document filterDoc = new Document().append("room", room);
@@ -130,6 +145,14 @@ public class Chat implements Serializable {
             }
         });
     }
+
+    /**
+     * Creates a new chat document in the database with the given room name.
+     * Also saves the first message sent to the room.
+     * @param senderID the message sender's id
+     * @param message the chat message to be saved
+     * @param room the room to save the chat message and sender in
+     */
     public void saveNewChatMessage(String senderID, String message, String room){
         Document newChat = new Document()
                 .append("room", room)
@@ -154,31 +177,66 @@ public class Chat implements Serializable {
         });
     }
 
+    /**
+     * gets the room of this chat
+     * @return this chat's room
+     */
     public String getRoom() {
         return room;
     }
+
+    /**
+     * Sets this chat's room name
+     * @param room the room to set the chat to.
+     */
     public void setRoom(String room){
         this.room=room;
     }
+
+    /**
+     * get the chatting student's id
+     * @return id of the chatting student
+     */
     public String getChattingStudentID(){
         return this.chattingStudent.getId();
     }
+
+    /**
+     * set the full name of the chatting student
+     * @param fullName the name to set the chatting student
+     */
     public void setChattingStudentFullName(String fullName){
         this.chattingStudentFullName=fullName;
     }
+
+    /**
+     * get the chatting student's full name
+     * @return the full name of the chatting student
+     */
     public String getChattingStudentFullName(){
         return this.chattingStudentFullName;
     }
+
+    /**
+     * Get the chatting student Student Object
+     * @return Student Object of the chatting student
+     */
     public Student getChattingStudent(){
         return this.chattingStudent;
     }
 
+    /**
+     * Get all the messages in this chat
+     * @return list of Message Objects in this chat
+     */
     public ArrayList<Message> getMessages() {
         return messages;
     }
 
+
     /**
-     * Finds the previous messages from this chat from database
+     * Finds the previous messages of this chat from database
+     * @param databaseCallBack The method to which the list of message documents is passed to
      */
     public void findMessages(DatabaseCallBack<List<Document>> databaseCallBack){
         //Query by chat room
@@ -212,6 +270,12 @@ public class Chat implements Serializable {
             }
         });
     }
+
+    /**
+     * Add a message to this chat's message list
+     * @param text message
+     * @param sender senderID of the message
+     */
     public void addMessage(String text, String sender){
         Message message=new Message(text, sender);
         messages.add(message);
@@ -220,6 +284,7 @@ public class Chat implements Serializable {
     /**
      * To open up a new chat between 2 students, need to assign them to a room number.
      * This method gets an unassigned room number from the database by incrementing the last room number assigned
+     * @param databaseCallBack The method to which the room name is passed to
      */
     public static void getNewRoomAssignment(DatabaseCallBack<String> databaseCallBack){
         Document query = new Document().append("roomTrack", new Document().append("$exists", true));
@@ -257,6 +322,13 @@ public class Chat implements Serializable {
 
     }
 
+    /**
+     * Saves a request document into this chat's document in database
+     * @param databaseCallBack The method to which the room name is passed to
+     * @param senderID the ID of the student who requested the session
+     * @param dateTime time of the study session
+     * @param reminder reminder for the study session
+     */
     public void requestSession(DatabaseCallBack<String> databaseCallBack, String senderID, Date dateTime, int reminder){
 
         Document filterDoc = new Document().append("room", room);
@@ -284,6 +356,12 @@ public class Chat implements Serializable {
             }
         });
     }
+
+    /**
+     * gets the request document from this chat document in database.
+     * Sends back null if no requests are found.
+     * @param databaseCallBack The method to which the request document is passed to
+     */
     public void getRequestedSession(DatabaseCallBack<Document> databaseCallBack){
 
         Document query = new Document().append("room", this.room).append("request", new Document("$exists", true));
@@ -316,6 +394,10 @@ public class Chat implements Serializable {
             }
         });
     }
+
+    /**
+     * Removes this chat's session request from this chat's document in the database
+     */
     public void removeRequest() {
         Document filterDoc = new Document().append("room", room);
         Document updateDoc = new Document().append("$unset", new Document()
