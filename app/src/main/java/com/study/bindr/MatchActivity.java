@@ -28,6 +28,7 @@ public class MatchActivity extends AppCompatActivity {
     private TextView coursesTextView;
     private TextView gpaTextView;
     private TextView bioTextView;
+    private TextView interestsTextView;
     private RatingBar ratingBar;
     private List<String> studentIDsInCourse;
     private String idOfDisplayedStudent;
@@ -63,6 +64,7 @@ public class MatchActivity extends AppCompatActivity {
         coursesTextView = (TextView)findViewById(R.id.editTextCourses);
         gpaTextView = (TextView)findViewById(R.id.editTextGPA);
         bioTextView = (TextView)findViewById(R.id.editTextBio);
+        interestsTextView = (TextView)findViewById(R.id.textViewInterests);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         ratingBar.setIsIndicator(true);
         course.getStudentIDsInCourse(items -> {
@@ -170,6 +172,7 @@ public class MatchActivity extends AppCompatActivity {
         }
             );
         student.getBio(items -> bioTextView.setText(items));
+        student.getInterests(items -> interestsTextView.setText(items));
         student.getRating(items -> ratingBar.setRating(items.getDouble("rating").floatValue()));
         student.getPicture(items -> {
             byte[] decodedString = Base64.decode(items, Base64.DEFAULT);

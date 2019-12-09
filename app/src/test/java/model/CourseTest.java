@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 
 public class CourseTest {
     private Course course;
-    private final int SCHOOL_ID = 1;
-    private final int DEPARTMENT_ID = 198;
-    private final int COURSE_ID = 431;
+    private final String SCHOOL_ID = "03";
+    private final String DEPARTMENT_ID = "300";
+    private final String COURSE_ID = "300";
     private final String COURSE_NAME = "Software Engineering";
 
     @Before
@@ -45,25 +45,5 @@ public class CourseTest {
     @Test
     public void testGetCourseName(){
         assertEquals(COURSE_NAME, course.getCourseName());
-    }
-
-    @Test
-    public void testGetStudentIDsInCourse() {
-        /*
-        ArrayList<String> studentIDs = new ArrayList<>();
-        course.getStudentIDsInCourse(new DatabaseCallBack<List<String>>() {
-            @Override
-            public void onCallback(List<String> items) {
-                //populate and set the adapter
-                for (int i=0; i<items.size(); i++){
-                    String studentID = items.get(i).toString();
-                    studentIDs.add(studentID);
-                }
-            }
-        });
-        for (int i=0; i<studentIDs.size(); i++){
-            assertEquals(i+1, studentIDs.get(i));
-        }
-         */
     }
 }
