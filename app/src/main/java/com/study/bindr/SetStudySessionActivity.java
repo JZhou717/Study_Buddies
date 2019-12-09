@@ -1,23 +1,18 @@
 package com.study.bindr;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -26,17 +21,22 @@ import model.Chat;
 import model.Session;
 
 public class SetStudySessionActivity extends AppCompatActivity{
-    private TextView dateTextView;
 
+    private TextView dateTextView;
     private DatePickerDialog.OnDateSetListener dateSetListener;
 
     private TextView timeTextView;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
+
     private EditText reminderEditText;
+
     private Chat chat=null;
     Calendar setCalendar = Calendar.getInstance();
 
-
+    /**
+     * displays activity, runs code for startup.
+     * @param savedInstanceState -bundle passed by previous activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +50,12 @@ public class SetStudySessionActivity extends AppCompatActivity{
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         chat=(Chat)bundle.getSerializable("Chat");
-        System.out.println("Study Session for chat "+chat.getRoom());
-
-
+        //System.out.println("Study Session for chat "+chat.getRoom());
     }
+
+    /**
+     * Sends back Chat object when back is pressed
+     */
     @Override
     public void onBackPressed() {
         Bundle bundle = new Bundle();
@@ -64,7 +66,9 @@ public class SetStudySessionActivity extends AppCompatActivity{
 
         startActivity(intent);
     }
-
+    /**
+     * Sends back Chat object when set up study session is cancelled
+     */
     public void onCancelStudySession(View view) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Chat", chat);
@@ -75,6 +79,10 @@ public class SetStudySessionActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    /**
+     * Creates a Session object with the given date, time and reminder input from the user, and sends it back to chatbox activity
+     * @param view
+     */
     public void onRequestStudySession(View view) {
         if (timeTextView.getText().equals("") || dateTextView.getText().equals("")){
             Toast.makeText(SetStudySessionActivity.this, "Please select time and date", Toast.LENGTH_LONG).show();
@@ -86,7 +94,6 @@ public class SetStudySessionActivity extends AppCompatActivity{
         if(!reminderString.equals("")){
             reminder=Integer.parseInt(reminderEditText.getText().toString());
         }
-        System.out.println("DATE "+date);
         Session session=new Session(chat.getChattingStudentID(), date,reminder);
         Bundle bundle = new Bundle();
         bundle.putSerializable("Chat", chat);
@@ -101,6 +108,11 @@ public class SetStudySessionActivity extends AppCompatActivity{
     }
 
 
+    /**
+     * shows a date picker when user clicks 'Select Date" button.
+     * Listens to what the user selects.
+     * @param view
+     */
     public void onSelectDate(View view) {
 
         Calendar calendar = Calendar.getInstance();
@@ -122,9 +134,12 @@ public class SetStudySessionActivity extends AppCompatActivity{
         }, YEAR, MONTH, DATE);
 
         datePickerDialog.show();
-
     }
-
+    /**
+     * shows a time picker when user clicks 'Select Time" button.
+     * Listens to what the user selects.
+     * @param view
+     */
     public void onSelectStartTime(View view) {
 
         Calendar calendar = Calendar.getInstance();

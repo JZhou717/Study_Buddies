@@ -15,6 +15,9 @@ import java.util.List;
 import model.Message;
 
 
+/**
+ * Displays messages to chatbox
+ */
 public class MessageAdapter extends BaseAdapter {
 
     List<Message> messages = new ArrayList<Message>();
@@ -22,32 +25,58 @@ public class MessageAdapter extends BaseAdapter {
     String chattingStudentID;
 
 
+    /**
+     * Constructor
+     * @param context
+     * @param chattingStudentID Id of the chatting student
+     */
     public MessageAdapter(Context context, String chattingStudentID) {
         this.context = context;
         this.chattingStudentID=chattingStudentID;
     }
 
-
+    /**
+     * Add Message to list
+     * @param message message to be added
+     */
     public void add(Message message) {
         this.messages.add(message);
         notifyDataSetChanged();
     }
 
+    /**
+     * gets size of the list
+     * @return size
+     */
     @Override
     public int getCount() {
         return messages.size();
     }
 
+    /**
+     *  Get the Messafe at index i
+     * @param i index of Message
+     * @return Message at index i
+     */
     @Override
     public Object getItem(int i) {
         return messages.get(i);
     }
+
 
     @Override
     public long getItemId(int i) {
         return i;
     }
 
+    /**
+     * Inflate the view into a chat bubble.
+     * If the message is sent by other student, will display their avatar.
+     * @param i
+     * @param convertView
+     * @param viewGroup
+     * @return
+     */
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         MessageViewHolder holder = new MessageViewHolder();
@@ -70,7 +99,6 @@ public class MessageAdapter extends BaseAdapter {
             convertView.setTag(holder);
             holder.messageBody.setText(message.getText());
         }
-
         return convertView;
     }
 
