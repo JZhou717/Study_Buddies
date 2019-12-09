@@ -33,8 +33,7 @@ public class Session_Activity extends AppCompatActivity implements NavigationVie
     private ArrayList<Session> sessions = new ArrayList<>();
 
     //CURRENT STUDENT TEST
-    private String id = "5ddb3fd5c3de9037b0b2ced6";
-    private Student me = new Student(id);
+    private Student me = BindrController.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
