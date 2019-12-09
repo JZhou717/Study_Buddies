@@ -106,9 +106,14 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
         profilePicImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         displayedStudent.getPicture(items -> {
-            byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
-            Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            profilePicImageView.setImageBitmap(decodedBytes);
+            if(!items.equals("")) {
+                byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
+                Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                profilePicImageView.setImageBitmap(decodedBytes);
+            }
+            else{
+                profilePicImageView.setImageResource(R.drawable.john);
+            }
 
         });
         //TODO: RETRIEVE PROFILE PIC
@@ -272,7 +277,8 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                final int QUALITY = 100;
+                bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
                 String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 me.editPicture(encoded);
@@ -292,9 +298,14 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         exitEditMode();
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        final int FLAGS = 0;
+        imm.hideSoftInputFromWindow(v.getWindowToken(), FLAGS);
         displayedStudent.editName(nameEditText.getText().toString(), items -> {});
-        displayedStudent.editGPA(Double.parseDouble(gpaEditText.getText().toString()),
+        final double GPA_NOT_ENTERED = 0;
+        if(gpaEditText.getText().toString().equals(""))
+            displayedStudent.editGPA(GPA_NOT_ENTERED, items -> {});
+        else
+            displayedStudent.editGPA(Double.parseDouble(gpaEditText.getText().toString()),
                 items -> {});
         displayedStudent.editBio(bioEditText.getText().toString(), items -> {});
         displayedStudent.editEmail(emailEditText.getText().toString(), items -> {});
