@@ -2,11 +2,13 @@ package com.study.bindr;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,9 +19,12 @@ import com.google.android.material.navigation.NavigationView;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import model.Course;
+import model.Session;
 import model.Student;
 
 public class Home_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,7 +35,7 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
 
 
     private ArrayList<Course> courses = new ArrayList<>();
-
+    private ArrayList<Session> sessions = new ArrayList<>();
     private Student me = BindrController.getCurrentUser();
 
 
@@ -62,9 +67,42 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
         //link xml component
         courseListView = findViewById(R.id.courseListView);
         populateCourses();
+
+        //notify user if there is a study session today
+        checkAndNotifySession();
     }
 
-
+    private void checkAndNotifySession(){
+        me.getSessions(new DatabaseCallBack<List<Document>>() {
+            @Override
+            public void onCallback(List<Document> items) {
+                for (int i = 0; i < items.size(); i++){
+                    String partnerID = items.get(i).get("partner").toString();
+                    Date dateTime = (Date) items.get(i).get("datetime");
+                    int reminder = Integer.parseInt(items.get(i).get("reminder").toString());
+                    Session session = new Session(partnerID, dateTime, reminder);
+                    sessions.add(session);
+                }
+                Calendar now = Calendar.getInstance();
+                for (int j = 0; j < sessions.size(); j ++){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(sessions.get(j).getDateTime());
+                    if(cal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY)){
+                        AlertDialog alertDialog = new AlertDialog.Builder(Home_Activity.this).create();
+                        alertDialog.setTitle("Alert");
+                        alertDialog.setMessage("You have a study session coming up soon!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void onStart(){
