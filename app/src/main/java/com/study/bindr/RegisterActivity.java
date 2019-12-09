@@ -140,11 +140,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if(valid_info) {
-            //Check user uploaded an image
-            if(picture.length == 0) {
-                createAlert("Missing Profile Image", "Please upload an image of less than 1MB");
-                return;
-            }
 
             //Create Account
             DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {

@@ -85,15 +85,15 @@
                 android:id="@+id/editTextCourses"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="8dp"
+                android:ellipsize="end"
+                android:maxLines="4"
                 android:text="Data Structures, Introduction to Linguistic Theory"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textViewCoursesLabel"
                 app:layout_constraintTop_toTopOf="@+id/textViewCoursesLabel"
-                tools:layout_constraintHorizontal_bias="0.1"
-                android:maxLines="4"
-                android:ellipsize="end" />
+                tools:layout_constraintHorizontal_bias="0.1" />
 
             <TextView
                 android:id="@+id/textViewGPALabel"
@@ -134,14 +134,14 @@
                 android:id="@+id/buttonPass"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="#F44336"
                 android:onClick="pass"
                 android:text="Pass"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.171"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewBioLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewInterests" />
 
             <Button
                 android:id="@+id/buttonMatch"
@@ -155,6 +155,30 @@
                 app:layout_constraintHorizontal_bias="0.664"
                 app:layout_constraintStart_toEndOf="@+id/buttonPass"
                 app:layout_constraintTop_toTopOf="@+id/buttonPass" />
+
+            <TextView
+                android:id="@+id/textViewInterestsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Interests:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textViewBioLabel"
+                app:layout_constraintTop_toBottomOf="@+id/editTextBio" />
+
+            <TextView
+                android:id="@+id/textViewInterests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Video games"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.021"
+                app:layout_constraintStart_toEndOf="@+id/textViewInterestsLabel"
+                app:layout_constraintTop_toBottomOf="@+id/editTextBio" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.drawerlayout.widget.DrawerLayout>

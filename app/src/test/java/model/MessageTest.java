@@ -7,13 +7,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MessageTest {
-    /*
+
 
     Message message;
 
     @Before
     public void setup() {
-        message=new Message("Hello", 1);
+        message=new Message("Hello", "1");
     }
 
     @Test
@@ -24,7 +24,7 @@ public class MessageTest {
 
     @Test
     public void testGetSenderID() {
-        assertTrue(message.getSenderID()==1);
+        assertTrue(message.getSenderID()=="1");
     }
-     */
+
 }

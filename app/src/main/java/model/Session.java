@@ -1,8 +1,6 @@
 package model;
-import com.study.bindr.DatabaseCallBack;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Session implements Serializable {
@@ -10,6 +8,12 @@ public class Session implements Serializable {
     private Date dateTime;
     private int reminder;
 
+    /**
+     * Constructor
+     * @param partnerID id of study session's partner
+     * @param dateTime Date of the study session
+     * @param reminder Reminder that the current user sets for the study session
+     */
     public Session(String partnerID, Date dateTime, int reminder) {
         this.partnerID = partnerID;
         this.dateTime = dateTime;
@@ -26,15 +30,5 @@ public class Session implements Serializable {
     public String getPartnerID() {
         return partnerID;
     }
-/*private Student[] students;
-    private LocalDateTime dateTime;
 
-    public Session(Student[] students, LocalDateTime dateTime){
-        this.students = students;
-        this.dateTime = dateTime;
-    }
-
-    public Student[] getStudents() {
-        return students;
-    }*/
 }

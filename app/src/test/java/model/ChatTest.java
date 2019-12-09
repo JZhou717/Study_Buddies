@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class ChatTest {
-    /*
+
     Chat chat;
     Message message1;
     Message message2;
@@ -17,13 +17,13 @@ public class ChatTest {
     @Before
     public void setup() {
 
-        message1=new Message("Hello", 1);
-        message2=new Message("Hi", 2);
+        message1=new Message("Hello", "1");
+        message2=new Message("Hi", "1");
         messages=new ArrayList<Message>();
         messages.add(message1);
         messages.add(message2);
 
-        chat=new Chat("room1", messages);
+        chat=new Chat("room1", "1");
     }
 
     @Test
@@ -41,8 +41,8 @@ public class ChatTest {
     }
     @Test
     public void testAddMessage() {
-        chat.addMessage("Study", 1);
+        chat.addMessage("Study", "1");
         assertTrue(messages.size()==3);
     }
-     */
+
 }
