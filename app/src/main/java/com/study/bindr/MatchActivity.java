@@ -1,7 +1,10 @@
 package com.study.bindr;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -168,6 +171,12 @@ public class MatchActivity extends AppCompatActivity {
             );
         student.getBio(items -> bioTextView.setText(items));
         student.getRating(items -> ratingBar.setRating(items.getDouble("rating").floatValue()));
+        student.getPicture(items -> {
+            byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
+            Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            profilePictureImageView.setImageBitmap(decodedBytes);
+
+        });
         idOfDisplayedStudent = student.getId();
         //unhide the match and pass buttons once the other student is displayed
         matchButton.setVisibility(View.VISIBLE);

@@ -134,7 +134,11 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         });
 
         gpaEditText = (EditText)findViewById(R.id.editTextGPA);
-        displayedStudent.getGPA(items -> gpaEditText.setText(String.format("%.2f", items)));
+        displayedStudent.getGPA(items -> {
+            gpaEditText.setText(String.format("%.2f", items));
+            if(gpaEditText.getText().toString().equals("0.00"))
+                gpaEditText.setText("");
+        });
 
         bioEditText = (EditText)findViewById(R.id.editTextBio);
         displayedStudent.getBio(items -> bioEditText.setText(items));
