@@ -13,9 +13,7 @@ import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 

@@ -5,30 +5,31 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Dialog fragment for session request
+ */
 public class SetSessionDialogFrag extends DialogFragment {
 
     public static final String MESSAGE_KEY = "message_key";
     public static final String TITLE = "title";
 
 
+    /**
+     * Creates the dialog fragment
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        // Set an EditText view to get user input
+
         final EditText input = new EditText(getActivity());
         input.setHint("Reminder (Minutes)");
+        //Only allow user to input numbers
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         final Bundle bundle = getArguments();

@@ -1249,9 +1249,12 @@ public class Student implements Serializable {
         });
     }
 
-    //This will get the matched students that the user has not chatted with yet.
+    /**
+     * Runs a query to get a list of Strings of student ids of students this user has matched with but has not chatted with yet.
+     * @param dbCallBack The method to which the list of Strings is passed to
+     */
     public void getMatchedNotChatting(DatabaseCallBack<List<String>> dbCallBack){
-//Query by id
+        //Query by id
         Document query = new Document().append("_id", new ObjectId(id));
 
         //Project the chats array
@@ -1301,8 +1304,6 @@ public class Student implements Serializable {
                     }
                     dbCallBack.onCallback(matchesString);
 
-
-
                 } else {
                     Log.e("getMatchedNotChatting", "Failed to findOne: ", task.getException());
                 }
@@ -1318,7 +1319,6 @@ public class Student implements Serializable {
         //Query by id
         Document query = new Document().append("_id", new ObjectId(id));
 
-        //Project the chats array
         Document projection = new Document()
                 .append("_id", 0)
                 .append("sessions", 1);
@@ -1429,7 +1429,11 @@ public class Student implements Serializable {
         });
     }
 
-    //Saves new chat room into database
+    /**
+     * Adds new chat room to the student's list of chats
+     * @param room of the chat
+     * @param studentID the id of the other student in the chat
+     */
     public void saveChatRoom(String room, String studentID){
         Document filterDoc = new Document().append("_id", new ObjectId(this.id));
         Document updateDoc = new Document().append("$push",
@@ -1459,7 +1463,7 @@ public class Student implements Serializable {
 
     /**
      * Removes a chatroom from this user's list of chat rooms
-     * @param room
+     * @param room of the chat
      */
     public void removeChatRoom(String room) {
         //Query for the document relating to this student object by their shared ID
@@ -1591,7 +1595,9 @@ public class Student implements Serializable {
     }
 
     /**
-     * Runs a query to get chat rooms from students
+     * Gets a list of Documents
+     * @param dbCallBack The method to which the rating and rating count document is passed to
+     * @param studentIDs List of student IDS
      */
     public void getChatRoomsFromStudents(DatabaseCallBack<List<Document>> dbCallBack, List<String> studentIDs){
         Document query = new Document().append("_id",new ObjectId(id));
@@ -1631,7 +1637,6 @@ public class Student implements Serializable {
                                 break;
                             }
                         }
-
                     }
                     dbCallBack.onCallback(filteredChatrooms);
 
@@ -1641,6 +1646,7 @@ public class Student implements Serializable {
             }
         });
     }
+
     public void removeMatchedStudent(String studentIDToRemove) {
 
         //Query for the document relating to this student object by their shared ID

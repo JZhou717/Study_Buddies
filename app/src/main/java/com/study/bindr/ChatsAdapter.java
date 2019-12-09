@@ -1,6 +1,9 @@
 package com.study.bindr;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +26,7 @@ import model.Chat;
 //This adapter follows the view holder design pattern, which means that it allows you to define a custom class that extends RecyclerView.ViewHolder.
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> implements Filterable {
     private Context context;
-    //Keep track of full list of filtered list
+    //Keep track of full list for filtering
 
     private ArrayList<Chat> chatRoomsList = new ArrayList<>();
     private ArrayList<Chat> chatRoomsListFull = new ArrayList<>();
@@ -96,7 +99,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                     @Override
                     public void onCallback(Boolean status) {
                         chatRoom.setChattingStudentFullName(item);
-                        if(status){
+                        if(!status){
                             holder.name.setText(item+" (Inactive)");
                         }else{
                             holder.name.setText(item);
@@ -117,6 +120,17 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                 holder.lastMessage.setText(text);
             }
         });
+        chatRoom.getChattingStudent().getPicture(new DatabaseCallBack<String>() {
+            @Override
+            public void onCallback(String items) {
+                byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
+                Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                holder.image.setImageBitmap(decodedBytes);
+            }
+        });
+
+
+
     }
 
     /**
