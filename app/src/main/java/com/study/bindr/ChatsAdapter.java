@@ -18,21 +18,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Chat;
-import model.Student;
 
 
 //This adapter follows the view holder design pattern, which means that it allows you to define a custom class that extends RecyclerView.ViewHolder.
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> implements Filterable {
+    private Context context;
+    //Keep track of full list of filtered list
 
     private ArrayList<Chat> chatRoomsList = new ArrayList<>();
     private ArrayList<Chat> chatRoomsListFull = new ArrayList<>();
+
     private List<String> fullNamesListFull=new ArrayList<>();
     private List<String> fullNamesList=new ArrayList<>();
 
-    //The interface (implemented in activity) will be passed to each individual view so will know where to go to when a chat is clicked
     private OnChatListener onChatListener;
     private String currentUserID;
 
+    /**
+     * Constructor
+     * @param chatRoomsList list of Chat objects
+     * @param fullNamesList list of the chatting student's full names
+     * @param currentUserID current user's id
+     * @param context context of this adapter
+     * @param onChatListener The interface (implemented in activity) that will be passed to each individual view so will know where to go to when a chat is clicked
+     */
     public ChatsAdapter(ArrayList<Chat> chatRoomsList, List<String> fullNamesList,String currentUserID, Context context, OnChatListener onChatListener) {
         this.chatRoomsList = chatRoomsList;
         this.chatRoomsListFull=new ArrayList<>(this.chatRoomsList);
@@ -41,24 +50,32 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         this.fullNamesListFull=new ArrayList<>(this.fullNamesList);
 
         this.context = context;
+
         this.onChatListener=onChatListener;
         this.currentUserID=currentUserID;
-        System.out.println("Names List, "+fullNamesList);
     }
 
-    private Context context;
-
+    /**
+     * Called whenever a viewholder is created.
+     * Inflates viewholder with chat row layout
+     * @param parent
+     * @param viewType
+     * @return new viewholder
+     */
     @NonNull
     @Override
-    //will be called whenever viewholder is created
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_row, parent, false);
         return new ViewHolder(view,onChatListener);
     }
 
+    /**
+     * Called after viewholder is created. Binds data to the viewholder
+     * @param holder
+     * @param position
+     */
     @Override
-    //will be called after viewholder is created. It binds data to the viewholder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Chat chatRoom=chatRoomsList.get(position);
         /*chatRoom.findChattingStudent(new DatabaseCallBack<Document>() {
@@ -84,12 +101,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                         }else{
                             holder.name.setText(item);
                         }
-
-
                     }
                 });
-
-
             }
         });
         chatRoom.findLastMessage(new DatabaseCallBack<Document>() {
@@ -104,10 +117,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                 holder.lastMessage.setText(text);
             }
         });
-
-
     }
 
+    /**
+     * Gets size of chats list
+     * @return size
+     */
     @Override
     public int getItemCount() {
         return chatRoomsList.size();
@@ -122,6 +137,11 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         //Each view holder will have a onChatListener interface
         OnChatListener onChatListener;
 
+        /**
+         * Constructor for viewholder
+         * @param itemView
+         * @param onChatListener
+         */
         public ViewHolder(View itemView,OnChatListener onChatListener) {
             super(itemView);
             image = itemView.findViewById(R.id.chatPhoto);
@@ -138,17 +158,21 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
             onChatListener.onChatClick(getAdapterPosition());
         }
     }
-
-    //Use this interface to detect click on chat
+    /**
+     * Interface to detect click on chat
+     */
     public interface OnChatListener{
         //Use this method in activity to send position of the clicked item
         void onChatClick(int position);
     }
 
+
     @Override
     public Filter getFilter() {
         return nameFilter;
     }
+
+    //Gets a filtered list of chats by inputted name
     private Filter nameFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -165,12 +189,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                     Chat chat=chatRoomsListFull.get(i);
                     String fullName=fullNamesListFull.get(i);
                     if (fullName.toLowerCase().contains(filterPattern)) {
-                        System.out.println("INDEX "+i+" ID "+chat.getChattingStudentID()+" NAME "+fullName);
                         filteredList.add(chat);
                         fullNamesList.add(fullName);
                     }
                 }
-
             }
 
             FilterResults results = new FilterResults();
@@ -179,12 +201,16 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
             return results;
         }
 
+        /**
+         * Displays the filtered results
+         * @param constraint
+         * @param results
+         */
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             chatRoomsList.clear();
             chatRoomsList.addAll((ArrayList) results.values);
             notifyDataSetChanged();
-            System.out.println(fullNamesList);
         }
     };
 
