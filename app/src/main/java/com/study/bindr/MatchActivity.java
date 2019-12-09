@@ -83,6 +83,7 @@ public class MatchActivity extends AppCompatActivity {
         coursesTextView.setText("");
         gpaTextView.setText("");
         bioTextView.setText("");
+        interestsTextView.setText("");
         profilePictureImageView.setImageResource(R.drawable.john);
         idOfDisplayedStudent = "";
     }
