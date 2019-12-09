@@ -4,32 +4,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class ChatTest {
 
     Chat chat;
-    Message message1;
-    Message message2;
-    ArrayList<Message> messages;
+
     Student chattingStudent;
 
     @Before
     public void setup() {
-        message1=new Message("Hello", "1");
-        message2=new Message("Hi", "1");
-        messages=new ArrayList<Message>();
-        messages.add(message1);
-        messages.add(message2);
 
         chat=new Chat("room1", "1");
+        chat.addMessage("Hello", "1");
+        chat.addMessage("Hi", "2");
     }
 
     @Test
     public void testGetLastMessage() {
-
-        assertTrue(chat.getLastMessage().equals(message2));
+        Message message=chat.getLastMessage();
+        assertTrue(message.getSenderID().equals("2"));
+        assertTrue(message.getText().equals("Hi"));
     }
     @Test
     public void testGetRoom() {
@@ -37,12 +34,19 @@ public class ChatTest {
     }
     @Test
     public void testGetMessages() {
-        assertTrue(chat.getMessages().equals(messages));
+        List<Message> messages=chat.getMessages();
+        Message message1=messages.get(0);
+        Message message2=messages.get(1);
+
+        assertTrue(message1.getText().equals("Hello"));
+        assertTrue(message1.getSenderID().equals("1"));
+        assertTrue(message2.getText().equals("Hi"));
+        assertTrue(message2.getSenderID().equals("2"));
     }
     @Test
     public void testAddMessage() {
         chat.addMessage("Study", "1");
-        assertTrue(messages.size()==3);
+        assertTrue(chat.getMessages().size()==3);
     }
 
     @Test

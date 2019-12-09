@@ -375,22 +375,10 @@ public class ChatsListActivity extends AppCompatActivity implements NavigationVi
                 //parse course documents
                 for (int i=0; i<courses.size();i++){
                     Document courseDoc=courses.get(i);
-                    String courseName="";
-                    if (courseDoc.containsKey("courseName")){
-                        courseName=courseDoc.getString("courseName");
-                    }
-                    String schoolID="";
-                    if(courseDoc.containsKey("schoolID")){
-                        schoolID=courseDoc.getString("schoolID");
-                    }
-                    String departmentID="";
-                    if(courseDoc.containsKey("departmentID")){
-                        schoolID=courseDoc.getString("departmentID");
-                    }
-                    String courseID="";
-                    if(courseDoc.containsKey("courseID")){
-                        schoolID=courseDoc.getString("courseID");
-                    }
+                    String courseName=courseDoc.getString("courseName");
+                    String schoolID=courseDoc.getString("schoolID");
+                    String departmentID=courseDoc.getString("departmentID");
+                    String courseID=courseDoc.getString("courseID");
                     searchOptions.add(courseName);
                     Course course=new Course(schoolID, departmentID, courseID, courseName);
 
