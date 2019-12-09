@@ -44,6 +44,11 @@ public class Chat implements Serializable {
         this.messages=new ArrayList<Message>();
     }
 
+    /**
+     * Constructor that takes in a student object.
+     * This constructor is mainly used when the current user and the other student has not chatted before, and therefore has not charoom.
+     * @param chattingStudent
+     */
     public Chat(Student chattingStudent){
         this.chattingStudent=chattingStudent;
         this.messages=new ArrayList<Message>();
@@ -333,8 +338,12 @@ public class Chat implements Serializable {
             }
         });
     }
-    public void removeChat(){
 
+    /**
+     * Removes the chat document that contains this chat's room name from the database
+     */
+    public void removeChat(){
+        //find the chat with
         Document query = new Document()
                 .append("room", this.room);
 
@@ -352,5 +361,4 @@ public class Chat implements Serializable {
         });
 
     }
-
 }

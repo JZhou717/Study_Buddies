@@ -42,35 +42,44 @@ import model.Session;
 import model.Student;
 
 public class ChatboxActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RoomListener, DialogReturn{
-
-    private Button blockButton;
-    private Button studyButton;
     //Need this for our drawer layout
     private DrawerLayout drawer;
 
-    private Student currentUser=BindrController.getCurrentUser();
-    private Student chattingStudent;
+    private Button blockButton;
+    private Button studyButton;
+
+    //Channel ID for Scaledrone
     private String channelID = "EgTZXDSK6J2eOp6U";
-    private EditText editText;
     private Scaledrone scaledrone;
+    private EditText editText;
+
     private MessageAdapter messageAdapter;
     private ListView messagesView;
 
-    private Chat chat=null;
+    //Stores the first message sent between current user and chatting student
     private String firstMessage=null;
+    private Chat chat=null;
+    private Student currentUser=BindrController.getCurrentUser();
+    private Student chattingStudent;
 
     DialogInterface.OnClickListener blockClickListener;
-    DialogInterface.OnClickListener sessionRequestListener;
+
+    /**
+     * displays activity, runs code for startup.
+     * Creates navigation bar, displays previous messages (if any), and sets up listeners
+     * @param savedInstanceState -bundle passed by previous activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_chatbox);
+
         /* Start Navigation Stuff */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        studyButton=findViewById(R.id.studyButton);
-        blockButton=findViewById(R.id.blockButton);
         //Change the view to the proper screen
         drawer = findViewById(R.id.chatbox_screen);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -85,42 +94,55 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         navigationView.getMenu().getItem(0).setChecked(false);
         /* End Navigation Stuff */
 
-        //get chats class
+        studyButton=findViewById(R.id.studyButton);
+        blockButton=findViewById(R.id.blockButton);
+
+        //Get data from chats list activity
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
 
+        //Create new scaledrone client for message sending.
         scaledrone = new Scaledrone(channelID, currentUser.getId());
 
+        //Current user and student has chatted before
         if(bundle.getString("type").equals("chat")){
+            //Get the Chat object that was selected in the Chats list activity
             chat=(Chat)bundle.getSerializable("Chat");
+            chattingStudent=chat.getChattingStudent();
             getSupportActionBar().setTitle(chat.getChattingStudentFullName());
             loadHistoryMessages();
-            //initial connection
+
+            //Initial connection
             scaledrone.connect(new ScaledroneListener());
-            onSessionRequest();
+
+            //See if current user got any session Requests
+            checkSessionRequest();
+
+            //Check if current user requested a session
             if(bundle.containsKey("Session")){
+
                 Session session=(Session)bundle.get("Session");
                 Date dateTime=session.getDateTime();
-
+                //Save request in database
                 chat.requestSession(new DatabaseCallBack<String>() {
                     @Override
                     public void onCallback(String items) {
-                        String requestedSessionMessage="Study Session Request \n"+convertDateTimeToString(dateTime);
-                        scaledrone.publish(chat.getRoom(), chat.getSessionRequestMessageID());
 
+                        String requestedSessionMessage="Study Session Request \n"+convertDateTimeToString(dateTime);
+                        //sends session request ID to student so they will know a session has been requested
+                        scaledrone.publish(chat.getRoom(), chat.getSessionRequestMessageID());
+                        //Sends the request information to student
                         scaledrone.publish(chat.getRoom(), requestedSessionMessage);
+                        //Save the request information in chat database
                         chat.saveMesssage(currentUser.getId(), requestedSessionMessage);
                     }
                 }, currentUser.getId(), session.getDateTime(), session.getReminder());
-
-
-
             }
-
-
-        }else {
+        }else {//Current user and student never chatted before
+            //Can only set up study session after 1st message
             studyButton.setEnabled(false);
             studyButton.setAlpha(0.5f);
+            //Get the chatting student object and create a chat object with no associated room name
             chattingStudent= (Student) bundle.get("Student");
             chat = new Chat(chattingStudent);
             chattingStudent.getFullName(new DatabaseCallBack<String>() {
@@ -128,24 +150,28 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 public void onCallback(String item) {
                     chat.setChattingStudentFullName(item);
                     getSupportActionBar().setTitle(chat.getChattingStudentFullName());
-
                 }
             });
         }
 
+        //Listens for when user clicks block button. Removes chatting student from current user's matches list
         blockClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
+                        //Remove from each other's chats list
                         currentUser.removeChatRoom(chat.getRoom());
                         chat.getChattingStudent().removeChatRoom(chat.getRoom());
 
+                        //remove chat document that has all the messages
                         chat.removeChat();
 
+                        //add to each other's passed list
                         currentUser.addPassedStudent(chat.getChattingStudentID());
                         chat.getChattingStudent().addPassedStudent(currentUser.getId());
 
+                        //remove from each other's matched list
                         currentUser.removeMatchedStudent(chat.getChattingStudentID());
                         chat.getChattingStudent().removeMatchedStudent(currentUser.getId());
 
@@ -155,32 +181,10 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-
                         break;
                 }
             }
         };
-        /*sessionRequestListener= new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        Toast.makeText(ChatboxActivity.this, "Successfully Set Up Study Session", Toast.LENGTH_LONG).show();
-                        String acceptMessage="Study Session Accepted";
-                        scaledrone.publish(chat.getRoom(), acceptMessage);
-                        chat.saveMesssage(currentUser.getId(), acceptMessage);
-
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        Toast.makeText(ChatboxActivity.this, "Study Session is Cancelled", Toast.LENGTH_LONG).show();
-                        String declineMessage="Study Session Declined";
-                        scaledrone.publish(chat.getRoom(), declineMessage);
-                        chat.saveMesssage(currentUser.getId(), declineMessage);
-                        break;
-                }
-            }
-        };*/
 
         //Chatbox code
         //get user input
@@ -194,112 +198,6 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
 
     }
-
-    private String convertDateTimeToString(Date dateTime){
-        Calendar calendar=Calendar.getInstance();
-        calendar.setTime(dateTime);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+1;
-        int date = calendar.get(Calendar.DATE);
-        String dateText=month + "/" + date + "/" + year;
-        String timeText = DateFormat.format("h:mm a", calendar).toString();
-
-        String dateTimeString="Date: "+dateText+"\nTime: "+timeText;
-        return dateTimeString;
-    }
-
-    public void sendMessage(View view) {
-
-        String message = editText.getText().toString();
-        if (message.length() > 0) {
-            if(chat.getRoom()==null ||chat.getRoom().equals("") ){
-                studyButton.setEnabled(true);
-                studyButton.setAlpha(1f);
-
-                Chat.getNewRoomAssignment(new DatabaseCallBack<String>() {
-                    @Override
-                    public void onCallback(String item) {
-                        chat.setRoom(item);
-                        currentUser.saveChatRoom(item, chattingStudent.getId());
-                        chattingStudent.saveChatRoom(item, currentUser.getId());
-
-                        //initial connection
-                        System.out.println("connecting");
-                        scaledrone.connect(new ScaledroneListener());
-                        firstMessage=message;
-                        chat.saveNewChatMessage(currentUser.getId(), message, chat.getRoom());
-
-                    }
-
-                });
-
-
-            }else{
-                scaledrone.publish(chat.getRoom(), message);
-                chat.saveMesssage(currentUser.getId(), message);
-
-
-            }
-            editText.getText().clear();
-        }
-
-    }
-    //chatbox
-    @Override
-    public void onOpen(Room room) {
-        System.out.println("Connected to room");
-        if(firstMessage!=null) {
-            System.out.println("publishing NEW message in new chat");
-            scaledrone.publish(chat.getRoom(), firstMessage);
-            firstMessage=null;
-        }
-
-    }
-
-    @Override
-    public void onOpenFailure(Room room, Exception ex) {
-        System.out.println("Failed to open connection: " + ex.getMessage());
-
-    }
-
-    @Override
-    public void onMessage(Room room, Message receivedMessage) {
-        // parse as string
-        System.out.println("Message client : "+receivedMessage.getClientID()+" "+receivedMessage.getMember()+" " + receivedMessage.getData().asText());
-        boolean belongsToCurrentUser = receivedMessage.getClientID().equals(scaledrone.getClientID());
-        String studentID=currentUser.getId();
-        System.out.println("Message sender "+receivedMessage.getClientID()+ "current client  "+scaledrone.getClientID());
-        String messageString=receivedMessage.getData().asText();
-        if (!belongsToCurrentUser){
-            studentID=chat.getChattingStudentID();
-            if(messageString.equals(chat.getSessionRequestMessageID()) ){
-                System.out.println("SESSION REQUEST FROM Other");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        onSessionRequest();
-                    }
-                });
-                return;
-
-            }
-        }
-        else if (belongsToCurrentUser&& messageString.equals(chat.getSessionRequestMessageID())){
-            System.out.println("SESSION REQUEST FROM you");
-            return;
-        }
-        final model.Message message = new model.Message(messageString, studentID);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                messageAdapter.add(message);
-                messagesView.setSelection(messagesView.getCount() - 1);
-            }
-        });
-
-
-    }
-
 
 
     /* Start Navigation Stuff */
@@ -352,20 +250,151 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
     /* End Navigation Stuff */
 
 
-    public void onSessionRequest() {
-        /*final EditText input = new EditText(this);
-        input.setHint("reminder (minutes)");
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
-        builder.setTitle("From "+chat.getChattingStudentFullName());
-        builder.setMessage(message).setPositiveButton("Accept", sessionRequestListener)
-                .setNegativeButton("Decline", sessionRequestListener).show();*/
+    /**
+     * Converts Date to String (Ex: Date: 11/07/2019 Time: 4:29 PM)
+     * @param dateTime Date object to be converted to string message.
+     * @return String message of given Date object.
+     */
+    private String convertDateTimeToString(Date dateTime){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(dateTime);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH)+1;
+        int date = calendar.get(Calendar.DATE);
+        String dateText=month + "/" + date + "/" + year;
+        String timeText = DateFormat.format("h:mm a", calendar).toString();
+
+        String dateTimeString="Date: "+dateText+"\nTime: "+timeText;
+        return dateTimeString;
+    }
+
+    /**
+     * Adds a new chat document if current user and student never chatted before.
+     * Saves the message to database, and sends it to the student using Scaledrone.
+     * @param view
+     */
+    public void sendMessage(View view) {
+        //get the messsage
+        String message = editText.getText().toString();
+
+        if (message.length() > 0) {
+            //Never chatted before
+            if(chat.getRoom()==null ||chat.getRoom().equals("") ){
+                studyButton.setEnabled(true);
+                studyButton.setAlpha(1f);
+
+                //Get a new chat room name
+                Chat.getNewRoomAssignment(new DatabaseCallBack<String>() {
+                    @Override
+                    public void onCallback(String item) {
+                        chat.setRoom(item);
+                        currentUser.saveChatRoom(item, chattingStudent.getId());
+                        chattingStudent.saveChatRoom(item, currentUser.getId());
+
+                        //initial connection
+                        scaledrone.connect(new ScaledroneListener());
+                        firstMessage=message;
+
+                        chat.saveNewChatMessage(currentUser.getId(), message, chat.getRoom());
+                    }
+                });
+            }else{
+                scaledrone.publish(chat.getRoom(), message);
+                chat.saveMesssage(currentUser.getId(), message);
+            }
+            editText.getText().clear();
+        }
+    }
+
+    /**
+     * Runs when Scaledrone's connection is opened.
+     * If current user sent a message to a student they never chatted with before,
+     * onOpen will send this message after connection is established
+     * @param room chat room that Scaledrone is subscribed to.
+     */
+    @Override
+    public void onOpen(Room room) {
+        //System.out.println("Connected to room");
+        if(firstMessage!=null) {
+            //System.out.println("publishing new message in new chat");
+            scaledrone.publish(chat.getRoom(), firstMessage);
+            firstMessage=null;
+        }
+    }
+
+    /**
+     * Runs when Scaledrone's connection failed to open.
+     * @param room chat room that Scaledrone is subscribed to.
+     * @param ex exception for failure
+     */
+    @Override
+    public void onOpenFailure(Room room, Exception ex) {
+        System.out.println("Failed to open connection: " + ex.getMessage());
+    }
+
+    /**
+     * Scaledrone client will receive all messages that are published its subscribed room.
+     * @param room chat room that Scaledrone is subscribed to.
+     * @param receivedMessage message that is received from Scaledrone
+     */
+    @Override
+    public void onMessage(Room room, Message receivedMessage) {
+        // parse as string
+        //System.out.println("Message client : "+receivedMessage.getClientID()+" "+receivedMessage.getMember()+" " + receivedMessage.getData().asText());
+
+        boolean belongsToCurrentUser = receivedMessage.getClientID().equals(scaledrone.getClientID());
+
+        //initialize sender to current user
+        String studentID=currentUser.getId();
+        //System.out.println("Message sender "+receivedMessage.getClientID()+ "current client  "+scaledrone.getClientID());
+
+        String messageString=receivedMessage.getData().asText();
+
+        if (!belongsToCurrentUser){
+            //Sender of message is chatting student
+            studentID=chat.getChattingStudentID();
+
+            //Chatting student sent a session request ID, so current user needs to acknowledge request
+            if(messageString.equals(chat.getSessionRequestMessageID()) ){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkSessionRequest();
+                    }
+                });
+                return;
+            }
+        }
+        //current user sent a session request ID, so ignore
+        else if (belongsToCurrentUser&& messageString.equals(chat.getSessionRequestMessageID())){
+            return;
+        }
+
+        //Non session request messages are displayed
+        final model.Message message = new model.Message(messageString, studentID);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                messageAdapter.add(message);
+                messagesView.setSelection(messagesView.getCount() - 1);
+            }
+        });
+    }
+
+    /**
+     * Checks to see if current user has any pending session requests.
+     * If so, displays dialog to accept or decline.
+     */
+    public void checkSessionRequest() {
         chat.getRequestedSession(new DatabaseCallBack<Document>() {
             @Override
             public void onCallback(Document request) {
                 if (request!=null){
+                    //Get request sender
                     String sessionSender=request.get("sender").toString();
+
+                    //Displays popup if the session request sender is not current user
                     if (!sessionSender.equals(currentUser.getId())){
-                        System.out.println("SESSION POPUP REQUEST FROM PARTNER");
                         Date dateTime=request.getDate("datetime");
                         String dialogMessage=convertDateTimeToString(dateTime);
                         String title="Session Request From "+chat.getChattingStudentFullName();
@@ -385,19 +414,23 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 }
             }
         });
-
-
-        //newFragment.show(getSupportFragmentManager(), "sessionRequest");
-
     }
 
+    /**
+     * Runs when user clicks on block button. Displays popup to confirm user's actions.
+     * @param view
+     */
     public void onBlockClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatboxActivity.this);
         builder.setMessage("Are you sure you want to block? This cannot be undone").setPositiveButton("Yes", blockClickListener)
                 .setNegativeButton("No", blockClickListener).show();
-
     }
 
+    /**
+     * Runs when user clicks on study button.
+     * If there are no pending session requests, will take user to set up session page.
+     * @param view
+     */
     public void onStudySessionClick(View view) {
         chat.getRequestedSession(new DatabaseCallBack<Document>() {
             @Override
@@ -413,37 +446,42 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
                     startActivity(intent);
                 }
-
             }});
-
-
     }
 
+    /**
+     * Displays previous messages between current user and chatting student in chatbox.
+     */
     private void loadHistoryMessages(){
         chat.findMessages(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> items) {
                 for (Document item: items) {
-                    Log.d("app", String.format("successfully found:  %s", item.toString()));
                     String sender=item.get("sender").toString();
                     String text=item.getString("text");
-                    System.out.println("MESSAGE HISTORY "+sender +" "+text );
+                    //System.out.println("Message from history "+sender +" "+text );
                     chat.addMessage(text, sender);
                     messageAdapter.add(chat.getLastMessage());
                     messagesView.setSelection(messagesView.getCount() - 1);
                 }
-
             }
         });
     }
 
+    /**
+     * SetSessionDialogFrag callback method for when current user accepts session request.
+     * Sends 'Study Session Accepted' and saves it to database.
+     * @param message Study Session Accepted
+     */
     @Override
     public void onPositive(String message) {
+
         Toast.makeText(ChatboxActivity.this, "Successfully Set Up Study Session", Toast.LENGTH_LONG).show();
         String acceptMessage="Study Session Accepted";
         scaledrone.publish(chat.getRoom(), acceptMessage);
         chat.saveMesssage(currentUser.getId(), acceptMessage);
 
+        //Saves study session
         chat.getRequestedSession(new DatabaseCallBack<Document>() {
             @Override
             public void onCallback(Document request) {
@@ -457,19 +495,18 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
                 Date date= request.getDate("datetime");
                 int partnerReminder=request.getInteger("reminder");
                 setUpStudySession(partnerReminder, reminder, date);
-                chat.removeRequest();
 
+                chat.removeRequest();
             }
         });
 
-
     }
 
-    private void setUpStudySession(int partnerReminder, int reminder, Date date){
-        currentUser.addSession(date, reminder, chat.getChattingStudentID());
-        chat.getChattingStudent().addSession(date, partnerReminder, currentUser.getId());
-    }
-
+    /**
+     * SetSessionDialogFrag callback method for when current user declines session request.
+     * Sends 'Study Session Declined' and saves it to database.
+     * @param message Study Session Declined
+     */
     @Override
     public void onNegative(String message) {
         Toast.makeText(ChatboxActivity.this, "Study Session is Cancelled", Toast.LENGTH_LONG).show();
@@ -479,8 +516,27 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
         chat.removeRequest();
     }
 
+    /**
+     * Adds study session doc to both current user and chatting student documents in database
+     * @param partnerReminder chatting student's reminder time for study session
+     * @param reminder current user's reminder time for study session
+     * @param date Date of study sessiom
+     */
+    private void setUpStudySession(int partnerReminder, int reminder, Date date){
+        currentUser.addSession(date, reminder, chat.getChattingStudentID());
+        chat.getChattingStudent().addSession(date, partnerReminder, currentUser.getId());
+    }
+
+
+    /**
+     * Listener for Scaledrone client
+     */
     private class ScaledroneListener implements Listener{
 
+        /**
+         * Runs when Scaledrone connection is opened
+         * Subscribes to a room when Scaledrone connection is opened
+         */
         @Override
         public void onOpen() {
             System.out.println("Scaledrone connection open");
@@ -488,12 +544,20 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
 
         }
 
+        /**
+         * Runs when Scaledrone failed to open room
+         * @param ex Exception for failure
+         */
         @Override
         public void onOpenFailure(Exception ex) {
-            System.out.println("Scaledrone connection open failure");
+            System.out.println("Scaledrone open failure");
             System.err.println(ex);
         }
 
+        /**
+         * Runs when Scaledrone failed to connect
+         * @param ex Exception for failure
+         */
         @Override
         public void onFailure(Exception ex) {
             System.out.println("Scaledrone connection failure");
@@ -502,13 +566,14 @@ public class ChatboxActivity extends AppCompatActivity implements NavigationView
             scaledrone.connect(new ScaledroneListener());
         }
 
+        /**
+         * Runs when Scaledrone connection has closed
+         * @param reason reason for Scaledrone closing
+         */
         @Override
         public void onClosed(String reason) {
             System.out.println("Scaledrone connection closed");
             System.err.println(reason);
         }
-
-
     }
-
 }
