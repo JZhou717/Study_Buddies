@@ -140,7 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if(valid_info) {
-            
+
             //Create Account
             DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {
                 @Override
