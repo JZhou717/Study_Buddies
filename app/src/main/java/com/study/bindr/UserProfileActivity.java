@@ -61,6 +61,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private static final int PICK_IMAGE = 100;
 
     private static final String TAG = "UserProfileActivity";
+    private static final int WITHDRAW_KEYBOARD_FLAGS = 0;
 
     DialogInterface.OnClickListener deleteClickListener;
 
@@ -298,8 +299,8 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         exitEditMode();
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        final int FLAGS = 0;
-        imm.hideSoftInputFromWindow(v.getWindowToken(), FLAGS);
+
+        imm.hideSoftInputFromWindow(v.getWindowToken(), WITHDRAW_KEYBOARD_FLAGS);
         displayedStudent.editName(nameEditText.getText().toString(), items -> {});
         final double GPA_NOT_ENTERED = 0;
         if(gpaEditText.getText().toString().equals(""))
@@ -337,7 +338,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     public void onCancelClicked(View v){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), WITHDRAW_KEYBOARD_FLAGS);
         exitEditMode();
         restoreValues();
     }
@@ -360,7 +361,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     public void onDeleteClicked(View v){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), WITHDRAW_KEYBOARD_FLAGS);
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
         Log.d(TAG, "Trying to delete account...");
         builder.setMessage("Are you sure you want to delete your account? This cannot be undone")
