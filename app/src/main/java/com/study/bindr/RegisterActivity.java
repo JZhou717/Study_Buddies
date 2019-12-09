@@ -132,21 +132,20 @@ public class RegisterActivity extends AppCompatActivity {
         }
         /* * * End of validating fields * * */
 
-        //Wait one second for queries to finish running
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-
-        }
-
-        //Wait 1 second for validation queries to complete
+        //Wait 2 second for validation queries to complete
         try{
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(2);
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
 
         if(valid_info) {
+            //Check user uploaded an image
+            if(picture.length == 0) {
+                createAlert("Missing Profile Image", "Please upload an image of less than 1MB");
+                return;
+            }
+
             //Create Account
             DatabaseUtility.createAccount(email, username, password, picture, fullName, bio, interests, gpa, new DatabaseCallBack<Boolean>() {
                 @Override
