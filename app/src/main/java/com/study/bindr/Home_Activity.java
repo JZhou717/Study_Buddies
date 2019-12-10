@@ -73,6 +73,8 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     }
 
     private void checkAndNotifySession(){
+        if(me == null)
+            return;
         me.getSessions(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> items) {
@@ -162,6 +164,8 @@ public class Home_Activity extends AppCompatActivity implements NavigationView.O
     /* End Navigation Stuff */
 
     private void populateCourses(){
+        if(me == null)
+            return;
         me.getCourses(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> items) {

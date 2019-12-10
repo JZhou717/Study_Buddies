@@ -64,6 +64,8 @@ public class EditCoursesActivity extends AppCompatActivity implements Navigation
         /* End Navigation Stuff */
         Log.d("EditCoursesOnCreate: ", "Populating courses...");
         //Populate courses:
+        if(me == null)
+            return;
         me.getCourses(new DatabaseCallBack<List<Document>>() {
             @Override
             public void onCallback(List<Document> items) {

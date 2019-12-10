@@ -61,6 +61,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     private static final int PICK_IMAGE = 100;
 
     private static final String TAG = "UserProfileActivity";
+    private static final int WITHDRAW_KEYBOARD_FLAGS = 0;
 
     DialogInterface.OnClickListener deleteClickListener;
 
@@ -106,9 +107,14 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
 
         profilePicImageView = (ImageView)findViewById(R.id.imageViewProfilePic);
         displayedStudent.getPicture(items -> {
-            byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
-            Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            profilePicImageView.setImageBitmap(decodedBytes);
+            if(!items.equals("")) {
+                byte[] decodedString = Base64.decode(items, Base64.DEFAULT);
+                Bitmap decodedBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                profilePicImageView.setImageBitmap(decodedBytes);
+            }
+            else{
+                profilePicImageView.setImageResource(R.drawable.john);
+            }
 
         });
         //TODO: RETRIEVE PROFILE PIC
@@ -272,7 +278,8 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                final int QUALITY = 100;
+                bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
                 String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 me.editPicture(encoded);
@@ -292,9 +299,14 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         exitEditMode();
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+        imm.hideSoftInputFromWindow(v.getWindowToken(), WITHDRAW_KEYBOARD_FLAGS);
         displayedStudent.editName(nameEditText.getText().toString(), items -> {});
-        displayedStudent.editGPA(Double.parseDouble(gpaEditText.getText().toString()),
+        final double GPA_NOT_ENTERED = 0;
+        if(gpaEditText.getText().toString().equals(""))
+            displayedStudent.editGPA(GPA_NOT_ENTERED, items -> {});
+        else
+            displayedStudent.editGPA(Double.parseDouble(gpaEditText.getText().toString()),
                 items -> {});
         displayedStudent.editBio(bioEditText.getText().toString(), items -> {});
         displayedStudent.editEmail(emailEditText.getText().toString(), items -> {});
@@ -326,7 +338,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     public void onCancelClicked(View v){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), WITHDRAW_KEYBOARD_FLAGS);
         exitEditMode();
         restoreValues();
     }
@@ -349,7 +361,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     public void onDeleteClicked(View v){
         //Force withdraw keyboard:
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), WITHDRAW_KEYBOARD_FLAGS);
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
         Log.d(TAG, "Trying to delete account...");
         builder.setMessage("Are you sure you want to delete your account? This cannot be undone")

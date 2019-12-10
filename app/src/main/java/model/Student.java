@@ -1595,8 +1595,8 @@ public class Student implements Serializable {
     }
 
     /**
-     * Gets a list of Documents
-     * @param dbCallBack The method to which the rating and rating count document is passed to
+     * Given a list of matched student ids, will get the corresponding chat rooms that they are in with the current user.
+     * @param dbCallBack The method to which the list of chat documents is passed to
      * @param studentIDs List of student IDS
      */
     public void getChatRoomsFromStudents(DatabaseCallBack<List<Document>> dbCallBack, List<String> studentIDs){
@@ -1647,11 +1647,13 @@ public class Student implements Serializable {
         });
     }
 
+    /**
+     * Removes a given student id from current student's matches.
+     * @param studentIDToRemove the student ID to remove
+     */
     public void removeMatchedStudent(String studentIDToRemove) {
 
-        //Query for the document relating to this student object by their shared ID
         Document filterDoc = new Document().append("_id", new ObjectId(this.id));
-        //Document listing the updates that we are performing
         Document updateDoc = new Document().append("$pull",
                 new Document().append("matches",
                         new Document()
